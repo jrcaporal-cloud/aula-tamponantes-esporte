@@ -3,6 +3,7 @@ import type { ComponentType, ReactNode } from 'react';
 import { Appear, Arrow, Move, Pop, Pulse, Tilt } from '../ato2/protonSources.svg';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
+import { CountSvgText } from '../kit/CountUp';
 import { WINDOW_SEC } from './cases';
 import { SIGNAL } from './shared';
 
@@ -75,7 +76,7 @@ const PrizeScene = ({ reduce }: SceneProps) => {
             </Appear>
             <Move reduce={reduce} begin={0.3} dur={1} from={`${ES_X0 - p} 0`} to="0 0">
                 <circle cx={p} cy={102} r={11} fill={C.base} stroke="#04080F" strokeWidth={3} />
-                <SvgText x={p} y={80} text="ES 0,17" size={22} anchor="middle" color={C.base} weight={700} />
+                <CountSvgText x={p} y={80} text="ES 0,17" size={22} anchor="middle" color={C.base} weight={700} delay={0.3} duration={1} />
             </Move>
             <Appear reduce={reduce} begin={1.8}>
                 <SvgText x={ES_X1} y={62} text="pequeno, mas longe do zero" size={17} anchor="end" color={INK} />
@@ -316,7 +317,7 @@ const ProductScene = ({ reduce }: SceneProps) => {
                         <rect x={0} y={-j.pct * inner} width={JAR.w - 12} height={j.pct * inner} rx={10} fill={C.acid} />
                     </GrowY>
                     <Appear reduce={reduce} begin={0.8 + i * 0.3}>
-                        <SvgText x={j.x + JAR.w / 2} y={JAR.top - 26} text={j.label} size={26} anchor="middle" color={C.acid} weight={700} />
+                        <CountSvgText x={j.x + JAR.w / 2} y={JAR.top - 26} text={j.label} size={26} anchor="middle" color={C.acid} weight={700} delay={0.8 + i * 0.3} duration={0.7} />
                     </Appear>
                     <SvgText x={j.x + JAR.w / 2} y={276} text={j.study} size={17} anchor="middle" color={INK} weight={700} />
                     <SvgText x={j.x + JAR.w / 2} y={298} text={j.n} size={16} anchor="middle" color={C.muted} weight={500} />

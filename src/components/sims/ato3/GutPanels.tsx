@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
+import { CountUp } from '../kit/CountUp';
 import { MILLER, STRATEGIES } from './intestino';
 
 /** Painéis à direita do intestino (slide 47). */
@@ -18,7 +19,7 @@ export const PricePanel = () => (
                             <motion.div className="h-full rounded" style={{ background: b.c }} initial={{ width: 0 }}
                                 animate={{ width: `${(b.v / 32) * 100}%` }} transition={{ duration: 0.7, delay: 0.2 * i }} />
                         </div>
-                        <span className="w-[64px] text-right text-[17px] font-bold" style={{ color: b.c }}>{br(b.v, 1)}%</span>
+                        <CountUp text={`${br(b.v, 1)}%`} delay={0.2 * i} duration={0.7} className="w-[64px] text-right text-[17px] font-bold" style={{ color: b.c }} />
                     </div>
                 ))}
             </div>

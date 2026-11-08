@@ -9,13 +9,15 @@ export interface Takeaway {
     figureLabel: string;
     color: string;
     source: string;
+    /** O número sobe de zero quando a mensagem abre (só onde contar faz sentido: ES e porcentagens). */
+    countUp?: boolean;
 }
 
 export const TAKEAWAYS: readonly Takeaway[] = [
     {
         title: 'O prêmio é pequeno e tem endereço',
         text: 'Esforços intensos de 30 s a ~12 min. Não força máxima, não sprint de 10 s.',
-        figure: 'ES 0,17', figureLabel: 'bicarbonato, 189 artigos', color: C.base,
+        figure: 'ES 0,17', figureLabel: 'bicarbonato, 189 artigos', color: C.base, countUp: true,
         source: 'de Oliveira 2022; Saunders 2017 (β-alanina, ES 0,18)',
     },
     {
@@ -39,7 +41,7 @@ export const TAKEAWAYS: readonly Takeaway[] = [
     {
         title: 'Regra e produto também são evidência',
         text: 'IN 28, Código Mundial e o pote contaminado entram na decisão; a justificativa vai ao prontuário.',
-        figure: '14,8–38%', figureLabel: 'suplementos contaminados', color: C.acid,
+        figure: '14,8–38%', figureLabel: 'suplementos contaminados', color: C.acid, countUp: true,
         source: 'IN 28; WADA 2026; Geyer 2004; Duiven 2021; CFN 656',
     },
 ];

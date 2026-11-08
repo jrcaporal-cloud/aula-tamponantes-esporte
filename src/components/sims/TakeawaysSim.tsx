@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { PANEL_BG } from './kit/palette';
+import { CountUp } from './kit/CountUp';
 import { SIM_H } from './ato7/shared';
 import { TakeawayVisual } from './ato7/takeawayVisuals';
 import { TAKEAWAYS } from './ato7/takeaways';
@@ -44,7 +45,9 @@ const TakeawaysSim = () => {
                                     {isActive && <span className="text-[16px] leading-snug text-gray-200">{t.text}</span>}
                                     {isActive && (
                                         <span className="mt-auto flex flex-col gap-1 pt-2">
-                                            <span className="font-display text-[30px] font-semibold leading-none" style={{ color: t.color }}>{t.figure}</span>
+                                            {t.countUp
+                                                ? <CountUp text={t.figure} delay={0.2} duration={1.1} className="font-display text-[30px] font-semibold leading-none" style={{ color: t.color }} />
+                                                : <span className="font-display text-[30px] font-semibold leading-none" style={{ color: t.color }}>{t.figure}</span>}
                                             <span className="text-[15px] leading-tight text-gray-300">{t.figureLabel}</span>
                                         </span>
                                     )}

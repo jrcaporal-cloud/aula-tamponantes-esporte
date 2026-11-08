@@ -1,9 +1,10 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { useStore } from '../../store/useStore';
-import { ANIMATED_BACKGROUND_SLIDES } from '../deck/slides';
+import { ANIMATED_BACKGROUND_SLIDES, DECK } from '../deck/slides';
+import { moodFor, type Mood } from '../deck/actMood';
 import { rng } from './shared/math';
 
 const ION_COUNT = 46;
@@ -22,6 +23,42 @@ const makeBicarbonateGeometry = () => {
     const geo = mergeGeometries(parts);
     geo.computeVertexNormals();
     return geo;
+};
+
+/** Valores do clima no quadro atual: caminham até o clima do slide (ver `deck/actMood.ts`). */
+interface Live {
+    protons: number;
+    ions: number;
+    warm: number;
+    speed: number;
+    pull: number;
+    ionColor: THREE.Color;
+    ionGlow: THREE.Color;
+}
+
+const liveFrom = (m: Mood): Live => ({
+    protons: m.protons, ions: m.ions, warm: m.warm, speed: m.speed, pull: m.pull,
+    ionColor: new THREE.Color(m.ionColor), ionGlow: new THREE.Color(m.ionGlow),
+});
+
+const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
+
+/** Leva o clima vivo até o alvo, mais devagar quando o clima pede uma troca longa (o fecho). */
+const MoodDriver = ({ target, liveRef }: { target: Mood; liveRef: RefObject<Live> }) => {
+    const ionColor = useMemo(() => new THREE.Color(target.ionColor), [target.ionColor]);
+    const ionGlow = useMemo(() => new THREE.Color(target.ionGlow), [target.ionGlow]);
+    useFrame((_, delta) => {
+        const live = liveRef.current;
+        const a = 1 - Math.exp(-Math.min(delta, 0.05) * (4000 / target.settleMs));
+        live.protons += (target.protons - live.protons) * a;
+        live.ions += (target.ions - live.ions) * a;
+        live.warm += (target.warm - live.warm) * a;
+        live.speed += (target.speed - live.speed) * a;
+        live.pull += (target.pull - live.pull) * a;
+        live.ionColor.lerp(ionColor, a);
+        live.ionGlow.lerp(ionGlow, a);
+    });
+    return null;
 };
 
 interface Drifter {
@@ -44,8 +81,9 @@ const makeDrifters = (count: number, seed: number, speed: [number, number], scal
 };
 
 /** Íons de bicarbonato (ciano) derivando devagar. */
-const Bicarbonate = () => {
+const Bicarbonate = ({ liveRef }: { liveRef: RefObject<Live> }) => {
     const meshRef = useRef<THREE.InstancedMesh>(null);
+    const materialRef = useRef<THREE.MeshStandardMaterial>(null);
     const geometry = useMemo(() => makeBicarbonateGeometry(), []);
     const ions = useMemo(() => makeDrifters(ION_COUNT, 7, [0.35, 0.9], [0.55, 1.1]), []);
     const dummy = useMemo(() => new THREE.Object3D(), []);
@@ -53,7 +91,10 @@ const Bicarbonate = () => {
     useFrame((_, delta) => {
         const mesh = meshRef.current;
         if (!mesh) return;
-        const dt = Math.min(delta, 0.05);
+        const live = liveRef.current;
+        const dt = Math.min(delta, 0.05) * live.speed;
+        // Íons além da fração do clima encolhem até sumir (sem "estalo" de aparecer/desaparecer).
+        const visible = live.ions * ION_COUNT;
         ions.forEach((c, i) => {
             c.pos.x += c.speed * dt;
             c.pos.y += Math.sin(c.pos.x * 0.15 + i) * 0.1 * dt;
@@ -63,22 +104,24 @@ const Bicarbonate = () => {
             c.rot.z += c.spin.z * dt;
             dummy.position.copy(c.pos);
             dummy.rotation.copy(c.rot);
-            dummy.scale.setScalar(c.scale);
+            dummy.scale.setScalar(c.scale * clamp01(visible - i));
             dummy.updateMatrix();
             mesh.setMatrixAt(i, dummy.matrix);
         });
         mesh.instanceMatrix.needsUpdate = true;
+        materialRef.current?.color.copy(live.ionColor);
+        materialRef.current?.emissive.copy(live.ionGlow);
     });
 
     return (
         <instancedMesh ref={meshRef} args={[geometry, undefined, ION_COUNT]}>
-            <meshStandardMaterial color="#0e7490" emissive="#0b4f63" emissiveIntensity={0.6} roughness={0.35} metalness={0.1} />
+            <meshStandardMaterial ref={materialRef} color="#0e7490" emissive="#0b4f63" emissiveIntensity={0.6} roughness={0.35} metalness={0.1} />
         </instancedMesh>
     );
 };
 
 /** Prótons (H⁺) laranja: pontos menores e mais rápidos, como faíscas. */
-const Protons = () => {
+const Protons = ({ liveRef }: { liveRef: RefObject<Live> }) => {
     const ref = useRef<THREE.Points>(null);
     const drifters = useMemo(() => makeDrifters(PROTON_COUNT, 13, [1.2, 2.6], [1, 1]), []);
     const geometry = useMemo(() => {
@@ -88,8 +131,10 @@ const Protons = () => {
     }, []);
     useFrame((_, delta) => {
         const attr = ref.current?.geometry.getAttribute('position') as THREE.BufferAttribute | undefined;
-        if (!attr) return;
-        const dt = Math.min(delta, 0.05);
+        if (!attr || !ref.current) return;
+        const live = liveRef.current;
+        const dt = Math.min(delta, 0.05) * live.speed;
+        ref.current.geometry.setDrawRange(0, Math.round(live.protons * PROTON_COUNT));
         drifters.forEach((p, i) => {
             p.pos.x += p.speed * dt;
             p.pos.y += Math.sin(p.pos.x * 0.3 + i * 1.7) * 0.25 * dt;
@@ -105,12 +150,19 @@ const Protons = () => {
     );
 };
 
+/** Luz quente (H⁺) que acompanha o clima. */
+const WarmLight = ({ liveRef }: { liveRef: RefObject<Live> }) => {
+    const ref = useRef<THREE.PointLight>(null);
+    useFrame(() => { if (ref.current) ref.current.intensity = liveRef.current.warm; });
+    return <pointLight ref={ref} position={[-12, -4, 4]} intensity={2.2} distance={40} color="#f97316" />;
+};
+
 /** Parallax suave com o mouse + leve aproximação ao avançar na aula. */
-const CameraDrift = () => {
+const CameraDrift = ({ liveRef }: { liveRef: RefObject<Live> }) => {
     const slide = useStore(s => s.currentSlide);
     const target = useRef(new THREE.Vector3());
     useFrame(({ camera, pointer }, delta) => {
-        target.current.set(pointer.x * 1.6, pointer.y * 1.0, 16 - Math.min(slide, 40) * 0.08);
+        target.current.set(pointer.x * 1.6, pointer.y * 1.0, 16 - Math.min(slide, 40) * 0.08 + liveRef.current.pull);
         camera.position.lerp(target.current, Math.min(delta * 1.5, 1));
         camera.lookAt(0, 0, -10);
     });
@@ -120,21 +172,33 @@ const CameraDrift = () => {
 /**
  * Fundo 3D da aula: íons de bicarbonato e prótons derivando — tema da aula, baixo custo
  * (duas instâncias, sem pós-processamento) e fica atenuado nos slides de conteúdo.
+ * Cada ato tem seu clima (mais H⁺ na Perícia, mais tampão no Ato III…); ver `deck/actMood.ts`.
  */
 export const AmbientBackground = () => {
     const slide = useStore(s => s.currentSlide);
     const modalOpen = useStore(s => s.modalOpen);
-    const isHero = slide === 0;
+    const item = DECK[slide] ?? DECK[0];
+    const mood = moodFor(item.slide.id, item.section);
+    const liveRef = useRef<Live>(liveFrom(mood));
+
+    // Ao trocar de clima, o fundo anima até assentar e depois volta a congelar.
+    const [settling, setSettling] = useState(false);
+    useEffect(() => {
+        const start = window.setTimeout(() => setSettling(true), 0);
+        const stop = window.setTimeout(() => setSettling(false), mood.settleMs);
+        return () => { window.clearTimeout(start); window.clearTimeout(stop); };
+    }, [mood]);
+    const animated = settling || ANIMATED_BACKGROUND_SLIDES.has(slide);
 
     return (
         <div
             aria-hidden
-            className="absolute inset-0 z-0 transition-opacity duration-1000"
-            style={{ opacity: isHero ? 0.95 : 0.4 }}
+            className="absolute inset-0 z-0 transition-opacity"
+            style={{ opacity: mood.opacity, transitionDuration: `${Math.min(mood.settleMs, 4000)}ms` }}
         >
             <Canvas
                 dpr={[1, 1.5]}
-                frameloop={modalOpen ? 'never' : ANIMATED_BACKGROUND_SLIDES.has(slide) ? 'always' : 'demand'}
+                frameloop={modalOpen ? 'never' : animated ? 'always' : 'demand'}
                 camera={{ position: [0, 0, 16], fov: 50 }}
                 gl={{ antialias: true, powerPreference: 'low-power' }}
             >
@@ -142,10 +206,11 @@ export const AmbientBackground = () => {
                 <fog attach="fog" args={['#04080F', 14, 46]} />
                 <ambientLight intensity={0.35} color="#1e3a5f" />
                 <directionalLight position={[8, 10, 12]} intensity={1.3} color="#cffafe" />
-                <pointLight position={[-12, -4, 4]} intensity={2.2} distance={40} color="#f97316" />
-                <CameraDrift />
-                <Bicarbonate />
-                <Protons />
+                <MoodDriver target={mood} liveRef={liveRef} />
+                <WarmLight liveRef={liveRef} />
+                <CameraDrift liveRef={liveRef} />
+                <Bicarbonate liveRef={liveRef} />
+                <Protons liveRef={liveRef} />
             </Canvas>
             {/* Vinheta: garante contraste do texto sobre o fundo animado. */}
             <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(4,8,15,0.55)_60%,rgba(4,8,15,0.92)_100%)]" />

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
+import { CountSvgText } from '../kit/CountUp';
 import type { ForestEstimate, ForestGroup } from './forest';
 
 /**
@@ -59,8 +60,8 @@ const Row = ({ r, i, visible, dim, showCertainty, reduce }: {
                 <SvgText x={(X0 + X1) / 2} y={cy + 6} text="n.s. (sem estimativa)" size={16} anchor="middle" weight={600} color={C.muted} />
             )}
             {visible && (
-                <SvgText x={FW} y={cy + 6} anchor="end" size={18} weight={700} color={has ? color : C.muted}
-                    text={has ? `${br(r.est!, 2)} (${br(r.lo!, 2)} a ${br(r.hi!, 2)})` : 'sem efeito agrupado'} />
+                <CountSvgText x={FW} y={cy + 6} anchor="end" size={18} weight={700} color={has ? color : C.muted} run={visible && !reduce}
+                    delay={0.1} duration={0.6} text={has ? `${br(r.est!, 2)} (${br(r.lo!, 2)} a ${br(r.hi!, 2)})` : 'sem efeito agrupado'} />
             )}
         </g>
     );

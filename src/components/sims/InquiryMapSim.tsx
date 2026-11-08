@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C, PANEL_BG } from './kit/palette';
+import { CountUp } from './kit/CountUp';
 import { CHAPTERS, PRIZE } from './ato1/content';
 import { ChapterCard, type CardState } from './ato1/ChapterCard';
 import { BANNER, BOARD_H, BOARD_W, CARD_H, CARD_W, SLOTS, stringBetween } from './ato1/inquiryLayout';
@@ -29,7 +30,7 @@ const PrizeCard = ({ shown }: { shown: boolean }) => {
                     <p className="font-mono text-[16px] uppercase tracking-wide" style={{ color: C.lactate }}>{PRIZE.title}</p>
                     {PRIZE.lines.map(line => (
                         <div key={line.value} className="flex items-center gap-2.5">
-                            <span className="w-[88px] shrink-0 whitespace-nowrap font-display text-[1.4rem] font-bold leading-none text-white">{line.value}</span>
+                            <CountUp text={line.value} delay={0.25} className="w-[88px] shrink-0 whitespace-nowrap font-display text-[1.4rem] font-bold leading-none text-white" />
                             <span className="text-[16px] leading-tight text-gray-200">{line.text}</span>
                         </div>
                     ))}

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
+import { CountSvgText } from '../kit/CountUp';
 import { br } from '../kit/format';
 import { DURATION_ZONES, FOREST_ROWS, OUTSIDE_FACTS } from './forestContent';
 
@@ -32,9 +33,15 @@ export const ForestPlot = ({ step, reduce }: { step: number; reduce: boolean }) 
                 <motion.g key={r.label} initial={false} animate={{ opacity: visible ? 1 : 0 }} transition={{ duration: reduce ? 0 : 0.45 }}>
                     <SvgText x={14} y={y - 4} text={r.label} color={C.text} size={18} weight={700} />
                     <SvgText x={14} y={y + 18} text={r.detail} color={C.muted} size={16} weight={500} />
-                    <line x1={sx(r.lo)} x2={sx(r.hi)} y1={y} y2={y} stroke={r.color} strokeWidth={4} strokeLinecap="round" />
+                    {/* o intervalo abre a partir da estimativa quando a linha aparece */}
+                    <motion.g key={visible ? 'on' : 'off'} initial={visible && !reduce ? { scaleX: 0.15 } : false} animate={{ scaleX: 1 }}
+                        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                        style={{ transformBox: 'view-box', transformOrigin: `${sx(r.es)}px ${y}px` }}>
+                        <line x1={sx(r.lo)} x2={sx(r.hi)} y1={y} y2={y} stroke={r.color} strokeWidth={4} strokeLinecap="round" />
+                    </motion.g>
                     <rect x={sx(r.es) - 9} y={y - 9} width={18} height={18} fill={r.color} transform={`rotate(45 ${sx(r.es)} ${y})`} />
-                    <SvgText x={sx(r.es)} y={y - 16} text={`${fmt(r.es)} (${fmt(r.lo)} a ${fmt(r.hi)})`} anchor="middle" color={r.color} size={16} weight={700} />
+                    <CountSvgText x={sx(r.es)} y={y - 16} text={`${fmt(r.es)} (${fmt(r.lo)} a ${fmt(r.hi)})`} anchor="middle" color={r.color} size={16} weight={700}
+                        run={visible && !reduce} duration={0.7} />
                 </motion.g>
             );
         })}

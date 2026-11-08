@@ -17,6 +17,8 @@ import { toggleDetails } from '../../lib/detailsEvent';
 import { MODALS_3D, preloadAll3D } from '../three/registry';
 import { InquiryBoard } from './InquiryBoard';
 import { boardForCrossing, boardForCurrent, ROMANS, type BoardState } from './inquiry';
+import { ActCurtain, CURTAIN_HOLD_MS } from './ActCurtain';
+import { CHAPTERS, type Chapter } from '../sims/ato1/content';
 
 const boardTitle = (b: BoardState | null) =>
     b === null ? null : b.ended !== null ? `Quadro do inquérito · fim do Ato ${ROMANS[b.ended]}` : 'Quadro do inquérito (Q)';
@@ -66,11 +68,21 @@ export const Deck = () => {
         onHashJump: closeBoardNow,
     });
 
+    // Cortina do ato: sobe junto com o 1º slide do ato novo e abre depois de um instante.
+    const [curtain, setCurtain] = useState<Chapter | null>(null);
+    useEffect(() => {
+        if (!curtain) return undefined;
+        const t = window.setTimeout(() => setCurtain(null), CURTAIN_HOLD_MS);
+        return () => window.clearTimeout(t);
+    }, [curtain]);
+
     const closeBoard = closeBoardNow;
     const continueBoard = useCallback(() => {
-        const target = boardRef.current?.target ?? null;
+        const current = boardRef.current;
         setBoard(null);
-        if (target !== null) goTo(target);
+        if (current?.target == null) return;
+        setCurtain(CHAPTERS[current.upcoming] ?? null);
+        goTo(current.target);
     }, [goTo]);
     // Passador, botões e janela do apresentador: com o quadro aberto, avançar segue para o ato novo.
     const advance = useCallback(() => (boardRef.current ? continueBoard() : next()), [continueBoard, next]);
@@ -195,6 +207,10 @@ export const Deck = () => {
                 on3D={() => setOpen3D(model3D)}
                 onPresenter={() => openPresenterWindow(index)}
             />
+
+            <AnimatePresence>
+                {curtain && <ActCurtain key={curtain.roman} chapter={curtain} />}
+            </AnimatePresence>
 
             <AnimatePresence>
                 {board && <InquiryBoard key={`${board.ended}-${board.upcoming}`} board={board} onContinue={continueBoard} onBack={closeBoard} />}
