@@ -1,0 +1,239 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-accent: #22D3EE;
+  --color-brand-deep: #0E7490;
+  /* Linguagem de cor da aula: ciano = base/tampão, laranja = ácido/H⁺, violeta = carnosina, lima = sódio. */
+  --color-acid: #FB923C;
+  --color-acid-deep: #C2410C;
+  --color-carno: #A78BFA;
+  --color-sodium: #A3E635;
+  --color-brand-dark: #04080F;
+  --color-brand-gray: #171717;
+  --color-brand-slate: #1e293b;
+  --font-display: 'Clash Display', sans-serif;
+  --font-body: 'Satoshi', sans-serif;
+
+  /* Piso tipográfico maior que o padrão do Tailwind: texto legível no projetor. */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+}
+
+/*
+ * Variáveis que o HTML dos slides (parsedPresentation.json) referencia em estilos inline.
+ * Antes não eram definidas em lugar nenhum, então cores e tamanhos caíam no padrão do navegador.
+ * Valores fixos (sem vw): o palco já escala o slide inteiro para caber na tela.
+ */
+:root {
+  --bg-primary: #04080F;
+  --bg-secondary: #111827;
+  --card-bg: #1F2937;
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --accent-critical: #C2410C;
+  --accent-main: #22D3EE;
+  --accent-info: #1E3A5F;
+  --accent-highlight: #2563EB;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --title-size: 4.5rem;
+  --h2-size: 3rem;
+  --h3-size: 2rem;
+  --subtitle-size: 1.75rem;
+  --body-size: 1.2rem;
+  --small-size: 0.9rem;
+  --number-size: 8rem;
+  --slide-padding: 3.5rem;
+  --content-gap: 2rem;
+  --element-gap: 0.8rem;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-black/40 border border-white/10 backdrop-blur-2xl shadow-2xl;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: var(--color-brand-dark);
+  color: #FAFAFA;
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+.grid-2 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+}
+
+/* Expandable Card CSS for the Biological Passport / Bento Slides */
+.expand-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 500ms ease;
+  overflow: hidden;
+  margin-top: 0;
+}
+
+.expand-content>p,
+.expand-content>ul {
+  overflow: hidden;
+}
+
+.group:hover .expand-content {
+  grid-template-rows: 1fr;
+  margin-top: 1rem;
+}
+
+.chevron {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.group:hover .chevron {
+  transform: rotate(180deg);
+}
+
+/* Pro-tip styling for the inline markdown logic inside Proze rendering */
+.highlight-white {
+  color: #fff;
+  font-weight: 700;
+}
+
+.highlight-red,
+.hl-base {
+  color: var(--color-brand-accent);
+  font-weight: 700;
+}
+
+.hl-acid {
+  color: var(--color-acid);
+  font-weight: 700;
+}
+
+.hl-carno {
+  color: var(--color-carno);
+  font-weight: 700;
+}
+
+/* Global Animations for Presentation Blocks */
+
+.reveal {
+  animation: fade-slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.reveal-scale {
+  animation: fade-scale-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+.delay-4 { animation-delay: 0.8s; }
+
+@keyframes fade-slide-up {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-scale-up {
+  0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0% { text-shadow: 0 0 10px rgba(34, 211, 238, 0.5); }
+  50% { text-shadow: 0 0 25px rgba(34, 211, 238, 1); transform: scale(1.02); }
+  100% { text-shadow: 0 0 10px rgba(34, 211, 238, 0.5); }
+}
+
+/* ---------- Deck ---------- */
+
+.deck-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.4rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom-width: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  line-height: 1;
+}
+
+.deck-stage::-webkit-scrollbar { width: 8px; }
+.deck-stage::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 999px; }
+.deck-stage::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- Slides de citação / encerramento ---------- */
+
+.quote-slide .quote-text {
+  font-family: var(--font-display);
+  font-size: 3.6rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-wrap: balance;
+  text-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+
+.quote-slide .quote-text .highlight-red,
+.quote-slide .quote-text .hl-base {
+  color: var(--color-brand-accent);
+  text-shadow: 0 0 40px rgba(34, 211, 238, 0.45);
+}
+
+.quote-slide .quote-text .hl-acid {
+  color: var(--color-acid);
+  text-shadow: 0 0 40px rgba(251, 146, 60, 0.45);
+}
+
+.quote-slide p:not(.quote-text) {
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1.35rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Rótulos com tamanho fixo minúsculo (9–11px) ficam ilegíveis projetados. */
+.deck-stage .text-\[9px\] { font-size: 11px; }
+.deck-stage .text-\[10px\] { font-size: 11.5px; }
+.deck-stage .text-\[11px\] { font-size: 12.5px; }
+
+/* Elementos de apoio (botão de detalhamento etc.) somem com o mouse parado: projeção limpa. */
+.hide-when-idle { transition: opacity 500ms ease; }
+.deck-root[data-idle='true'] .hide-when-idle { opacity: 0; pointer-events: none; }

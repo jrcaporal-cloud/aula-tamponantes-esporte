@@ -1,0 +1,102 @@
+[
+ {
+  "id": 40,
+  "sectionName": "Ato III · A Primeira Testemunha: Bicarbonato",
+  "number": "",
+  "layout": "prose",
+  "title": "1977: Três Frascos",
+  "subtitle": "Giz, cloreto de amônio ou bicarbonato: o pH do sangue muda o tempo até a exaustão?",
+  "content": "[[COMP:ThreeVialsSim]]<h4>Fontes</h4><ul><li>Jones NL, Sutton JR, Taylor R, Toews CJ. Effect of pH on cardiorespiratory and metabolic responses to exercise. J Appl Physiol 1977;43(6):959-964. — 5 homens, 0,3 g/kg em cápsulas por 3 h; pH pré 7,21/7,38/7,43; tempo a 95% da potência máxima 160 ± 22, 270 ± 13 e 438 ± 120 s (% vs controle = cálculo).</li><li>Grgic J, Pedisic Z, Saunders B, et al. International Society of Sports Nutrition position stand: sodium bicarbonate and exercise performance. J Int Soc Sports Nutr 2021;18(1):61. — Jones 1977 como marco moderno do tema.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 41,
+  "sectionName": "Ato III · A Primeira Testemunha: Bicarbonato",
+  "number": "",
+  "layout": "prose",
+  "title": "Da Pista à Biópsia",
+  "subtitle": "Mesma substância, dois desenhos, dois resultados",
+  "content": "[[COMP:PioneersSim]]<h4>Fontes</h4><ul><li>Wilkes D, Gledhill N, Smyth R. Effect of acute induced metabolic alkalosis on 800-m racing time. Med Sci Sports Exerc 1983;15(4):277-280. — 6 corredores, 800 m 2,9 s mais rápidos.</li><li>Costill DL, Verstappen F, Kuipers H, Janssen E, Fink W. Acid-base balance during repeated bouts of exercise: influence of HCO3. Int J Sports Med 1984;5(5):228-231. — 0,2 g/kg; 5º tiro 113,5 × 160,8 s (+42%); pH do vasto lateral 6,73 × 6,81 (n = 4).</li><li>Katz A, Costill DL, King DS, Hargreaves M, Fink WJ. Maximal exercise tolerance after induced alkalosis. Int J Sports Med 1984;5(2):107-110. — tiro único a 125% VO₂máx: 100,6 × 98,6 s, sem diferença; HCO₃⁻ 28,2 × 24,4 mmol/L.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 42,
+  "sectionName": "Ato III · A Primeira Testemunha: Bicarbonato",
+  "number": "",
+  "layout": "prose",
+  "title": "Do Copo ao Músculo",
+  "subtitle": "O bicarbonato não entra na fibra: ele trabalha do lado de fora",
+  "content": "[[COMP:BicarbJourneySim]]<h4>Fontes</h4><ul><li>Grgic J, Pedisic Z, Saunders B, et al. International Society of Sports Nutrition position stand: sodium bicarbonate and exercise performance. J Int Soc Sports Nutr 2021;18(1):61. — CO₂ no estômago e sintomas; cápsula entérica provavelmente não evita a diarreia osmótica.</li><li>de Oliveira LF, Dolan E, Swinton PA, et al. Extracellular buffering supplements to improve exercise capacity and performance: a comprehensive systematic review and meta-analysis. Sports Med 2022;52(3):505-526. — HCO₃⁻ sanguíneo +5,2 mmol/L (ICr95 4,7–5,7).</li><li>Bishop D, Edge J, Davis C, Goodman C. Induced metabolic alkalosis affects muscle metabolism and repeated-sprint ability. Med Sci Sports Exerc 2004;36(5):807-813. — HCO₃⁻ 23,6 → 30,0 mmol/L, pH 7,42 → 7,50; pH muscular de repouso igual.</li><li>Hollidge-Horvat MG, Parolin ML, Wong D, Jones NL, Heigenhauser GJ. Effect of induced metabolic alkalosis on human skeletal muscle metabolism during exercise. Am J Physiol Endocrinol Metab 2000;278(2):E316-E329. — efluxo de lactato da perna 10,0 × 4,2 mmol/min a 75% VO₂máx.</li><li>Teto teórico de CO₂ (~6,8 L para 22,5 g) e fração de sódio (27,4%): cálculo do dossiê (massa molar 84,006 g/mol).</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 43,
+  "sectionName": "Ato III · A Primeira Testemunha: Bicarbonato",
+  "number": "",
+  "layout": "prose",
+  "title": "O que Dizem 189 Estudos",
+  "subtitle": "O efeito médio é pequeno; o que muda é para qual esforço",
+  "content": "[[COMP:BicarbForestSim]]<h4>Fontes</h4><ul><li>de Oliveira LF, Dolan E, Swinton PA, et al. Extracellular buffering supplements to improve exercise capacity and performance: a comprehensive systematic review and meta-analysis. Sports Med 2022;52(3):505-526. — 189 artigos, 2.019 participantes; ES geral 0,17 (0,12–0,21).</li><li>Christensen PM, Shirai Y, Ritz C, Nordsborg NB. Caffeine and bicarbonate for speed. A meta-analysis of legal supplements potential for improving intense endurance exercise performance. Front Physiol 2017;8:240. — provas de 45 s a 8 min: ES 0,40 (0,27–0,54).</li><li>Lopes-Silva JP, Correia-Oliveira CR. Acute effects of sodium bicarbonate ingestion on cycling time-trial performance: a systematic review and meta-analysis of randomized controlled trials. Eur J Sport Sci 2023;23(6):943-954. — potência média DMP 0,42 (0,21–0,63), I² 0%.</li><li>Grgic J, Rodriguez RF, Garofolini A, et al. Effects of sodium bicarbonate supplementation on muscular strength and endurance: a systematic review and meta-analysis. Sports Med 2020;50(7):1361-1375. — força −0,03 (−0,18 a 0,12); resistência muscular 0,37 (0,15–0,59).</li><li>Carr AJ, Hopkins WG, Gore CJ. Effects of acute alkalosis and acidosis on performance: a meta-analysis. Sports Med 2011;41(10):801-814. — sprint de 1 min: +1,7% (±2,0) com alcalose × −1,6% (±1,9) com acidose.</li><li>Miranda WAS, Barreto LBM, Miarka B, et al. Can sodium bicarbonate supplementation improve combat sports performance? A systematic review and meta-analysis. Curr Nutr Rep 2022;11(2):273-282. — 8 artigos: lactato ↑, desempenho sem diferença.</li><li>Grgic J, Grgic I, Del Coso J, Schoenfeld BJ, Pedisic Z. Effects of sodium bicarbonate supplementation on exercise performance: an umbrella review. J Int Soc Sports Nutr 2021;18(1):71. — certeza GRADE baixa a moderada.</li><li>Ensaios de combate citados: Artioli 2007, Siegler 2010, Lopes-Silva 2018, Rezaei 2019 (referências completas no slide 49).</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 44,
+  "sectionName": "Ato III · A Primeira Testemunha: Bicarbonato",
+  "number": "",
+  "layout": "prose",
+  "title": "A Janela de Duração",
+  "subtitle": "De 30 segundos a 12 minutos: onde o tampão tem trabalho",
+  "content": "[[COMP:DurationWindowSim]]<h4>Fontes</h4><ul><li>McNaughton LR. Sodium bicarbonate ingestion and its effects on anaerobic exercise of various durations. J Sports Sci 1992;10(5):425-435. — 0,3 g/kg: nulo em 10 e 30 s; melhora em 120 e 240 s.</li><li>Grgic J, Pedisic Z, Saunders B, et al. International Society of Sports Nutrition position stand: sodium bicarbonate and exercise performance. J Int Soc Sports Nutr 2021;18(1):61. — efeito sobretudo em tarefas de 30 s a 12 min.</li><li>de Oliveira LF, Dolan E, Swinton PA, et al. Sports Med 2022;52(3):505-526. — esforços > 10 min: ES 0,22 (0,10–0,33).</li><li>Lopes-Silva JP, Choo HC, Franchini E, Abbiss CR. Isolated ingestion of caffeine and sodium bicarbonate on repeated sprint performance: a systematic review and meta-analysis. J Sci Med Sport 2019;22(8):962-972. — sprints repetidos: nulo.</li><li>Stephens TJ, McKenna MJ, Canny BJ, Snow RJ, McConell GK. Effect of sodium bicarbonate on muscle metabolism during intense endurance cycling. Med Sci Sports Exerc 2002;34(4):614-621. — ~30 min de ciclismo: desempenho igual.</li><li>Freis T, Hecksteden A, Such U, Meyer T. Effect of sodium bicarbonate on prolonged running performance: a randomized, double-blind, cross-over study. PLoS One 2017;12(8):e0182158. — ~40 min de corrida: 39,6 × 39,3 min.</li><li>Personagens (Júlia, Rafael, Carlos, Bianca): casos fictícios do dossiê 06; posições no eixo aproximadas.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 45,
+  "sectionName": "Ato III · A Primeira Testemunha: Bicarbonato",
+  "number": "",
+  "layout": "prose",
+  "title": "Dose: Mais não é Melhor",
+  "subtitle": "0,2 é o mínimo, 0,3 é o teto útil — e o resto vai para o intestino",
+  "content": "[[COMP:BicarbDoseSim]]<h4>Fontes</h4><ul><li>McNaughton LR. Bicarbonate ingestion: effects of dosage on 60 s cycle ergometry. J Sports Sci 1992;10(5):415-423. — 100 mg/kg não alcaliniza; máximo em 300 mg/kg (41,9 kJ); potência pico só a partir de 300 mg/kg.</li><li>Grgic J, Pedisic Z, Saunders B, et al. J Int Soc Sports Nutr 2021;18(1):61. — 0,2 g/kg mínima, 0,3 g/kg ótima, 0,4–0,5 g/kg sem ganho extra e com mais efeitos adversos.</li><li>Jones RL, Stellingwerff T, Artioli GG, Saunders B, Cooper S, Sale C. Dose-response of sodium bicarbonate ingestion highlights individuality in time course of blood analyte responses. Int J Sport Nutr Exerc Metab 2016;26(5):445-453. — aumento de HCO₃⁻ +2,0–5 / +5,1–8,1 / +6,0–12,3 mmol/L com 0,1/0,2/0,3 g/kg.</li><li>Gough LA, Deb SK, Sparks SA, McNaughton LR. Sodium bicarbonate improves 4 km time trial cycling performance when individualised to time to peak blood bicarbonate in trained male cyclists. J Sports Sci 2018;36(15):1705-1712. — 0,2 g/kg −8,3 ± 3,5 s × 0,3 g/kg −8,6 ± 5,4 s (p = 0,87).</li><li>Curvas de desempenho e de GI: forma ilustrativa; gramas e sódio para 70 kg: cálculo.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 46,
+  "sectionName": "Ato III · A Primeira Testemunha: Bicarbonato",
+  "number": "",
+  "layout": "prose",
+  "title": "Cada Atleta tem seu Relógio",
+  "subtitle": "A mesma dose por quilo chega ao pico em horários diferentes",
+  "content": "[[COMP:TimeToPeakSim]]<h4>Fontes</h4><ul><li>Jones RL, Stellingwerff T, Artioli GG, et al. Int J Sport Nutr Exerc Metab 2016;26(5):445-453. — com 0,3 g/kg, pico de 75 a 180 min (curvas do slide: ilustrativas dentro dessas faixas).</li><li>Boegman S, Stellingwerff T, Shaw G, et al. The impact of individualizing sodium bicarbonate supplementation strategies on world-class rowing performance. Front Nutr 2020;7:138. — 23 remadores (Canadá e Austrália); 367,0 × 369,0 s (p = 0,007; d = 0,15); sem braço placebo; só 1 de 23 no pico aos 60 min; HCO₃⁻ igual após o aquecimento.</li><li>Gough LA, Deb SK, Sparks AS, McNaughton LR. The reproducibility of blood acid base responses in male collegiate athletes following individualised doses of sodium bicarbonate: a randomised controlled crossover study. Sports Med 2017;47(10):2117-2127. — CCI do tempo até o pico do HCO₃⁻ 0,94 (0,3 g/kg).</li><li>de Oliveira LF, Saunders B, Yamaguchi G, Swinton P, Artioli GG. Is individualization of sodium bicarbonate ingestion based on time to peak necessary? Med Sci Sports Exerc 2020;52(8):1801-1808. — Tmax 169/127/159 min em 3 sessões; > 80% acima de +5 mmol/L entre 75 e 240 min.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 47,
+  "sectionName": "Ato III · A Primeira Testemunha: Bicarbonato",
+  "number": "",
+  "layout": "prose",
+  "title": "O Preço no Intestino",
+  "subtitle": "O efeito colateral mais comum também pode apagar o efeito",
+  "content": "[[COMP:GutSim]]<h4>Fontes</h4><ul><li>Miller LE, Bhattacharyya R, Katz SJ, et al. Negligible benefit of oral single-dose sodium bicarbonate on continuous running performance: systematic review with meta-analysis of randomized, double-blind, placebo-controlled trials. J Int Soc Sports Nutr 2025;22(1):2538606. — GI 29,5% × 2,6%; abandono 8,7% × 1,6%.</li><li>Kahle LE, Kelly PV, Eliot KA, Weiss EP. Acute sodium bicarbonate loading has negligible effects on resting and exercise blood pressure but causes gastrointestinal distress. Nutr Res 2013;33(6):479-486. — diarreia em 10 de 11.</li><li>Saunders B, Sale C, Harris RC, Sunderland C. Sodium bicarbonate and high-intensity-cycling capacity: variability in responses. Int J Sports Physiol Perform 2014;9(4):627-632. — p = 0,16 com todos; p = 0,01 sem os 4 com GI.</li><li>Durkalec-Michalski K, Nowaczyk PM, Kamińska J, et al. The interplay between bicarbonate kinetics and gastrointestinal upset on ergogenic potential after sodium bicarbonate intake. Sci Rep 2023;13(1):7081. — GI × potência média r = −0,674.</li><li>Carr AJ, Slater GJ, Gore CJ, Dawson B, Burke LM. Effect of sodium bicarbonate on [HCO3-], pH, and gastrointestinal symptoms. Int J Sport Nutr Exerc Metab 2011;21(3):189-194. — com refeição, menos GI; pico de GI 90 min após solução.</li><li>Siegler JC, Marshall PW, Bray J, Towlson C. Sodium bicarbonate supplementation and ingestion timing: does it matter? J Strength Cond Res 2012;26(7):1953-1958. — GI aumentado em todos os tempos, exceto 180 min.</li><li>Hilton NP, Leach NK, Craig MM, Sparks SA, McNaughton LR. Enteric-coated sodium bicarbonate attenuates gastrointestinal side-effects. Int J Sport Nutr Exerc Metab 2020;30(1):62-68; e Hilton NP et al. Eur J Appl Physiol 2020;120(7):1563-1573. — gravidade 7,0 (gelatina) × 2,8 (entérica); TT 4 km mantido.</li><li>Grgic J, Pedisic Z, Saunders B, et al. J Int Soc Sports Nutr 2021;18(1):61. — fracionar e carga de vários dias (0,4–0,5 g/kg/dia, 3–7 dias).</li><li>Gough LA, Sparks SA. The effects of a carbohydrate hydrogel system for the delivery of bicarbonate mini-tablets on acid-base buffering and gastrointestinal symptoms in resting well-trained male cyclists. Sports Med Open 2024;10(1):17. — GI −79 UA; financiado pela Maurten.</li><li>McKay AKA, Peeling P, Binnie MJ, et al. Topical sodium bicarbonate: no improvement in blood buffering capacity or exercise performance. Int J Sports Physiol Perform 2020;15(7):1005-1011; Gibson BM et al. Front Physiol 2023;14:1142567 (financiado em parte pela Momentous).</li><li>Winter IP, Sarac P, Wilson PB. Gastrointestinal symptoms associated with sodium bicarbonate supplementation protocols: a systematic review. Eur J Sport Sci 2026;26(8):e70225. — sem comparação direta entre estratégias; 26 de 101 sem teste estatístico do GI.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 48,
+  "sectionName": "Ato III · A Primeira Testemunha: Bicarbonato",
+  "number": "",
+  "layout": "prose",
+  "title": "Quanto Sódio é Isso?",
+  "subtitle": "Uma dose de 0,3 g/kg passa do teto diário de sódio numa tomada só",
+  "content": "[[COMP:SodiumCalcSim]]<h4>Fontes</h4><ul><li>Cálculo próprio: NaHCO₃ 84,006 g/mol, 27,37% de sódio; cápsulas de 840 mg; líquido de 10 mL/kg do protocolo de Boegman S et al. Front Nutr 2020;7:138.</li><li>World Health Organization. Sodium reduction — fact sheet (atualizada em 11/05/2026). — menos de 2 g de sódio por dia.</li><li>Arm and Hammer Baking Soda (sodium bicarbonate) powder — Drug Facts. Church & Dwight. DailyMed (acessado em 04/11/2026). — máximo de 7 × ½ colher (~16,8 g) em 24 h; 3 se > 60 anos.</li><li>Bicarbonato de Sódio RioQuímica — bula (atualizada em 08/09/2026). — 2,5 g por dose como antiácido.</li><li>Antonio B, Shannon ES, Candow DG, et al. Common questions and misconceptions of sodium bicarbonate as an ergogenic aid: what does the science really show? J Int Soc Sports Nutr 2026;23(1):2724103. — 70 kg → 21 g → ~5,75 g de sódio.</li><li>Personagens: casos fictícios do dossiê 06 (Júlia 54, Rafael 76, Carlos 82, Bianca 60 kg).</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 49,
+  "sectionName": "Ato III · A Primeira Testemunha: Bicarbonato",
+  "number": "",
+  "layout": "prose",
+  "title": "Nos Tatames",
+  "subtitle": "Nas lutas, o bicarbonato briga com a balança e com o relógio",
+  "content": "[[COMP:MatSim]]<h4>Fontes</h4><ul><li>Artioli GG, Gualano B, Coelho DF, et al. Does sodium-bicarbonate ingestion improve simulated judo performance? Int J Sport Nutr Exerc Metab 2007;17(2):206-217. — judô (USP): melhora no 2º e 3º SJFT e nos Wingates de braços 3 e 4.</li><li>Siegler JC, Hirscher K. Sodium bicarbonate ingestion and boxing performance. J Strength Cond Res 2010;24(1):103-108. — 10 boxeadores: mais golpes acertados.</li><li>Lopes-Silva JP, Da Silva Santos JF, Artioli GG, et al. Sodium bicarbonate ingestion increases glycolytic contribution and improves performance during simulated taekwondo combat. Eur J Sport Sci 2018;18(3):431-440. — tempo de ataque +13% (p = 0,05).</li><li>Rezaei S, Akbari K, Gahreman DE, et al. Caffeine and sodium bicarbonate supplementation alone or together improve karate performance. J Int Soc Sports Nutr 2019;16(1):44. — 8 caratecas: TTE maior.</li><li>Ragone L, Vieira JG, Laterza MC, et al. Acute effect of sodium bicarbonate supplementation on symptoms of gastrointestinal discomfort, acid-base balance, and performance of jiu-jitsu athletes. J Hum Kinet 2020;75:85-93. — 10 atletas: preensão nula.</li><li>Miranda WAS, Barreto LBM, Miarka B, et al. Curr Nutr Rep 2022;11(2):273-282. — 8 artigos: lactato ↑ (p = 0,006); desempenho sem diferença.</li><li>Boegman S, Stellingwerff T, Shaw G, et al. Front Nutr 2020;7:138. — ganho de ~0,6 kg nos remadores peso-leve.</li><li>IBJJF — regras de pesagem (ibjjf.com/weigh-ins): de quimono, imediatamente antes da 1ª luta, tentativa única; WADA, Lista Proibida 2026 — diuréticos (S5). Rafael: caso fictício (dossiê 06); horários ilustrativos.</li></ul>",
+  "cards": []
+ }
+]

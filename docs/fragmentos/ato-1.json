@@ -1,0 +1,42 @@
+[
+  {
+    "id": 10,
+    "sectionName": "Ato I · O Inquérito",
+    "number": "",
+    "layout": "prose",
+    "title": "Os Últimos 200 Metros",
+    "subtitle": "A velocidade cai na reta final e as pernas queimam. O que, exatamente, está queimando?",
+    "content": "[[COMP:LastLapSim]]<h4>Fontes</h4><ul><li>Sahlin K, Harris RC, Nylind B, Hultman E. Lactate content and pH in muscle obtained after dynamic exercise. Pflugers Arch 1976;367(2):143-9. — pH do vasto lateral 7,08 em repouso e 6,60 na exaustão (biópsia); extremos do medidor. O trajeto do pH e a curva de velocidade são ilustrativos.</li><li>Júlia é personagem fictícia composta para ensino (dossiê 06, Parte 5): 24 anos, 800 m, 54 kg.</li></ul>",
+    "cards": []
+  },
+  {
+    "id": 11,
+    "sectionName": "Ato I · O Inquérito",
+    "number": "",
+    "layout": "prose",
+    "title": "Culpado ou Inocente?",
+    "subtitle": "Seis acusações que a turma já ouviu. Vote antes de ver o veredito.",
+    "content": "[[COMP:VerdictVoteSim]]<h4>Fontes</h4><ul><li>Marcinek DJ, Kushmerick MJ, Conley KE. Lactic acidosis in vivo: testing the link between lactate generation and H+ accumulation in ischemic mouse muscle. J Appl Physiol 2010;108(6):1479-86. — H⁺ gerado e lactato acumulado com inclinação 0,98 (camundongo, isquemia).</li><li>Pollak KA, Swenson JD, Vanhaitsma TA, et al. Exogenously applied muscle metabolites synergistically evoke sensations of muscle fatigue and pain in human subjects. Exp Physiol 2014;99(2):368-80. — Cada metabólito sozinho não dá sensação; H⁺ + ATP + lactato juntos dão fadiga e dor (acusação 1).</li><li>Schwane JA, Johnson SR, Vandenakker CB, Armstrong RB. Delayed-onset muscular soreness and plasma CPK and LDH activities after downhill running. Med Sci Sports Exerc 1983;15(1):51-6. — Plano a 78% × descida a 57% do VO₂máx; só a descida deu dor; CK +351% em 24 h (acusação 2).</li><li>Sahlin K, Harris RC, Nylind B, Hultman E. Lactate content and pH in muscle obtained after dynamic exercise. Pflugers Arch 1976;367(2):143-9. — Meia-vida de remoção do lactato muscular de 9,5 min (acusação 2).</li><li>Cady EB, Jones DA, Lynn J, Newham DJ. Changes in force and intracellular metabolites during fatigue of human skeletal muscle. J Physiol 1989;418:311-25. — Na doença de McArdle o pH não cai e a força cai do mesmo jeito (acusação 3).</li><li>Westerblad H, Bruton JD, Lännergren J. The effect of intracellular pH on contractile function of intact, single fibres of mouse muscle declines with increasing temperature. J Physiol 1997;500(Pt 1):193-204. — Força tetânica −28% a 12 °C × −10% a 32 °C com acidificação de ~0,5 unidade (acusação 3).</li><li>McNaughton LR. Sodium bicarbonate ingestion and its effects on anaerobic exercise of various durations. J Sports Sci 1992;10(5):425-35. — 0,3 g/kg: nulo em 10 e 30 s, melhora em 120 e 240 s (acusação 4).</li><li>Grgic J, Rodriguez RF, Garofolini A, et al. Effects of sodium bicarbonate supplementation on muscular strength and endurance: a systematic review and meta-analysis. Sports Med 2020;50(7):1361-75. — Força: DMP −0,03 (−0,18 a 0,12); resistência muscular 0,37 (acusação 4).</li><li>Harris RC, Tallon MJ, Dunnett M, et al. The absorption of orally supplied beta-alanine and its effect on muscle carnosine synthesis in human vastus lateralis. Amino Acids 2006;30(3):279-89. — Carnosina +42,1% (3,2 g/d) e +64,2% (6,4 g/d) em 4 semanas (acusação 5).</li><li>Hill CA, Harris RC, Kim HJ, et al. Influence of beta-alanine supplementation on skeletal muscle carnosine concentrations and high intensity cycling capacity. Amino Acids 2007;32(2):225-33. — Carnosina +58,8% em 4 semanas e +80,1% em 10 semanas (acusação 5).</li><li>World Anti-Doping Agency. The 2026 Prohibited List — International Standard. Em vigor desde 01/01/2026. — Bicarbonato fora de todas as classes; M2.2 proíbe infusões/injeções acima de 100 mL em 12 h (acusação 6).</li></ul>",
+    "cards": []
+  },
+  {
+    "id": 12,
+    "sectionName": "Ato I · O Inquérito",
+    "number": "",
+    "layout": "prose",
+    "title": "Quatro Atletas, um Problema",
+    "subtitle": "Quatro esportes, quatro durações de esforço e quatro dilemas diferentes para o mesmo tampão.",
+    "content": "[[COMP:CastSim]]<h4>Fontes</h4><ul><li>Personagens fictícios compostos para ensino (dossiê 06, Parte 5): Júlia (800 m), Rafael (jiu-jítsu), Carlos (remo master), Bianca (natação 200 m). Durações aproximadas; a de Bianca é estimativa.</li><li>IBJJF. Weigh-ins (ibjjf.com/weigh-ins). — Pesagem com quimono imediatamente antes da primeira luta (dilema de Rafael).</li><li>World Anti-Doping Agency. The 2026 Prohibited List — International Standard. — Hidroclorotiazida na classe S5, proibida sempre (dilema de Carlos).</li><li>Everaert I, Mooyaart A, Baguet A, et al. Vegetarianism, female gender and increasing age, but not CNDP1 genotype, are associated with reduced muscle carnosine levels in humans. Amino Acids 2011;40(4):1221-9. — Vegetarianos com −26% de carnosina no gastrocnêmio (dilema de Bianca).</li><li>Anvisa. Instrução Normativa nº 28, de 26/07/2018 (texto consolidado). — Beta-alanina autorizada só a partir de 19 anos (dilema de Bianca).</li></ul>",
+    "cards": []
+  },
+  {
+    "id": 13,
+    "sectionName": "Ato I · O Inquérito",
+    "number": "",
+    "layout": "prose",
+    "title": "O Mapa do Inquérito",
+    "subtitle": "Sete capítulos para julgar um efeito pequeno: a pergunta é para quem e quando.",
+    "content": "[[COMP:InquiryMapSim]]<h4>Fontes</h4><ul><li>de Oliveira LF, Dolan E, Swinton PA, et al. Extracellular buffering supplements to improve exercise capacity and performance: a comprehensive systematic review and meta-analysis. Sports Med 2022;52(3):505-26. — 189 artigos, 2.019 participantes; efeito geral ES 0,17 (0,12–0,21).</li><li>Maughan RJ, Burke LM, Dvorak J, et al. IOC consensus statement: dietary supplements and the high-performance athlete. Br J Sports Med 2018;52(7):439-55. — Bicarbonato: ~2% em esforços de ~60 s, eficácia menor acima de 10 min.</li></ul>",
+    "cards": []
+  }
+]

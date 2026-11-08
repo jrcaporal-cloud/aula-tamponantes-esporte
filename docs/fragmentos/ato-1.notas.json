@@ -1,0 +1,32 @@
+{
+  "0": {
+    "minutos": 1,
+    "mensagem": "Hoje vamos abrir um inquérito. A fadiga é o crime, o ácido lático é o suspeito de sempre, e vamos ouvir perícia, testemunhas e contra-interrogatório antes de dar qualquer veredito.",
+    "pergunta": "Quem aqui já explicou a um atleta que a queimação era ácido lático?",
+    "transicao": "Começamos pela cena do crime: os últimos 200 metros de um 800 m."
+  },
+  "10": {
+    "minutos": 3,
+    "mensagem": "Júlia é fictícia, mas a cena é real em qualquer pista: nos últimos 200 m o esforço é máximo e a velocidade cai. No músculo, o pH sai de cerca de 7,08 e chega perto de 6,60 na exaustão, como mostrou a biópsia de Sahlin em 1976; o caminho entre os dois é ilustrativo.",
+    "pergunta": "Quando ela diz que as pernas queimaram, o que exatamente está queimando?",
+    "transicao": "Cada um aqui tem um suspeito. Vamos colocar as acusações no quadro e votar."
+  },
+  "11": {
+    "minutos": 4,
+    "mensagem": "Seis frases que a turma já ouviu de colegas, atletas e rótulos. Votem antes de virar: culpado quer dizer que a acusação procede. O ponto final é que nenhuma procede inteira — há cúmplices, dependências e mitos.",
+    "pergunta": "Antes de virar a carta: quem vota culpado?",
+    "transicao": "Esses vereditos voltam no fim da aula. Agora, os quatro atletas que vão nos acompanhar até lá."
+  },
+  "12": {
+    "minutos": 3,
+    "mensagem": "Quatro casos fictícios, quatro esforços: 800 m, lutas repetidas, 2.000 m de remo e 200 m de natação. A ciência do tampão é a mesma, mas o dilema de cada um é outro: o dia de prova, a balança, a pressão arterial e a regra brasileira.",
+    "pergunta": "Qual dos quatro vocês acham que mais se beneficiaria? E qual corre mais risco?",
+    "transicao": "Para responder, vamos seguir um roteiro de investigação em sete capítulos."
+  },
+  "13": {
+    "minutos": 2,
+    "mensagem": "O mapa do inquérito: primeiro a perícia da fisiologia, depois as testemunhas, o contra-interrogatório dos métodos e o veredito prático. E o prêmio em jogo é pequeno: ES médio de 0,17 em 189 estudos, cerca de 2% em esforços de um minuto.",
+    "pergunta": "Se o efeito médio é pequeno, para quem ele vale a pena?",
+    "transicao": "Para julgar, precisamos da perícia: o que acontece com o H⁺ dentro e fora da fibra."
+  }
+}

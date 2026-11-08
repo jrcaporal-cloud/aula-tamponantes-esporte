@@ -1,0 +1,112 @@
+[
+ {
+  "id": 20,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "Uma Escala de Nanomols",
+  "subtitle": "pH é logaritmo: uma régua que parece curta esconde o H⁺ triplicando.",
+  "content": "[[COMP:PhScaleSim]]<h4>Fontes</h4><ul><li>Sahlin K, Harris RC, Nylind B, Hultman E. Lactate content and pH in muscle obtained after dynamic exercise. Pflugers Arch 1976;367(2):143-9. — pH muscular 7,08 em repouso e 6,60 na exaustão (biópsia, humano).</li><li>Nielsen HB, Bredmose PP, Strømstad M et al. Bicarbonate attenuates arterial desaturation during maximal exercise in humans. J Appl Physiol 2002;93(2):724-31. — pH arterial 7,42 em repouso e 7,07 no fim do 2.000 m em remadores (humano).</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 21,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "Henderson–Hasselbalch sem Medo",
+  "subtitle": "O pH depende da razão bicarbonato/CO₂ — e cada tampão rende mais perto do próprio pKa.",
+  "content": "[[COMP:HendersonSim]]<h4>Fontes</h4><ul><li>Nielsen HB, Bredmose PP, Strømstad M et al. Bicarbonate attenuates arterial desaturation during maximal exercise in humans. J Appl Physiol 2002;93(2):724-31. — pH 7,07 e PaCO₂ inalterada (~40 mmHg) no fim da prova; HCO₃⁻ ~11 mmol/L calculado pela equação.</li><li>de Oliveira LF, Dolan E, Swinton PA et al. Extracellular buffering supplements to improve exercise capacity and performance: a comprehensive systematic review and meta-analysis. Sports Med 2022;52(3):505-26. — bicarbonato oral eleva o HCO₃⁻ sanguíneo em +5,2 mmol/L (ICr95 4,7–5,7).</li><li>Sale C, Saunders B, Harris RC. Effect of beta-alanine supplementation on muscle carnosine concentrations and exercise performance. Amino Acids 2010;39(2):321-33. — pKa do imidazol da carnosina = 6,83.</li><li>Mannion AF, Jakeman PM, Dunnett M, Harris RC, Willan PL. Carnosine and anserine concentrations in the quadriceps femoris muscle of healthy humans. Eur J Appl Physiol Occup Physiol 1992;64(1):47-50. — faixa de pH muscular 7,1–6,5 usada para o tamponamento da carnosina.</li><li>pKa 6,1 do par CO₂/HCO₃⁻, solubilidade 0,03 e pKa ~6,8 do fosfato: constantes de livro (cálculo ilustrativo).</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 22,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "O Julgamento do Ácido Lático",
+  "subtitle": "De suspeito de sempre a termômetro fiel: um século de acusação, defesa e acordo.",
+  "content": "[[COMP:LacticTimelineSim]]<h4>Fontes</h4><ul><li>Fletcher WM, Hopkins FG. Lactic acid in amphibian muscle. J Physiol 1907;35(4):247-309. — ácido lático acumula em músculo de rã sem O₂ (animal).</li><li>Bassett DR. Scientific contributions of A. V. Hill: exercise physiology pioneer. J Appl Physiol 2002;93(5):1567-82. — Nobel de 1922 a Hill e Meyerhof.</li><li>Dennig H, Talbott JH, Edwards HT, Dill DB. Effect of acidosis and alkalosis upon capacity for work. J Clin Invest 1931;9(4):601-13. — acidose encurtou a corrida (humano, n = 1).</li><li>Schwane JA, Johnson SR, Vandenakker CB, Armstrong RB. Delayed-onset muscular soreness and plasma CPK and LDH activities after downhill running. Med Sci Sports Exerc 1983;15(1):51-6. — descida deu DOMS; plano mais intenso, não.</li><li>Brooks GA. The lactate shuttle during exercise and recovery. Med Sci Sports Exerc 1986;18(3):360-8. — ≥75% do lactato oxidado no exercício estável.</li><li>Robergs RA, Ghiasvand F, Parker D. Biochemistry of exercise-induced metabolic acidosis. Am J Physiol Regul Integr Comp Physiol 2004;287(3):R502-16. — produção de lactato retarda, não causa, a acidose.</li><li>Böning D, Strobel G, Beneke R, Maassen N. Lactic acid still remains the real cause of exercise-induced metabolic acidosis. Am J Physiol Regul Integr Comp Physiol 2005;289(3):R902-3. — crítica a Robergs no vol. 289, nº 3 (conteúdo não lido; só posição).</li><li>Kemp G. Lactate accumulation, proton buffering, and pH change in ischemically exercising muscle. Am J Physiol Regul Integr Comp Physiol 2005;289(3):R895-901. — crítica no mesmo número.</li><li>Lindinger MI, Kowalchuk JM, Heigenhauser GJ. Applying physicochemical principles to skeletal muscle acid-base status. Am J Physiol Regul Integr Comp Physiol 2005;289(3):R891-4. — crítica físico-química no mesmo número.</li><li>Marcinek DJ, Kushmerick MJ, Conley KE. Lactic acidosis in vivo: testing the link between lactate generation and H+ accumulation in ischemic mouse muscle. J Appl Physiol 2010;108(6):1479-86. — H⁺ gerado × lactato: inclinação 0,98, r² = 0,86 (camundongo isquêmico).</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 23,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "O Homem que se Acidificou de Propósito",
+  "subtitle": "Em 1931, um pesquisador mudou o próprio pH — e deixou a hipótese do bicarbonato só deduzida.",
+  "content": "[[COMP:DennigSim]]<h4>Fontes</h4><ul><li>Dennig H, Talbott JH, Edwards HT, Dill DB. Effect of acidosis and alkalosis upon capacity for work. J Clin Invest 1931;9(4):601-13. — n = 1 (o próprio Dennig); NH₄Cl → pH 7,21/7,09 e corrida limitada a 15 min; 10 g de NaHCO₃ → reserva 127/126 e cãibras tetânicas; ganho da alcalose não testado (texto completo).</li><li>Jones NL, Sutton JR, Taylor R, Toews CJ. Effect of pH on cardiorespiratory and metabolic responses to exercise. J Appl Physiol 1977;43(6):959-64. — 1977: 5 homens (gancho para o Ato III).</li><li>de Oliveira LF, Dolan E, Swinton PA et al. Extracellular buffering supplements to improve exercise capacity and performance: a comprehensive systematic review and meta-analysis. Sports Med 2022;52(3):505-26. — 189 estudos na meta-análise de 2022.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 24,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "De Onde Vem o H⁺?",
+  "subtitle": "Três escolas brigam pela contabilidade; todas concordam que H⁺ e lactato sobem juntos.",
+  "content": "[[COMP:ProtonSourcesSim]]<h4>Fontes</h4><ul><li>Robergs RA, Ghiasvand F, Parker D. Biochemistry of exercise-induced metabolic acidosis. Am J Physiol Regul Integr Comp Physiol 2004;287(3):R502-16. — tese da hidrólise do ATP; a LDH consome H⁺.</li><li>Böning D, Strobel G, Beneke R, Maassen N. Lactic acid still remains the real cause of exercise-induced metabolic acidosis. Am J Physiol Regul Integr Comp Physiol 2005;289(3):R902-3. — posição \"ácido lático\": 1 H⁺ por lactato (só a posição foi conferida).</li><li>Böning D, Maassen N. Point: Lactic acid is the only physicochemical contributor to the acidosis of exercise. J Appl Physiol 2008;105(1):358-9. — Point do debate de 2008 (só posição).</li><li>Lindinger MI, Heigenhauser GJ. Counterpoint: Lactic acid is not the only physicochemical contributor to the acidosis of exercise. J Appl Physiol 2008;105(1):359-61. — Counterpoint (só posição).</li><li>Stewart PA. Modern quantitative acid-base chemistry. Can J Physiol Pharmacol 1983;61(12):1444-61. — [H⁺] como variável dependente (SID, PCO₂, Atot).</li><li>Lindinger MI. Origins of [H+] changes in exercising skeletal muscle. Can J Appl Physiol 1995;20(3):357-68. — SID 62%, Atot 19%, PCO₂ 12%, Kₐ 7% da subida do [H⁺]ᵢ.</li><li>Marcinek DJ, Kushmerick MJ, Conley KE. Lactic acidosis in vivo: testing the link between lactate generation and H+ accumulation in ischemic mouse muscle. J Appl Physiol 2010;108(6):1479-86. — inclinação 0,98 (r² = 0,86); a ligação falha quando a PCr se esgota (animal). Pontos do gráfico ilustrativos.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 25,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "Lactato: Combustível, não Lixo",
+  "subtitle": "O lactato sai de uma fibra para virar energia em outra — e some do músculo em minutos.",
+  "content": "[[COMP:LactateShuttleSim]]<h4>Fontes</h4><ul><li>Brooks GA. The lactate shuttle during exercise and recovery. Med Sci Sports Exerc 1986;18(3):360-8. — ≥75% oxidado durante o exercício estável; ~20% vira glicose.</li><li>Brooks GA. Lactate production under fully aerobic conditions: the lactate shuttle during rest and exercise. Fed Proc 1986;45(13):2924-9. — produção de lactato com O₂ abundante.</li><li>Juel C, Halestrap AP. Lactate transport in skeletal muscle — role and regulation of the monocarboxylate transporter. J Physiol 1999;517(Pt 3):633-42. — MCT1 Km ~5 mM (captação) e MCT4 Km ~20 mM (exportação).</li><li>Pilegaard H, Terzis G, Halestrap A, Juel C. Distribution of the lactate/H+ transporter isoforms MCT1 and MCT4 in human skeletal muscle. Am J Physiol 1999;276(5):E843-8. — MCT4 mais abundante em fibras tipo II; MCT1 acompanha fibras tipo I (humano).</li><li>Sahlin K, Harris RC, Nylind B, Hultman E. Lactate content and pH in muscle obtained after dynamic exercise. Pflugers Arch 1976;367(2):143-9. — lactato muscular 2–3× o sanguíneo; meia-vida de remoção 9,5 min.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 26,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "As Quatro Linhas de Defesa",
+  "subtitle": "Da fibra ao pulmão: segurar, exportar, neutralizar e soprar o H⁺.",
+  "content": "[[COMP:DefenseLinesSim]]<h4>Fontes</h4><ul><li>Abe H. Role of histidine-related compounds as intracellular proton buffering constituents in vertebrate muscle. Biochemistry (Mosc) 2000;65(7):757-65. — tampões intracelulares: histidina das proteínas, dipeptídeos com histidina.</li><li>Mannion AF, Jakeman PM, Dunnett M, Harris RC, Willan PL. Carnosine and anserine concentrations in the quadriceps femoris muscle of healthy humans. Eur J Appl Physiol Occup Physiol 1992;64(1):47-50. — carnosina ≈ 7% da capacidade tamponante muscular humana.</li><li>Guthrie BM, Frostick SP, Goodman J et al. Endurance-trained and untrained skeletal muscle bioenergetics observed with magnetic resonance spectroscopy. Can J Appl Physiol 1996;21(4):251-63. — alcalose transitória inicial pela creatina-quinase (³¹P-ERM, humano).</li><li>Juel C. Lactate-proton cotransport in skeletal muscle. Physiol Rev 1997;77(2):321-58. — efluxo de lactato/H⁺ mediado principalmente pelo MCT.</li><li>Juel C. Regulation of pH in human skeletal muscle: adaptations to physical activity. Acta Physiol 2008;193(1):17-24. — MCT, NHE1 e NBC se adaptam ao treino.</li><li>Kristensen JM, Kristensen M, Juel C. Expression of Na+/HCO3- co-transporter proteins (NBCs) in rat and human skeletal muscle. Acta Physiol Scand 2004;182(1):69-76. — ~metade da recuperação do pH dependente de bicarbonato (vesículas de rato).</li><li>Medbø JI, Sejersted OM. Acid-base and electrolyte balance after exhausting exercise in endurance-trained and sprint-trained subjects. Acta Physiol Scand 1985;125(1):97-109. — −1,09 mmol/L de HCO₃⁻ por mmol/L de lactato.</li><li>Nielsen HB, Bredmose PP, Strømstad M et al. Bicarbonate attenuates arterial desaturation during maximal exercise in humans. J Appl Physiol 2002;93(2):724-31. — ventilação 155 × 142 L/min (salina × bicarbonato IV); HCO₃⁻ ~11 mmol/L = cálculo.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 27,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "O H⁺ é Mesmo o Vilão?",
+  "subtitle": "Provas de acusação e de defesa: o H⁺ é cúmplice da fadiga, não o chefe.",
+  "content": "[[COMP:FatigueCourtSim]]<h4>Fontes</h4><ul><li>Hultman E, Del Canale S, Sjöholm H. Effect of induced metabolic acidosis on intracellular pH, buffer capacity and contraction force of human skeletal muscle. Clin Sci 1985;69(5):505-10. — acidose induzida: força final 44,6% × 55,4% (humano, n = 5).</li><li>Knuth ST, Dave H, Peters JR, Fitts RH. Low cell pH depresses peak power in rat skeletal muscle fibres at both 30 °C and 15 °C. J Physiol 2006;575(Pt 3):887-99. — pH 6,2 a 30 °C: potência −34% (tipo I) e −18% (IIa) em fibras de rato.</li><li>Sundberg CW, Hunter SK, Trappe SW, Smith CS, Fitts RH. Effects of elevated H+ and Pi on the contractile mechanics of skeletal muscle fibres from young and old men. J Physiol 2018;596(17):3993-4015. — H⁺ + Pi em sinergia em fibras humanas.</li><li>Westerblad H, Bruton JD, Lännergren J. The effect of intracellular pH on contractile function of intact, single fibres of mouse muscle declines with increasing temperature. J Physiol 1997;500(Pt 1):193-204. — força −28% a 12 °C × −10% a 32 °C (camundongo).</li><li>Cady EB, Jones DA, Lynn J, Newham DJ. Changes in force and intracellular metabolites during fatigue of human skeletal muscle. J Physiol 1989;418:311-25. — McArdle fadiga sem acidificar; força volta com pH baixo (humano).</li><li>Bangsbo J, Madsen K, Kiens B, Richter EA. Effect of muscle acidity on muscle metabolism and fatigue during intense exercise in man. J Physiol 1996;495(Pt 2):587-96. — exaustão em pH 6,65 × 6,82 (humano).</li><li>Pedersen TH, Nielsen OB, Lamb GD, Stephenson DG. Intracellular acidosis enhances the excitability of working muscle. Science 2004;305(5687):1144-7. — acidose protegeria a excitabilidade (rato).</li><li>Nielsen OB, de Paoli F, Overgaard K. Protective effects of lactic acid on force production in rat skeletal muscle. J Physiol 2001;536(Pt 1):161-6. — ácido lático restaura força com K⁺ alto (rato).</li><li>Kristensen M, Albertsen J, Rentsch M, Juel C. Lactate and force production in skeletal muscle. J Physiol 2005;562(Pt 2):521-6. — proteção não se reproduz no músculo em fadiga (rato).</li><li>Pollak KA, Swenson JD, Vanhaitsma TA et al. Exogenously applied muscle metabolites synergistically evoke sensations of muscle fatigue and pain in human subjects. Exp Physiol 2014;99(2):368-80. — pH 7,2 + ATP 500 nM + lactato 10 mM juntos evocam fadiga; sozinhos, nada (humano, n = 10).</li><li>Light AR, Hughen RW, Zhang J et al. Dorsal root ganglion neurons innervating skeletal muscle respond to physiological combinations of protons, ATP, and lactate mediated by ASIC, P2X, and TRPV1. J Neurophysiol 2008;100(3):1184-201. — ASIC3, P2X e TRPV1 (camundongo).</li><li>Cairns SP. Lactic acid and exercise performance: culprit or friend? Sports Med 2006;36(4):279-91. — em corpo inteiro, acidose piora e alcalose melhora provas de 1–10 min.</li><li>Allen DG, Lamb GD, Westerblad H. Skeletal muscle fatigue: cellular mechanisms. Physiol Rev 2008;88(1):287-332. — co-réus: Pi, Ca²⁺, íons (revisão, base animal).</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 28,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "A Dor que Vem Descendo o Morro",
+  "subtitle": "O treino mais intenso não doeu; o mais leve, excêntrico, doeu — o lactato tem álibi.",
+  "content": "[[COMP:DomsSim]]<h4>Fontes</h4><ul><li>Schwane JA, Johnson SR, Vandenakker CB, Armstrong RB. Delayed-onset muscular soreness and plasma CPK and LDH activities after downhill running. Med Sci Sports Exerc 1983;15(1):51-6. — plano a 78% × descida a 57% VO₂máx, 45 min; só a descida deu DOMS; CK +351% em 24 h (humano, n = 7).</li><li>Sahlin K, Harris RC, Nylind B, Hultman E. Lactate content and pH in muscle obtained after dynamic exercise. Pflugers Arch 1976;367(2):143-9. — meia-vida do lactato muscular 9,5 min.</li><li>Armstrong RB. Mechanisms of exercise-induced delayed onset muscular soreness: a brief review. Med Sci Sports Exerc 1984;16(6):529-38. — DOMS de 1 a 5 dias; dano excêntrico.</li><li>Cheung K, Hume P, Maxwell L. Delayed onset muscle soreness: treatment strategies and performance factors. Sports Med 2003;33(2):145-64. — ácido lático entre as teorias propostas e descartadas.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 29,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "Então por que Tamponar Funciona?",
+  "subtitle": "O bicarbonato não entra na fibra: ele age de fora, por uma soma de mecanismos.",
+  "content": "[[COMP:WhyItWorksSim]]<h4>Fontes</h4><ul><li>Bishop D, Edge J, Davis C, Goodman C. Induced metabolic alkalosis affects muscle metabolism and repeated-sprint ability. Med Sci Sports Exerc 2004;36(5):807-13. — HCO₃⁻ 23,6 → 30,0 mmol/L; pH muscular de repouso e βm iguais (humano, duplo-cego).</li><li>Hollidge-Horvat MG, Parolin ML, Wong D, Jones NL, Heigenhauser GJ. Effect of induced metabolic alkalosis on human skeletal muscle metabolism during exercise. Am J Physiol Endocrinol Metab 2000;278(2):E316-29. — efluxo de lactato da perna 10,0 × 4,2 mmol/min; glicogenólise acelerada (humano, n = 8).</li><li>Mainwood GW, Worsley-Brown P. The effects of extracellular pH and buffer concentration on the efflux of lactate from frog sartorius muscle. J Physiol 1975;250(1):1-22. — pH externo 8,0 dobra ou triplica o efluxo (rã).</li><li>Street D, Nielsen JJ, Bangsbo J, Juel C. Metabolic alkalosis reduces exercise-induced acidosis and potassium accumulation in human skeletal muscle interstitium. J Physiol 2005;566(Pt 2):481-9. — H⁺ intersticial 79 × 131 nM; K⁺ 8,0 × 11,0 mM (humano, citrato).</li><li>Sostaric SM, Skinner SL, Brown MJ et al. Alkalosis increases muscle K+ release, but lowers plasma [K+] and delays fatigue during dynamic forearm exercise. J Physiol 2006;570(Pt 1):185-205. — mais efluxo de lactato e menor K⁺ plasmático (humano).</li><li>Raymer GH, Marsh GD, Kowalchuk JM, Thompson RT. Metabolic effects of induced alkalosis during progressive forearm exercise to fatigue. J Appl Physiol 2004;96(6):2050-6. — início da acidose intracelular adiado; tempo até fadiga +~12% (humano).</li><li>Cairns SP. Lactic acid and exercise performance: culprit or friend? Sports Med 2006;36(4):279-91. — alcalose melhora provas de 1–10 min; soma de mecanismos.</li></ul>",
+  "cards": []
+ },
+ {
+  "id": 30,
+  "sectionName": "Ato II · A Perícia",
+  "number": "",
+  "layout": "prose",
+  "title": "O Treino, o Primeiro Tampão",
+  "subtitle": "Antes de qualquer suplemento, o treino intenso já aumenta o tampão do músculo — e ele é perecível.",
+  "content": "[[COMP:TrainingBufferSim]]<h4>Fontes</h4><ul><li>Sharp RL, Costill DL, Fink WJ, King DS. Effects of eight weeks of bicycle ergometer sprint training on human muscle buffer capacity. Int J Sports Med 1986;7(1):13-7. — βm +37% (44,7 → 61,0 slykes) com 8 semanas de sprint.</li><li>Edge J, Bishop D, Goodman C. The effects of training intensity on muscle buffer capacity in females. Eur J Appl Physiol 2006;96(1):97-105. — +25% intervalado × +2% contínuo, volume igualado.</li><li>Weston AR, Myburgh KH, Lindsay FH, Dennis SC, Noakes TD, Hawley JA. Skeletal muscle buffering capacity and endurance performance after high-intensity interval training by well-trained cyclists. Eur J Appl Physiol Occup Physiol 1997;75(1):7-13. — +16% com 6 sessões de HIIT em ciclistas treinados.</li><li>Bishop D, Edge J, Thomas C, Mercier J. Effects of high-intensity training on muscle lactate transporters and postexercise recovery of muscle lactate and hydrogen ions in women. Am J Physiol Regul Integr Comp Physiol 2008;295(6):R1991-8. — βm −11% com HIIT muito intenso.</li><li>McGinley C, Bishop DJ. Influence of training intensity on adaptations in acid/base transport proteins, muscle buffer capacity, and repeated-sprint ability in active men. J Appl Physiol 2016;121(6):1290-305. — 6 semanas de destreino apagaram as adaptações.</li><li>Medbø JI, Sejersted OM. Acid-base and electrolyte balance after exhausting exercise in endurance-trained and sprint-trained subjects. Acta Physiol Scand 1985;125(1):97-109. — pH sanguíneo mínimo 7,065 (velocistas) × 7,175 (fundistas); tamponamento do sangue igual.</li></ul>",
+  "cards": []
+ }
+]

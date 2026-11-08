@@ -1,0 +1,62 @@
+{
+ "40": {
+  "minutos": 3,
+  "mensagem": "Em 1977, cinco homens tomaram giz, cloreto de amônio ou bicarbonato e pedalaram a 95% até não aguentar: 160, 270 e 438 segundos. O pH do sangue mexeu no desempenho nos dois sentidos. É daqui que vem a dose de 0,3 g/kg — de 5 pessoas e de um teste até a exaustão.",
+  "pergunta": "Antes de eu revelar: em qual frasco vocês apostam, e quanto mais tempo ele aguenta?",
+  "transicao": "Laboratório convence pouco treinador. Seis anos depois, o bicarbonato foi para a pista."
+ },
+ "41": {
+  "minutos": 4,
+  "mensagem": "Wilkes leva o bicarbonato para um 800 m real: 2,9 s. Costill põe a agulha no músculo e vê o tiro final durar 42% mais. No mesmo ano, o mesmo grupo testa um tiro único e não acha nada — o efeito aparece quando a acidose se acumula.",
+  "pergunta": "Se vocês tivessem lido só o artigo do Katz, o que diriam ao atleta?",
+  "transicao": "Para entender por que o desenho muda o resultado, vamos seguir o bicarbonato do copo até o músculo."
+ },
+ "42": {
+  "minutos": 4,
+  "mensagem": "No estômago, o bicarbonato vira CO₂ — é daí que vem o estufamento. O que chega ao sangue sobe o HCO₃⁻ em ~5 mmol/L, mas o pH dentro da fibra em repouso não muda. Durante o esforço, o sangue alcalino puxa mais H⁺ e lactato para fora.",
+  "pergunta": "Se o bicarbonato não entra na fibra, por que ele melhora um tiro de 2 minutos?",
+  "transicao": "Mecanismo plausível não é efeito garantido. O que dizem os 189 estudos?"
+ },
+ "43": {
+  "minutos": 5,
+  "mensagem": "A média de 189 artigos é pequena: 0,17. Quando o teste é uma prova fechada de 45 s a 8 min, a estimativa sobe para ~0,40, e no contrarrelógio de ciclismo os estudos concordam. Força máxima não muda; nas lutas, sem efeito agrupado. E a certeza é baixa a moderada.",
+  "pergunta": "Qual linha deste gráfico vocês mostrariam a um treinador de judô — e qual esconderiam?",
+  "transicao": "Se o efeito depende do esforço, precisamos de um mapa de duração."
+ },
+ "44": {
+  "minutos": 3,
+  "mensagem": "Em 1992, a mesma dose deu nada em 10 e 30 s e melhorou 120 e 240 s. A janela útil fica entre ~30 s e 12 min, com borda suave. Tiros curtos repetidos e provas contínuas de 30–40 min ficaram nulos.",
+  "pergunta": "Onde vocês colocariam o atleta de vocês nesse eixo?",
+  "transicao": "Sabemos para qual prova. Agora: quanto?"
+ },
+ "45": {
+  "minutos": 3,
+  "mensagem": "0,1 g/kg nem alcaliniza; 0,2 é o mínimo; 0,3 é o teto útil. Acima disso, só mais sintomas. E quando a dose é tomada no pico de cada um, 0,2 rendeu o mesmo que 0,3 — com um terço a menos de sódio.",
+  "pergunta": "Por que a literatura inteira ainda usa 0,3 g/kg como padrão?",
+  "transicao": "O estudo de 0,2 g/kg acertou o horário de cada atleta. Mas cada atleta tem um relógio diferente."
+ },
+ "46": {
+  "minutos": 4,
+  "mensagem": "Com 0,3 g/kg, o pico do bicarbonato no sangue cai entre 75 e 180 min conforme a pessoa. Nos remadores de elite, só 1 de 23 estava no pico aos 60 min, e tomar no pico individual deu ~2 s em 2.000 m — sem braço placebo e com o HCO₃⁻ igualado pelo aquecimento. Se o relógio se repete, os estudos discordam.",
+  "pergunta": "Vale a pena coletar sangue capilar do atleta para achar o pico dele? Em quem?",
+  "transicao": "Mirar o pico é inútil se o atleta passar a prova no banheiro. Vamos ao preço."
+ },
+ "47": {
+  "minutos": 4,
+  "mensagem": "Sintoma GI é a regra: 29,5% nos ensaios de corrida, diarreia em 10 de 11 num ECR. E pode apagar o efeito: sem os que passaram mal, o resultado mudou. Refeição com carboidrato, 120–180 min, cápsula entérica, fracionar e carga de vários dias têm dado; hidrogel e loção, não o bastante.",
+  "pergunta": "Quem aqui já viu um atleta abandonar o bicarbonato por causa do intestino — e o que foi testado antes?",
+  "transicao": "Além do intestino, a dose carrega outra conta que pouca gente faz: o sódio."
+ },
+ "48": {
+  "minutos": 3,
+  "mensagem": "Uma dose de 0,3 g/kg para 70 kg são 21 g de pó e ~5,7 g de sódio — quase 3 vezes o teto diário da OMS, de uma vez. O rótulo do antiácido limita a ~16,8 g em 24 h. Para o Carlos, hipertenso, a conta pesa mais.",
+  "pergunta": "Vocês prescreveriam essa quantidade de sódio para um paciente hipertenso fora do esporte?",
+  "transicao": "Sódio também é água na balança — e há um esporte em que a balança decide tudo."
+ },
+ "49": {
+  "minutos": 4,
+  "mensagem": "Judô, boxe, taekwondo e caratê têm ensaios positivos pequenos, mas a meta-análise de combate não achou efeito agrupado e o único ensaio agudo de jiu-jítsu foi nulo. O Rafael pesa de quimono imediatamente antes da 1ª luta: tomar antes pesa na balança; depois, a 1ª luta fica sem tampão.",
+  "pergunta": "Se vocês fossem o nutricionista do Rafael, em que momento — se algum — dariam o bicarbonato?",
+  "transicao": "O bicarbonato age em horas. A próxima testemunha precisa de semanas: a beta-alanina."
+ }
+}

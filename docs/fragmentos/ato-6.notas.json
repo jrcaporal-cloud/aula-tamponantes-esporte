@@ -1,0 +1,56 @@
+{
+  "80": {
+    "minutos": 1,
+    "mensagem": "Depois de ouvir as testemunhas, é hora de interrogá-las. Ninguém aqui inventou dado: o problema é o que o método deixa ver e o que o resumo esconde.",
+    "pergunta": "Quantos de vocês já indicaram um suplemento lendo só o resumo?",
+    "transicao": "Começamos pela régua: o teste que mede o efeito."
+  },
+  "81": {
+    "minutos": 4,
+    "mensagem": "O mesmo ganho de potência aparece como ~2% no contrarrelógio e ~20% no tempo até a exaustão, porque a reta da carga fixa corta a curva de raspão. O ruído cresce na mesma proporção: a sensibilidade dos dois testes é parecida. O erro é traduzir o % de um teste de capacidade em % de prova — o +62% de 1977 e o +13% da β-alanina são de capacidade.",
+    "pergunta": "Se um estudo diz +13%, qual é a primeira pergunta que vocês fazem?",
+    "transicao": "Mesmo com um bom teste, falta gente: vamos ver quantos atletas cabem num estudo típico."
+  },
+  "82": {
+    "minutos": 5,
+    "mensagem": "Programamos um efeito real de 1% e repetimos o mesmo estudo de 11 atletas 400 vezes: só ~1 em 5 acha p < 0,05. E os que acham relatam o dobro do efeito real — a maldição do vencedor. Dobrar o ruído do teste exige quadruplicar a amostra; para a elite, o alvo é de meio por cento.",
+    "pergunta": "Se só os estudos significativos fossem publicados, o que a meta-análise desses 400 diria?",
+    "transicao": "Uma saída é usar cada atleta como o próprio controle — mas isso não serve para tudo."
+  },
+  "83": {
+    "minutos": 3,
+    "mensagem": "O bicarbonato some em horas e permite o cruzado, desde que haja familiarização: só repetir o teste já rende 1,2%. A carnosina é um estoque: leva até 15 semanas para voltar, e por isso a β-alanina exige paralelo, que pede muito mais atletas.",
+    "pergunta": "Num cruzado de β-alanina com um mês de intervalo, o que o grupo placebo do 2º período está tomando de verdade?",
+    "transicao": "Cruzado ou paralelo, o estudo precisa de um placebo que engane. Ele engana?"
+  },
+  "84": {
+    "minutos": 5,
+    "mensagem": "Duplo-cego só vale se for testado: em solução, o gosto denuncia o bicarbonato; em cápsula, metade desconfia depois do esforço. Um placebo que imita o estufamento rendeu +9,5% sem bicarbonato, e cerca de um quarto do efeito dos tamponantes vem da expectativa. Para o atleta, que nunca toma placebo, o efeito total inclui a crença.",
+    "pergunta": "O efeito placebo é um problema do estudo ou parte do benefício que o atleta leva para a prova?",
+    "transicao": "Se a média já é frágil, o que dizer do atleta que 'não respondeu'?"
+  },
+  "85": {
+    "minutos": 4,
+    "mensagem": "Damos exatamente +2% a 20 atletas e medimos com ruído: aparecem respondedores e não respondedores do nada. O placebo tem a mesma cascata; só se fala em resposta individual quando o DP das mudanças supera o do controle. E o mesmo atleta, quatro vezes com bicarbonato, não se repete.",
+    "pergunta": "Quantas vezes vocês precisariam testar um atleta para dizer que ele não responde?",
+    "transicao": "Juntar muitos estudos resolve? Vamos abrir uma meta-análise por dentro."
+  },
+  "86": {
+    "minutos": 5,
+    "mensagem": "O IC diz onde está a média; o intervalo de predição diz o que esperar no próximo cenário, e costuma cruzar o zero. I² com poucos estudos engana, o funil mostra a gaveta de estudos negativos, e o bicarbonato chega no máximo a certeza moderada no GRADE. A meta-análise clássica do bicarbonato usa MBI, método com falso-positivo de até 45% para 'possível'.",
+    "pergunta": "Para decidir pelo seu atleta, vocês querem o IC ou o intervalo de predição?",
+    "transicao": "E mesmo a melhor meta-análise responde sobre alguém: quem são essas pessoas?"
+  },
+  "87": {
+    "minutos": 3,
+    "mensagem": "Em 1.826 estudos de suplementos, 23% dos participantes são mulheres, ~70% dos estudos classificáveis são de nível 0 a 2 e só 10% de elite. No bicarbonato, a lacuna feminina é maior. Nenhum dos nossos quatro atletas fictícios se parece com o participante típico.",
+    "pergunta": "A Júlia e a Bianca cabem em quantos desses estudos?",
+    "transicao": "Juntando tudo: vamos ler um resumo como leitor crítico."
+  },
+  "88": {
+    "minutos": 5,
+    "mensagem": "Um resumo fictício e bonito — randomizado, duplo-cego, +18% — tem sete bandeiras: n = 9, placebo sem sódio, teste de capacidade na bicicleta, exclusão por diarreia, MBI, conclusão além dos dados e financiamento do fabricante. A conclusão honesta cabe em uma frase bem menor.",
+    "pergunta": "Antes de virar o passador: quantas bandeiras vocês acham?",
+    "transicao": "Com o contra-interrogatório feito, podemos dar o veredito: para quem e quando usar."
+  }
+}

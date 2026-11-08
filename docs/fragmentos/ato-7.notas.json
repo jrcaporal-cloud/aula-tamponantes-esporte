@@ -1,0 +1,56 @@
+{
+  "90": {
+    "minutos": 4,
+    "mensagem": "Pela boca, bicarbonato, citrato e β-alanina estão fora da Lista Proibida 2026; na veia, o que viola o M2.2 é o volume, e a dose útil não cabe em 100 mL. O turfe puniu o milkshake por décadas e a meta-análise com 74 cavalos não achou efeito. Para o atleta, o risco real é o suplemento contaminado.",
+    "pergunta": "Se o milkshake não funciona nos cavalos, por que continuou sendo fraude e sendo punido?",
+    "transicao": "Isso é a regra do esporte. E a regra brasileira, o que diz?"
+  },
+  "91": {
+    "minutos": 4,
+    "mensagem": "A IN 28 limita a β-alanina a 2 g/dia, em doses de até 300 mg, só a partir de 19 anos — cerca de um terço da dose estudada, e a carga leva ~90 dias em vez de 28. Bicarbonato não existe como suplemento em cápsula: é fonte de sódio em bebida de eletrólitos ou antiácido de farmácia. A CFN 656 manda respeitar a IN 28, e não achamos parecer para os casos de fronteira: é zona cinzenta, não orientação jurídica — na dúvida, o CRN.",
+    "pergunta": "Quem aqui já viu β-alanina prescrita acima de 2 g/d? Com que justificativa no prontuário?",
+    "transicao": "Regra à parte, há quem não deva tomar nem a dose permitida."
+  },
+  "92": {
+    "minutos": 4,
+    "mensagem": "20 g é praticamente a dose de um atleta de 70 kg; num homem de 69 anos com rim doente, por uma semana, virou pH 7,61 e lesão renal. O semáforo muda com diurético, rim, idade, transtorno alimentar e idade abaixo de 19 anos. A β-alanina fica verde na maior parte, mas a regra brasileira a fecha para adolescentes.",
+    "pergunta": "Qual destes perfis vocês atendem mais — e quantos já tomam bicarbonato por conta própria?",
+    "transicao": "Mesmo no atleta liberado, o dia de prova cria problemas que o estudo não tem."
+  },
+  "93": {
+    "minutos": 4,
+    "mensagem": "Nos estudos a dose cai num horário controlado; no dia de prova há pesagem, chave imprevisível, remédio da manhã e controle de doping. Para Rafael, a pesagem colada na luta empurra a dose para antes da balança; para Carlos, o problema começa no diurético. São personagens fictícios, horários ilustrativos e janelas de Urwin 2023.",
+    "pergunta": "Em qual desses dias a dose aguda de bicarbonato simplesmente não cabe?",
+    "transicao": "Com o dia na mão, vamos decidir caso a caso."
+  },
+  "94": {
+    "minutos": 6,
+    "mensagem": "Cada caso segue a mesma ordem: o que a evidência diz para aquela prova, onde estão as armadilhas e só então a decisão. Júlia é candidata se testar antes; Rafael tem o dia contra a dose aguda; Carlos precisa do médico antes do tampão; em Bianca, a regra e a idade decidem antes da ciência. Deixe a turma votar antes de abrir cada veredito.",
+    "pergunta": "Antes de abrir: o que vocês decidiriam para este atleta, e por quê?",
+    "transicao": "O que se repetiu nos quatro casos vira um fluxo de raciocínio."
+  },
+  "95": {
+    "minutos": 4,
+    "mensagem": "Seis perguntas na ordem: a prova está na janela, há contraindicação, as regras permitem, testou no treino, registrou, decidiu. As três primeiras podem encerrar a conversa. O teste segue as quatro fases do AIS, e o registro com justificativa é exigência da CFN 656.",
+    "pergunta": "Em que passo vocês costumam pular direto para a dose?",
+    "transicao": "Se for para guardar só cinco coisas desta aula, são estas."
+  },
+  "96": {
+    "minutos": 3,
+    "mensagem": "O efeito é pequeno e tem endereço; bicarbonato é de horas e β-alanina de semanas; a dose é a mesma, o paciente não; intestino e relógio vêm antes do pódio; regra e produto também são evidência. Cada mensagem tem o número que a sustenta.",
+    "pergunta": "Qual dessas cinco muda alguma coisa no seu atendimento de segunda-feira?",
+    "transicao": "Agora podemos voltar às acusações do começo."
+  },
+  "97": {
+    "minutos": 3,
+    "mensagem": "As mesmas seis acusações do slide 11, agora com o que a aula acrescentou a cada uma. O quadro julga a acusação, não a molécula: o lactato é cúmplice, não autor; o bicarbonato não melhora qualquer prova; a β-alanina não funciona na primeira semana.",
+    "pergunta": "Quem mudou de voto desde o começo? Em qual acusação?",
+    "transicao": "Fica uma frase para fechar."
+  },
+  "99": {
+    "minutos": 1,
+    "mensagem": "Fechar sem prometer efeito: o tampão é ajuste fino de poucos segundos, para a prova certa, no atleta certo, testado antes.",
+    "pergunta": "",
+    "transicao": ""
+  }
+}

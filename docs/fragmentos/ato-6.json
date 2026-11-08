@@ -1,0 +1,92 @@
+[
+  {
+    "id": 80,
+    "sectionName": "Ato VI · O Contra-interrogatório",
+    "number": "",
+    "layout": "prose",
+    "title": "",
+    "subtitle": "",
+    "content": "<p class=\"quote-text reveal\">Nenhum desses estudos mentiu. Mas quase todos podem <span class=\"hl-acid\">enganar</span> quem lê <span class=\"hl-base\">só o resumo</span>.</p>",
+    "cards": []
+  },
+  {
+    "id": 81,
+    "sectionName": "Ato VI · O Contra-interrogatório",
+    "number": "",
+    "layout": "prose",
+    "title": "O Teste Decide o Tamanho do Efeito",
+    "subtitle": "O mesmo ganho vira +2% num contrarrelógio e ~20% num teste até a exaustão.",
+    "content": "[[COMP:TestNoiseSim]]<h4>Fontes</h4><ul><li>Jeukendrup A, Saris WH, Brouns F, Kester AD. A new validated endurance performance test. Med Sci Sports Exerc 1996;28(2):266-270. — CV 26,6% (75% Wmax até a exaustão) × 3,35% (contrarrelógio de trabalho fixo).</li><li>Laursen PB, Francis GT, Abbiss CR, Newton MJ, Nosaka K. Reliability of time-to-exhaustion versus time-trial running tests in runners. Med Sci Sports Exerc 2007;39(8):1374-1379. — CV 15,1% × 2,0% (5 km) e 13,2% × 3,3% (1.500 m) nos mesmos corredores; base da modelagem log-log.</li><li>Amann M, Hopkins WG, Marcora SM. Similar sensitivity of time to exhaustion and time-trial time to changes in endurance. Med Sci Sports Exerc 2008;40(3):574-578. — hipóxia: TTE −45% ± 13% × contrarrelógio +5,7% ± 1,6%; sensibilidade 6,3 × 4,5.</li><li>Jones NL, Sutton JR, Taylor R, Toews CJ. Effect of pH on cardiorespiratory and metabolic responses to exercise. J Appl Physiol 1977;43(6):959-964. — 270 → 438 s em 5 homens; +62% = cálculo (438 ÷ 270).</li><li>Hill CA, Harris RC, Kim HJ, et al. Influence of beta-alanine supplementation on skeletal muscle carnosine concentrations and high intensity cycling capacity. Amino Acids 2007;32(2):225-233. — +13% de trabalho total no CCT110% após 4 semanas (teste de capacidade).</li><li>Saunders B, Elliott-Sale K, Artioli GG, et al. β-alanine supplementation to improve exercise capacity and performance: a systematic review and meta-analysis. Br J Sports Med 2017;51(8):658-669. — 0,5–10 min: capacidade 0,50 × desempenho 0,11.</li><li>Curva potência–duração (P = a·t^−0,1), ruído diário de 1,5% e porcentagens do gráfico: modelo ilustrativo, cálculo próprio.</li></ul>",
+    "cards": []
+  },
+  {
+    "id": 82,
+    "sectionName": "Ato VI · O Contra-interrogatório",
+    "number": "",
+    "layout": "prose",
+    "title": "Onze Atletas e um Sussurro",
+    "subtitle": "Onze atletas não enxergam 1% — e quem enxerga, exagera.",
+    "content": "[[COMP:PowerSim]]<h4>Fontes</h4><ul><li>de Oliveira LF, Dolan E, Swinton PA, et al. Extracellular buffering supplements to improve exercise capacity and performance: a comprehensive systematic review and meta-analysis. Sports Med 2022;52(3):505-526. — 189 artigos, 2.019 participantes (~11 por estudo, cálculo).</li><li>Hopkins WG. How to interpret changes in an athletic performance test. Sportscience 2004;8:1-7. — SWC = 0,3 × variação do atleta entre provas (era 0,5 até 2011).</li><li>Paton CD, Hopkins WG. Variation in performance of elite cyclists from race to race. Eur J Sport Sci 2006;6(1):25-31. — ciclista de elite varia 1,3% entre contrarrelógios; SWC ~0,6%.</li><li>Hopkins WG, Hawley JA, Burke LM. Design and analysis of research on sport performance enhancement. Med Sci Sports Exerc 1999;31(3):472-485. — com a prova como desfecho: cruzado 16–65 atletas; paralelo 65–260.</li><li>Simulação própria (semente 1977): 400 estudos cruzados, efeito real +1%, diferença = efeito + ruído √2 × CV, teste t pareado. Poder ~20% com CV 2% e n = 11: cálculo ilustrativo.</li></ul>",
+    "cards": []
+  },
+  {
+    "id": 83,
+    "sectionName": "Ato VI · O Contra-interrogatório",
+    "number": "",
+    "layout": "prose",
+    "title": "Cruzado ou Paralelo?",
+    "subtitle": "O bicarbonato vai embora no mesmo dia; a carnosina, em meses.",
+    "content": "[[COMP:DesignSim]]<h4>Fontes</h4><ul><li>Hopkins WG, Schabort EJ, Hawley JA. Reliability of power in physical performance tests. Sports Med 2001;31(3):211-234. — +1,2% entre a 1ª e a 2ª tentativa e +0,2% depois; CV das duas primeiras 1,3× maior.</li><li>Australian Institute of Sport. AIS Sports Supplement Framework — Sodium Bicarbonate (Group A). Practitioner fact sheet, nov. 2025. — efeito por 3–4 h após a dose.</li><li>Grgic J, Pedisic Z, Saunders B, et al. International Society of Sports Nutrition position stand: sodium bicarbonate and exercise performance. J Int Soc Sports Nutr 2021;18(1):61. — cruzado duplo-cego é o desenho mais usado.</li><li>Baguet A, Reyngoudt H, Pottier A, et al. Carnosine loading and washout in human skeletal muscles. J Appl Physiol 2009;106(3):837-842. — 4,8 g/dia por 5–6 semanas; queda de 2–4%/semana; basal em 9 semanas (grupo) e 15 (altos respondedores, +55%); 6 nos baixos (+15%). Forma das curvas ilustrativa.</li><li>Hopkins WG, Hawley JA, Burke LM. Design and analysis of research on sport performance enhancement. Med Sci Sports Exerc 1999;31(3):472-485. — cruzado 16–65 × paralelo 65–260 atletas.</li><li>Saunders B, Elliott-Sale K, Artioli GG, et al. β-alanine supplementation to improve exercise capacity and performance: a systematic review and meta-analysis. Br J Sports Med 2017;51(8):658-669. — estudos cruzados excluídos pelo washout da carnosina.</li></ul>",
+    "cards": []
+  },
+  {
+    "id": 84,
+    "sectionName": "Ato VI · O Contra-interrogatório",
+    "number": "",
+    "layout": "prose",
+    "title": "O Placebo que Denuncia",
+    "subtitle": "Gosto, estufamento e formigamento contam ao atleta o que ele tomou.",
+    "content": "[[COMP:BlindingSim]]<h4>Fontes</h4><ul><li>Gurton WH, Matta GG, Gough LA, Hurst P. Efficacy of sodium bicarbonate ingestion strategies for protecting blinding. Eur J Appl Physiol 2022;122(12):2555-2563. — estudo 2 (12 atletas): \"não sei\" em cápsula × solução 92% × 33% logo após, 67% × 17% antes e 50% × 17% depois do teste.</li><li>Dolan E, Swinton PA, Painelli VS, et al. A systematic risk assessment and meta-analysis on the use of oral β-alanine supplementation. Adv Nutr 2019;10(3):452-463. — parestesia OR 8,9 (CrI95% 2,2–32,6).</li><li>Miller LE, Bhattacharyya R, Katz SJ, et al. Negligible benefit of oral single-dose sodium bicarbonate on continuous running performance: systematic review with meta-analysis of randomized, double-blind, placebo-controlled trials. J Int Soc Sports Nutr 2025;22(1):2538606. — sintomas GI 29,5% × 2,6%; desistência por GI 8,7% × 1,6%.</li><li>de Camargo JBB, Brigatto FA, Zaroni RS, et al. Does beta-alanine supplementation enhance adaptations to resistance training? A randomized, placebo-controlled, double-blind study. Biol Sport 2023;40(1):217-224. — teste de cegamento: 3 de 9 (β-alanina) e 3 de 10 (placebo) acertaram.</li><li>Higgins MF, Shabir A. Expectancy of ergogenicity from sodium bicarbonate ingestion increases high-intensity cycling capacity. Appl Physiol Nutr Metab 2016;41(4):405-410. — placebo com água com gás + texto de expectativa: 461 × 421 s (+9,5%).</li><li>Zagatto AM, Lopes VHF, Dutra YM, et al. Sodium bicarbonate induces alkalosis, but improves high-intensity cycling performance only when participants expect a beneficial effect: a placebo and nocebo study. Eur J Appl Physiol 2024;124(5):1367-1380. — bicarbonato \"ergogênico\" 0,46 × dextrose \"ergogênica\" 0,45.</li><li>Marticorena FM, Carvalho A, Oliveira LF, et al. Nonplacebo controls to determine the magnitude of ergogenic interventions: a systematic review and meta-analysis. Med Sci Sports Exerc 2021;53(8):1766-1777. — placebo × controle 0,09; ativo × controle 0,37; placebo = 25% (CrI75% 16–35%) do efeito dos tamponantes.</li><li>Hurst P, Foad A, Coleman D, Beedie C. Athletes intending to use sports supplements are more likely to respond to a placebo. Med Sci Sports Exerc 2017;49(9):1877-1883. — 627 participantes: cápsula \"potente\" −0,07% (sem placebo médio); \"prejudicial\" −0,92%; quem pretendia usar +0,19%, quem não pretendia −1,10%.</li></ul>",
+    "cards": []
+  },
+  {
+    "id": 85,
+    "sectionName": "Ato VI · O Contra-interrogatório",
+    "number": "",
+    "layout": "prose",
+    "title": "Respondedor ou Ruído?",
+    "subtitle": "Antes de rotular um atleta, compare com a dispersão do placebo.",
+    "content": "[[COMP:ResponderSim]]<h4>Fontes</h4><ul><li>Atkinson G, Batterham AM. True and false interindividual differences in the physiological response to an intervention. Exp Physiol 2015;100(6):577-588. — a resposta individual verdadeira só aparece comparando o DP das mudanças com o do controle.</li><li>Froio de Araujo Dias G, da Eira Silva V, de Salles Painelli V, et al. (In)consistencies in responses to sodium bicarbonate supplementation: a randomised, repeated measures, counterbalanced and double-blind study. PLoS One 2015;10(11):e0143086. — 15 homens, 4 sessões: +3,6%, +0,3%, +2,1%, +6,7% (todas p > 0,05); 10 melhoraram além do ruído em ≥ 1 sessão; 5 nunca.</li><li>Hecksteden A, Pitsch W, Rosenberger F, Meyer T. Repeated testing for the assessment of individual response to exercise training. J Appl Physiol 2018;124(6):1567-1579. — em treino, só 11 de 20 classificados de forma consistente pelos diferentes métodos.</li><li>de Oliveira LF, Saunders B, Yamaguchi G, Swinton P, Artioli GG. Is individualization of sodium bicarbonate ingestion based on time to peak necessary? Med Sci Sports Exerc 2020;52(8):1801-1808. — Tmax 169, 127 e 159 min nas 3 sessões: não reprodutível.</li><li>Simulação própria (semente 85): 20 + 20 atletas, efeito verdadeiro +2% em todos, ruído √2 × CV; corte de \"respondedor\" > +1% é ilustrativo.</li></ul>",
+    "cards": []
+  },
+  {
+    "id": 86,
+    "sectionName": "Ato VI · O Contra-interrogatório",
+    "number": "",
+    "layout": "prose",
+    "title": "A Meta-análise por Dentro",
+    "subtitle": "O losango mostra a média; o atleta vive o próximo resultado.",
+    "content": "[[COMP:MetaInsideSim]]<h4>Fontes</h4><ul><li>IntHout J, Ioannidis JP, Rovers MM, Goeman JJ. Plea for routinely presenting prediction intervals in meta-analysis. BMJ Open 2016;6(7):e010247. — em 72,4% de 479 meta-análises significativas o intervalo de predição incluía o nulo; em 20,3%, o efeito oposto.</li><li>Carr AJ, Hopkins WG, Gore CJ. Effects of acute alkalosis and acidosis on performance: a meta-analysis. Sports Med 2011;41(10):801-814. — +1,7% (IC90% ±2,0%), variação entre cenários ±1,2%, exclusão de estimativas com EP > 2,7%, inferência MBI. Intervalo de predição ≈ −0,7% a +4,1%: cálculo ilustrativo.</li><li>von Hippel PT. The heterogeneity statistic I² can be biased in small meta-analyses. BMC Med Res Methodol 2015;15:35. — com 7 estudos, I² superestima em média 12 pontos (sem heterogeneidade) ou subestima até 28 (com 80%).</li><li>Miller LE, Bhattacharyya R, Katz SJ, et al. Negligible benefit of oral single-dose sodium bicarbonate on continuous running performance: systematic review with meta-analysis of randomized, double-blind, placebo-controlled trials. J Int Soc Sports Nutr 2025;22(1):2538606. — I² = 0% com 11 estudos.</li><li>Egger M, Davey Smith G, Schneider M, Minder C. Bias in meta-analysis detected by a simple, graphical test. BMJ 1997;315(7109):629-634. — gráfico de funil.</li><li>Grgic J, Grgic I, Del Coso J, Schoenfeld BJ, Pedisic Z. Effects of sodium bicarbonate supplementation on exercise performance: an umbrella review. J Int Soc Sports Nutr 2021;18(1):71. — certeza moderada (Wingate, Yo-Yo) a baixa (45 s–8 min, remo 2.000 m); viés de publicação fortemente suspeito.</li><li>Lohse KR, Sainani KL, Taylor JA, et al. Systematic review of the use of \"magnitude-based inference\" in sports science and medicine. PLoS One 2020;15(6):e0235318. — 232 artigos com MBI; n mediano 10 por grupo; 15% com cálculo amostral; falso-positivo 22–45% para \"possível\".</li><li>Sainani KL. The problem with \"magnitude-based inference\". Med Sci Sports Exerc 2018;50(10):2166-2176. — erro tipo I da MBI 2 a 6 vezes o do teste padrão.</li><li>Forest plot (semente 253) e funil (sementes 277/1277): estudos simulados, efeitos aleatórios DerSimonian–Laird.</li></ul>",
+    "cards": []
+  },
+  {
+    "id": 87,
+    "sectionName": "Ato VI · O Contra-interrogatório",
+    "number": "",
+    "layout": "prose",
+    "title": "Quem é Estudado?",
+    "subtitle": "A evidência em “atletas” é, em maioria, de homens universitários.",
+    "content": "[[COMP:WhoIsStudiedSim]]<h4>Fontes</h4><ul><li>Smith ES, McKay AKA, Kuikman M, et al. Auditing the representation of female versus male athletes in sports science and sports medicine research: evidence-based performance supplements. Nutrients 2022;14(5):953. — 1.826 estudos, 34.889 participantes, 23% mulheres; 34% dos estudos com ≥ 1 mulher; 0–8% só com mulheres; 14% definiram o ciclo; níveis 0–5: 6 / 30 / 34,5 / 19,5 / 9,5 / 0,5% (56% sem informação).</li><li>McKay AKA, Stellingwerff T, Smith ES, et al. Defining training and performance caliber: a participant classification framework. Int J Sports Physiol Perform 2022;17(2):317-331. — níveis 0 (sedentário) a 5 (classe mundial).</li><li>Saunders B, Oliveira LF, Dolan E, et al. Sodium bicarbonate supplementation and the female athlete: a brief commentary with small scale systematic review and meta-analysis. Eur J Sport Sci 2022;22(5):745-754. — 20% dos estudos de bicarbonato incluíram mulheres e 7,4% as analisaram à parte; efeito 0,37 (CrI95% −0,06 a 0,92).</li><li>Australian Institute of Sport. AIS Sports Supplement Framework — Sodium Bicarbonate (Group A). Practitioner fact sheet, nov. 2025. — auditoria: 4% dos estudos de bicarbonato com mulheres.</li><li>Australian Institute of Sport. AIS Sports Supplement Framework — β-Alanine (Group A). Practitioner fact sheet, nov. 2025. — carnosina menor em mulheres, vegetarianos e idosos.</li><li>Malcata RM, Hopkins WG. Variability of competitive performance of elite athletes: a systematic review. Sports Med 2014;44(12):1763-1774. — variabilidade de elite por esporte; sem desfecho contínuo equivalente nas lutas.</li><li>Júlia, Rafael, Carlos e Bianca: personagens fictícios (dossiê 06, Parte 5).</li></ul>",
+    "cards": []
+  },
+  {
+    "id": 88,
+    "sectionName": "Ato VI · O Contra-interrogatório",
+    "number": "",
+    "layout": "prose",
+    "title": "Leitor Crítico",
+    "subtitle": "Randomizado, duplo-cego, +18%: quantas bandeiras cabem num resumo?",
+    "content": "[[COMP:CriticalReaderSim]]<h4>Fontes</h4><ul><li>Resumo fictício, escrito para a aula; não corresponde a nenhum estudo real.</li><li>de Oliveira LF, Dolan E, Swinton PA, et al. Extracellular buffering supplements to improve exercise capacity and performance: a comprehensive systematic review and meta-analysis. Sports Med 2022;52(3):505-526. e Lohse KR, Sainani KL, Taylor JA, et al. Systematic review of the use of \"magnitude-based inference\" in sports science and medicine. PLoS One 2020;15(6):e0235318. — amostras pequenas e cálculo amostral raro.</li><li>Gurton WH, Matta GG, Gough LA, Hurst P. Efficacy of sodium bicarbonate ingestion strategies for protecting blinding. Eur J Appl Physiol 2022;122(12):2555-2563. e Higgins MF, Shabir A. Expectancy of ergogenicity from sodium bicarbonate ingestion increases high-intensity cycling capacity. Appl Physiol Nutr Metab 2016;41(4):405-410. — placebo sem sódio em solução se denuncia.</li><li>Amann M, Hopkins WG, Marcora SM. Similar sensitivity of time to exhaustion and time-trial time to changes in endurance. Med Sci Sports Exerc 2008;40(3):574-578., Saunders B, Sale C, Harris RC, Morris JG, Sunderland C. Reliability of a high-intensity cycling capacity test. J Sci Med Sport 2013;16(3):286-289. e Saunders B, Elliott-Sale K, Artioli GG, et al. β-alanine supplementation to improve exercise capacity and performance: a systematic review and meta-analysis. Br J Sports Med 2017;51(8):658-669. — teste de capacidade × desempenho.</li><li>Miller LE, Bhattacharyya R, Katz SJ, et al. Negligible benefit of oral single-dose sodium bicarbonate on continuous running performance: systematic review with meta-analysis of randomized, double-blind, placebo-controlled trials. J Int Soc Sports Nutr 2025;22(1):2538606. — viés de atrito por desistência por GI.</li><li>Lohse KR, Sainani KL, Taylor JA, et al. Systematic review of the use of \"magnitude-based inference\" in sports science and medicine. PLoS One 2020;15(6):e0235318. e Sainani KL. The problem with \"magnitude-based inference\". Med Sci Sports Exerc 2018;50(10):2166-2176. — falso-positivos da MBI.</li><li>Smith ES, McKay AKA, Kuikman M, et al. Auditing the representation of female versus male athletes in sports science and sports medicine research: evidence-based performance supplements. Nutrients 2022;14(5):953. — quem é estudado (níveis 0–2).</li><li>Conflitos de interesse declarados em estudos de bicarbonato em hidrogel: dossiê 01.</li></ul>",
+    "cards": []
+  }
+]

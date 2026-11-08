@@ -1,0 +1,338 @@
+{
+  "0": {
+    "minutos": 1,
+    "mensagem": "Hoje vamos abrir um inquérito. A fadiga é o crime, o ácido lático é o suspeito de sempre, e vamos ouvir perícia, testemunhas e contra-interrogatório antes de dar qualquer veredito.",
+    "pergunta": "Quem aqui já explicou a um atleta que a queimação era ácido lático?",
+    "transicao": "Começamos pela cena do crime: os últimos 200 metros de um 800 m."
+  },
+  "10": {
+    "minutos": 3,
+    "mensagem": "Júlia é fictícia, mas a cena é real em qualquer pista: nos últimos 200 m o esforço é máximo e a velocidade cai. No músculo, o pH sai de cerca de 7,08 e chega perto de 6,60 na exaustão, como mostrou a biópsia de Sahlin em 1976; o caminho entre os dois é ilustrativo.",
+    "pergunta": "Quando ela diz que as pernas queimaram, o que exatamente está queimando?",
+    "transicao": "Cada um aqui tem um suspeito. Vamos colocar as acusações no quadro e votar."
+  },
+  "11": {
+    "minutos": 4,
+    "mensagem": "Seis frases que a turma já ouviu de colegas, atletas e rótulos. Votem antes de virar: culpado quer dizer que a acusação procede. O ponto final é que nenhuma procede inteira — há cúmplices, dependências e mitos.",
+    "pergunta": "Antes de virar a carta: quem vota culpado?",
+    "transicao": "Esses vereditos voltam no fim da aula. Agora, os quatro atletas que vão nos acompanhar até lá."
+  },
+  "12": {
+    "minutos": 3,
+    "mensagem": "Quatro casos fictícios, quatro esforços: 800 m, lutas repetidas, 2.000 m de remo e 200 m de natação. A ciência do tampão é a mesma, mas o dilema de cada um é outro: o dia de prova, a balança, a pressão arterial e a regra brasileira.",
+    "pergunta": "Qual dos quatro vocês acham que mais se beneficiaria? E qual corre mais risco?",
+    "transicao": "Para responder, vamos seguir um roteiro de investigação em sete capítulos."
+  },
+  "13": {
+    "minutos": 2,
+    "mensagem": "O mapa do inquérito: primeiro a perícia da fisiologia, depois as testemunhas, o contra-interrogatório dos métodos e o veredito prático. E o prêmio em jogo é pequeno: ES médio de 0,17 em 189 estudos, cerca de 2% em esforços de um minuto.",
+    "pergunta": "Se o efeito médio é pequeno, para quem ele vale a pena?",
+    "transicao": "Para julgar, precisamos da perícia: o que acontece com o H⁺ dentro e fora da fibra."
+  },
+  "20": {
+    "minutos": 3,
+    "mensagem": "pH é logaritmo: a régua parece curta, mas cada 0,3 a menos dobra o H⁺. Do músculo em repouso (7,08) à exaustão (6,60) o H⁺ triplica, e o sangue no fim de um 2.000 m chega ao H⁺ do músculo parado.",
+    "pergunta": "Se o pH do músculo cai 0,5, quantas vezes sobe o H⁺?",
+    "transicao": "Para saber o que segura esse H⁺ no sangue, vamos à equação que todo médico decorou e pouca gente usa."
+  },
+  "21": {
+    "minutos": 4,
+    "mensagem": "O pH do sangue depende da razão bicarbonato/CO₂, não de um número isolado. No fim da prova o bicarbonato cai para menos da metade (cálculo); o suplemento aumenta o numerador em ~5 mmol/L. E cada tampão rende mais perto do seu pKa.",
+    "pergunta": "Por que a carnosina, com pKa 6,83, combina com o músculo e o bicarbonato, com 6,1, não?",
+    "transicao": "Essa química demorou um século para ser entendida — e o ácido lático foi julgado no caminho."
+  },
+  "22": {
+    "minutos": 4,
+    "mensagem": "O lactato nasceu suspeito em músculo de rã frio e ganhou um Nobel como resíduo. Depois veio a reabilitação: combustível, e a briga sobre de onde vem o H⁺. O acordo de 2010: H⁺ e lactato sobem juntos.",
+    "pergunta": "Quem aqui aprendeu na graduação que o ácido lático causa a fadiga?",
+    "transicao": "Um capítulo dessa história merece ser contado à parte: o homem que se acidificou de propósito."
+  },
+  "23": {
+    "minutos": 3,
+    "mensagem": "Em 1931, Dennig mudou o próprio pH: acidificado, cansou antes; alcalinizado, a reserva subiu e vieram cãibras tetânicas. O benefício da alcalose foi só deduzido — n = 1, sem placebo.",
+    "pergunta": "O que faltou nesse experimento para ele convencer vocês hoje?",
+    "transicao": "Se o H⁺ importa, de onde ele vem? Três testemunhas discordam."
+  },
+  "24": {
+    "minutos": 4,
+    "mensagem": "Três escolas explicam a origem do H⁺: hidrólise do ATP, ácido lático e diferença de íons fortes. Brigam pela contabilidade, mas concordam no essencial: H⁺ e lactato sobem quase 1:1. O lactato é o termômetro, não o fogo.",
+    "pergunta": "Se o lactato não é o fogo, ainda serve para medir o incêndio?",
+    "transicao": "E se o lactato não é o vilão, o que ele é? Combustível."
+  },
+  "25": {
+    "minutos": 3,
+    "mensagem": "A fibra rápida produz lactato mesmo com O₂; ele sai pelo MCT4 e entra pelo MCT1 nas fibras oxidativas e no coração. No exercício estável, ≥75% é oxidado na hora, e no músculo ele cai à metade a cada 9,5 min.",
+    "pergunta": "Faz sentido o atleta 'limpar o lactato' com massagem no dia seguinte?",
+    "transicao": "Mas o H⁺ que acompanha o lactato precisa ser contido: são quatro linhas de defesa."
+  },
+  "26": {
+    "minutos": 4,
+    "mensagem": "A defesa contra o H⁺ tem quatro linhas: tampões dentro da fibra, portas de saída na membrana, bicarbonato no sangue e ventilação. A beta-alanina reforça a primeira; o bicarbonato, a terceira. Não há porcentagem confirmada por tampão.",
+    "pergunta": "Em qual linha vocês acham que o atleta treinado é diferente?",
+    "transicao": "Defendemos o músculo do H⁺ — mas ele é mesmo o culpado da fadiga?"
+  },
+  "27": {
+    "minutos": 5,
+    "mensagem": "A acusação mostra perda de potência e sinergia com o fosfato; a defesa mostra que no calor o efeito encolhe e que um músculo sem acidose também fadiga. A prova da 'acidose protetora' não se repetiu. Veredito: cúmplice, não chefe.",
+    "pergunta": "Se o H⁺ é só cúmplice, por que alcalinizar ajudaria?",
+    "transicao": "Antes, um mito que cai em dois minutos: a dor do dia seguinte."
+  },
+  "28": {
+    "minutos": 2,
+    "mensagem": "Schwane: o treino no plano, mais intenso, não doeu; a descida, mais leve e excêntrica, doeu e subiu a CK 351%. O lactato some em minutos; a dor chega em dias.",
+    "pergunta": "Quantos pacientes de vocês ainda culpam o ácido lático pela dor do dia seguinte?",
+    "transicao": "Voltando à pergunta que ficou: se o H⁺ é cúmplice, por que tamponar funciona?"
+  },
+  "29": {
+    "minutos": 4,
+    "mensagem": "O bicarbonato não entra na fibra: aumenta o gradiente e puxa H⁺ e lactato para fora — o efluxo da perna foi 10,0 × 4,2 mmol/min. Soma-se glicólise mais rápida, menos K⁺ fora e acidose adiada; o peso de cada mecanismo é incerto.",
+    "pergunta": "Se o efeito é de fora para dentro, que tipo de prova deveria se beneficiar mais?",
+    "transicao": "E antes de qualquer pó, o primeiro tampão do atleta é o treino."
+  },
+  "30": {
+    "minutos": 3,
+    "mensagem": "Treino intenso aumenta o tampão do músculo: +37% com sprint, +25% com intervalado contra +2% no contínuo com o mesmo volume. Intenso demais reduz, e tudo se perde em semanas. O velocista não tampona melhor no sangue: aguenta pH mais baixo.",
+    "pergunta": "O atleta de vocês precisa de suplemento ou de treino mais específico?",
+    "transicao": "Com a perícia feita, chamamos a primeira testemunha da performance: o bicarbonato."
+  },
+  "40": {
+    "minutos": 3,
+    "mensagem": "Em 1977, cinco homens tomaram giz, cloreto de amônio ou bicarbonato e pedalaram a 95% até não aguentar: 160, 270 e 438 segundos. O pH do sangue mexeu no desempenho nos dois sentidos. É daqui que vem a dose de 0,3 g/kg — de 5 pessoas e de um teste até a exaustão.",
+    "pergunta": "Antes de eu revelar: em qual frasco vocês apostam, e quanto mais tempo ele aguenta?",
+    "transicao": "Laboratório convence pouco treinador. Seis anos depois, o bicarbonato foi para a pista."
+  },
+  "41": {
+    "minutos": 4,
+    "mensagem": "Wilkes leva o bicarbonato para um 800 m real: 2,9 s. Costill põe a agulha no músculo e vê o tiro final durar 42% mais. No mesmo ano, o mesmo grupo testa um tiro único e não acha nada — o efeito aparece quando a acidose se acumula.",
+    "pergunta": "Se vocês tivessem lido só o artigo do Katz, o que diriam ao atleta?",
+    "transicao": "Para entender por que o desenho muda o resultado, vamos seguir o bicarbonato do copo até o músculo."
+  },
+  "42": {
+    "minutos": 4,
+    "mensagem": "No estômago, o bicarbonato vira CO₂ — é daí que vem o estufamento. O que chega ao sangue sobe o HCO₃⁻ em ~5 mmol/L, mas o pH dentro da fibra em repouso não muda. Durante o esforço, o sangue alcalino puxa mais H⁺ e lactato para fora.",
+    "pergunta": "Se o bicarbonato não entra na fibra, por que ele melhora um tiro de 2 minutos?",
+    "transicao": "Mecanismo plausível não é efeito garantido. O que dizem os 189 estudos?"
+  },
+  "43": {
+    "minutos": 5,
+    "mensagem": "A média de 189 artigos é pequena: 0,17. Quando o teste é uma prova fechada de 45 s a 8 min, a estimativa sobe para ~0,40, e no contrarrelógio de ciclismo os estudos concordam. Força máxima não muda; nas lutas, sem efeito agrupado. E a certeza é baixa a moderada.",
+    "pergunta": "Qual linha deste gráfico vocês mostrariam a um treinador de judô — e qual esconderiam?",
+    "transicao": "Se o efeito depende do esforço, precisamos de um mapa de duração."
+  },
+  "44": {
+    "minutos": 3,
+    "mensagem": "Em 1992, a mesma dose deu nada em 10 e 30 s e melhorou 120 e 240 s. A janela útil fica entre ~30 s e 12 min, com borda suave. Tiros curtos repetidos e provas contínuas de 30–40 min ficaram nulos.",
+    "pergunta": "Onde vocês colocariam o atleta de vocês nesse eixo?",
+    "transicao": "Sabemos para qual prova. Agora: quanto?"
+  },
+  "45": {
+    "minutos": 3,
+    "mensagem": "0,1 g/kg nem alcaliniza; 0,2 é o mínimo; 0,3 é o teto útil. Acima disso, só mais sintomas. E quando a dose é tomada no pico de cada um, 0,2 rendeu o mesmo que 0,3 — com um terço a menos de sódio.",
+    "pergunta": "Por que a literatura inteira ainda usa 0,3 g/kg como padrão?",
+    "transicao": "O estudo de 0,2 g/kg acertou o horário de cada atleta. Mas cada atleta tem um relógio diferente."
+  },
+  "46": {
+    "minutos": 4,
+    "mensagem": "Com 0,3 g/kg, o pico do bicarbonato no sangue cai entre 75 e 180 min conforme a pessoa. Nos remadores de elite, só 1 de 23 estava no pico aos 60 min, e tomar no pico individual deu ~2 s em 2.000 m — sem braço placebo e com o HCO₃⁻ igualado pelo aquecimento. Se o relógio se repete, os estudos discordam.",
+    "pergunta": "Vale a pena coletar sangue capilar do atleta para achar o pico dele? Em quem?",
+    "transicao": "Mirar o pico é inútil se o atleta passar a prova no banheiro. Vamos ao preço."
+  },
+  "47": {
+    "minutos": 4,
+    "mensagem": "Sintoma GI é a regra: 29,5% nos ensaios de corrida, diarreia em 10 de 11 num ECR. E pode apagar o efeito: sem os que passaram mal, o resultado mudou. Refeição com carboidrato, 120–180 min, cápsula entérica, fracionar e carga de vários dias têm dado; hidrogel e loção, não o bastante.",
+    "pergunta": "Quem aqui já viu um atleta abandonar o bicarbonato por causa do intestino — e o que foi testado antes?",
+    "transicao": "Além do intestino, a dose carrega outra conta que pouca gente faz: o sódio."
+  },
+  "48": {
+    "minutos": 3,
+    "mensagem": "Uma dose de 0,3 g/kg para 70 kg são 21 g de pó e ~5,7 g de sódio — quase 3 vezes o teto diário da OMS, de uma vez. O rótulo do antiácido limita a ~16,8 g em 24 h. Para o Carlos, hipertenso, a conta pesa mais.",
+    "pergunta": "Vocês prescreveriam essa quantidade de sódio para um paciente hipertenso fora do esporte?",
+    "transicao": "Sódio também é água na balança — e há um esporte em que a balança decide tudo."
+  },
+  "49": {
+    "minutos": 4,
+    "mensagem": "Judô, boxe, taekwondo e caratê têm ensaios positivos pequenos, mas a meta-análise de combate não achou efeito agrupado e o único ensaio agudo de jiu-jítsu foi nulo. O Rafael pesa de quimono imediatamente antes da 1ª luta: tomar antes pesa na balança; depois, a 1ª luta fica sem tampão.",
+    "pergunta": "Se vocês fossem o nutricionista do Rafael, em que momento — se algum — dariam o bicarbonato?",
+    "transicao": "O bicarbonato age em horas. A próxima testemunha precisa de semanas: a beta-alanina."
+  },
+  "60": {
+    "minutos": 3,
+    "mensagem": "A carnosina foi achada na carne em 1900, mas a enzima que a fabrica só foi identificada em 2010. Os animais que vivem de esforço sem oxigênio — baleia, galgo, cavalo, peito de frango — carregam muito; o humano carrega pouco, e vegetarianos, mulheres e idosos, menos ainda.",
+    "pergunta": "Se a carnosina vem da carne, comer mais carne resolve? (Spoiler: em onívoros, a β-alanina da dieta não se associou à carnosina.)",
+    "transicao": "Para entender por que a dieta não basta, vamos montar a molécula peça por peça."
+  },
+  "61": {
+    "minutos": 4,
+    "mensagem": "A carnosina é β-alanina + histidina, montada no músculo pela CARNS1; a β-alanina é a peça que falta. O imidazol tem pKa 6,83, bem na faixa do músculo cansado, mas em humanos responde por ~7% do tampão. E engolir carnosina pronta não adianta: a carnosinase do soro a corta em pouco mais de um minuto.",
+    "pergunta": "Se a carnosina oral é destruída no sangue, por que ela subiu a carnosina muscular tanto quanto a β-alanina no estudo de Harris?",
+    "transicao": "Então o jogo é entregar β-alanina ao músculo. Quanto tempo leva para encher o tanque?"
+  },
+  "62": {
+    "minutos": 5,
+    "mensagem": "O que manda é a dose acumulada: no modelo de Rezende, metade do teto só chega com ~377 g, e 4 semanas a 6,4 g/dia (179 g) ficam em cerca de um terço. Só ~3% do que se engole vira carnosina, e tomar com refeição carrega mais. No Brasil, o rótulo de 2 g/dia estica os 179 g para ~90 dias; e ao parar, a carnosina leva de 6 a 15 semanas para voltar.",
+    "pergunta": "Para a Bianca, com 18 anos e rótulo brasileiro, o que decide primeiro: a fisiologia ou a regra?",
+    "transicao": "Quem descobriu que dava para encher esse tanque foi um cientista que já tinha enchido outro, bem mais rápido."
+  },
+  "63": {
+    "minutos": 3,
+    "mensagem": "Roger Harris liderou os estudos originais de creatina e, anos depois, os da β-alanina: patente depositada em 1997, cavalos em 1999, humanos em Chichester em 2006. A patente hoje pertence à NAI, fabricante do CarnoSyn, e os estudos declaram esses vínculos.",
+    "pergunta": "Um conflito de interesse declarado muda o quanto você confia num resultado? O que você procuraria antes de acreditar?",
+    "transicao": "E todo mundo que já tomou β-alanina conhece o primeiro efeito, aquele que aparece em minutos."
+  },
+  "64": {
+    "minutos": 3,
+    "mensagem": "O formigamento segue o pico plasmático: 248 µM com 1,6 g pura contra 82 µM na liberação lenta, com a mesma área sob a curva. O receptor é o MrgprD em neurônios da pele, e a via não usa histamina. É o único efeito colateral consistente (OR 8,9), e se resolve fracionando ou usando liberação lenta.",
+    "pergunta": "Seu atleta diz que a β-alanina 'está funcionando porque formiga'. O que você responde?",
+    "transicao": "Mecanismo e efeito colateral entendidos. Agora, a pergunta que importa: melhora o desempenho?"
+  },
+  "65": {
+    "minutos": 5,
+    "mensagem": "Quarenta ensaios dão um efeito global pequeno, 0,18, do mesmo tamanho do bicarbonato. Mas a separação é o que importa: em testes até a exaustão o efeito é 0,50; em provas de tempo ou distância fixos, 0,11 com intervalo cruzando o zero. Abaixo de 60 s, em sprints repetidos, no contrarrelógio de 1 h, na força e na composição corporal: nada.",
+    "pergunta": "A prova do Carlos é um 2.000 m com distância fixa. Qual das duas linhas do forest descreve o caso dele?",
+    "transicao": "Se o efeito é pequeno, onde ele deveria aparecer mais? Em quem treina no limite: a elite."
+  },
+  "66": {
+    "minutos": 4,
+    "mensagem": "Na elite, a β-alanina vive de 'quases': velocistas com carnosina +47% e o mesmo tempo de 400 m; remadores 4,3 s mais rápidos com P = 0,07. Com o mesmo efeito e 10 remadores por grupo, o P cairia para ~0,05 (cálculo): o estudo era pequeno para decidir. Diferente do Kern & Robinson, em que nada foi significativo e o resumo concluiu que funcionava.",
+    "pergunta": "4,3 s num 2.000 m com P = 0,07: você chamaria isso de efeito nulo, de efeito provável ou de 'não sabemos'?",
+    "transicao": "Duas testemunhas fortes ouvidas. Agora vêm as testemunhas fracas, e as alianças entre elas."
+  },
+  "70": {
+    "minutos": 3,
+    "mensagem": "Na dose certa (0,5 g/kg), o citrato leva o bicarbonato do sangue ao mesmo pico do bicarbonato de sódio; o que muda é o relógio: janela útil de 3 a 4 h, contra 2 a 3 h. Boa parte dos estudos nulos testou o citrato cedo demais, e nem o pico individual se repete de um dia para o outro. Ele também não é o tampão sem desconforto: os sintomas só chegam em outra hora, e cada dose carrega mais sódio.",
+    "pergunta": "Se o atleta tomar citrato no mesmo horário em que tomaria bicarbonato, em que ponto da curva ele vai competir?",
+    "transicao": "O citrato é uma testemunha honesta, só lenta. Agora vamos ao banco das que mal se sustentam."
+  },
+  "71": {
+    "minutos": 4,
+    "mensagem": "Ponho cada candidato a tampão num mapa de força da evidência por tamanho do efeito, com bicarbonato e β-alanina como régua. Lactato, fosfato, histidina, carnosina oral, anserina, água e dieta alcalinas e KHCO₃ ficam entre o nulo e o incerto, quase sempre com poucos estudos pequenos ou mecanismo que não é o pH. O carbonato de cálcio não é testemunha: é o placebo de vários desses ensaios.",
+    "pergunta": "Por que o antiácido de farmácia, que neutraliza ácido, não serve como tampão para o atleta?",
+    "transicao": "Uma dessas fichas, a dieta alcalina, nasceu de uma pista falsa. Vamos reabrir esse caso."
+  },
+  "72": {
+    "minutos": 3,
+    "mensagem": "Em 1988, a dieta pobre em carboidrato deixava o sangue mais ácido e encurtava o esforço de 210 para 179 s, e o pH virou o suspeito. Em 1996 o mesmo grupo corrigiu o pH com bicarbonato e o tempo não voltou: o pH andava junto com a fadiga, mas não era a causa. Quando duas variáveis mudam juntas, só a intervenção em uma delas separa cúmplice de culpado.",
+    "pergunta": "Que outra variável a dieta pobre em carboidrato mudou ao mesmo tempo que o pH?",
+    "transicao": "Se uma peça sozinha engana, será que duas peças juntas somam? Vamos às alianças."
+  },
+  "73": {
+    "minutos": 4,
+    "mensagem": "β-alanina e bicarbonato atuam em andares diferentes, e é a única combinação com sinal agrupado: SMD 0,32 contra 0,17–0,18 dos isolados, com estudos pequenos. No tatame da USP a soma quase fechou, mas o maior estudo, com 71 ciclistas, foi nulo. Cafeína, nitrato e o 'stack' completo não somaram: cada peça serve a uma tarefa, e o resto é extrapolação.",
+    "pergunta": "Se cafeína e bicarbonato rendem cerca de 2,5% cada, por que juntos não dão 5%?",
+    "transicao": "Até aqui o bicarbonato foi tomado para competir. E se ele for tomado para treinar?"
+  },
+  "74": {
+    "minutos": 3,
+    "mensagem": "Em mulheres ativas, treinar com bicarbonato antes de cada sessão não aumentou mais o tampão muscular, mas a resistência subiu mais: tempo até a fadiga +164% contra +123%. Em remadores de elite, quatro semanas de HIIT com bicarbonato não somaram nada aos 2.000 m. O nível do atleta, a dose de treino e o tipo de teste explicam parte da diferença; e o próprio treino já fabrica tampão, como mostram os vegetarianos da USP.",
+    "pergunta": "Por que um efeito que aparece em quem treina por saúde some em quem já está perto do teto?",
+    "transicao": "Vimos números de todo tipo. Agora vamos interrogar os próprios estudos: como um estudo engana sem mentir."
+  },
+  "80": {
+    "minutos": 1,
+    "mensagem": "Depois de ouvir as testemunhas, é hora de interrogá-las. Ninguém aqui inventou dado: o problema é o que o método deixa ver e o que o resumo esconde.",
+    "pergunta": "Quantos de vocês já indicaram um suplemento lendo só o resumo?",
+    "transicao": "Começamos pela régua: o teste que mede o efeito."
+  },
+  "81": {
+    "minutos": 4,
+    "mensagem": "O mesmo ganho de potência aparece como ~2% no contrarrelógio e ~20% no tempo até a exaustão, porque a reta da carga fixa corta a curva de raspão. O ruído cresce na mesma proporção: a sensibilidade dos dois testes é parecida. O erro é traduzir o % de um teste de capacidade em % de prova — o +62% de 1977 e o +13% da β-alanina são de capacidade.",
+    "pergunta": "Se um estudo diz +13%, qual é a primeira pergunta que vocês fazem?",
+    "transicao": "Mesmo com um bom teste, falta gente: vamos ver quantos atletas cabem num estudo típico."
+  },
+  "82": {
+    "minutos": 5,
+    "mensagem": "Programamos um efeito real de 1% e repetimos o mesmo estudo de 11 atletas 400 vezes: só ~1 em 5 acha p < 0,05. E os que acham relatam o dobro do efeito real — a maldição do vencedor. Dobrar o ruído do teste exige quadruplicar a amostra; para a elite, o alvo é de meio por cento.",
+    "pergunta": "Se só os estudos significativos fossem publicados, o que a meta-análise desses 400 diria?",
+    "transicao": "Uma saída é usar cada atleta como o próprio controle — mas isso não serve para tudo."
+  },
+  "83": {
+    "minutos": 3,
+    "mensagem": "O bicarbonato some em horas e permite o cruzado, desde que haja familiarização: só repetir o teste já rende 1,2%. A carnosina é um estoque: leva até 15 semanas para voltar, e por isso a β-alanina exige paralelo, que pede muito mais atletas.",
+    "pergunta": "Num cruzado de β-alanina com um mês de intervalo, o que o grupo placebo do 2º período está tomando de verdade?",
+    "transicao": "Cruzado ou paralelo, o estudo precisa de um placebo que engane. Ele engana?"
+  },
+  "84": {
+    "minutos": 5,
+    "mensagem": "Duplo-cego só vale se for testado: em solução, o gosto denuncia o bicarbonato; em cápsula, metade desconfia depois do esforço. Um placebo que imita o estufamento rendeu +9,5% sem bicarbonato, e cerca de um quarto do efeito dos tamponantes vem da expectativa. Para o atleta, que nunca toma placebo, o efeito total inclui a crença.",
+    "pergunta": "O efeito placebo é um problema do estudo ou parte do benefício que o atleta leva para a prova?",
+    "transicao": "Se a média já é frágil, o que dizer do atleta que 'não respondeu'?"
+  },
+  "85": {
+    "minutos": 4,
+    "mensagem": "Damos exatamente +2% a 20 atletas e medimos com ruído: aparecem respondedores e não respondedores do nada. O placebo tem a mesma cascata; só se fala em resposta individual quando o DP das mudanças supera o do controle. E o mesmo atleta, quatro vezes com bicarbonato, não se repete.",
+    "pergunta": "Quantas vezes vocês precisariam testar um atleta para dizer que ele não responde?",
+    "transicao": "Juntar muitos estudos resolve? Vamos abrir uma meta-análise por dentro."
+  },
+  "86": {
+    "minutos": 5,
+    "mensagem": "O IC diz onde está a média; o intervalo de predição diz o que esperar no próximo cenário, e costuma cruzar o zero. I² com poucos estudos engana, o funil mostra a gaveta de estudos negativos, e o bicarbonato chega no máximo a certeza moderada no GRADE. A meta-análise clássica do bicarbonato usa MBI, método com falso-positivo de até 45% para 'possível'.",
+    "pergunta": "Para decidir pelo seu atleta, vocês querem o IC ou o intervalo de predição?",
+    "transicao": "E mesmo a melhor meta-análise responde sobre alguém: quem são essas pessoas?"
+  },
+  "87": {
+    "minutos": 3,
+    "mensagem": "Em 1.826 estudos de suplementos, 23% dos participantes são mulheres, ~70% dos estudos classificáveis são de nível 0 a 2 e só 10% de elite. No bicarbonato, a lacuna feminina é maior. Nenhum dos nossos quatro atletas fictícios se parece com o participante típico.",
+    "pergunta": "A Júlia e a Bianca cabem em quantos desses estudos?",
+    "transicao": "Juntando tudo: vamos ler um resumo como leitor crítico."
+  },
+  "88": {
+    "minutos": 5,
+    "mensagem": "Um resumo fictício e bonito — randomizado, duplo-cego, +18% — tem sete bandeiras: n = 9, placebo sem sódio, teste de capacidade na bicicleta, exclusão por diarreia, MBI, conclusão além dos dados e financiamento do fabricante. A conclusão honesta cabe em uma frase bem menor.",
+    "pergunta": "Antes de virar o passador: quantas bandeiras vocês acham?",
+    "transicao": "Com o contra-interrogatório feito, podemos dar o veredito: para quem e quando usar."
+  },
+  "90": {
+    "minutos": 4,
+    "mensagem": "Pela boca, bicarbonato, citrato e β-alanina estão fora da Lista Proibida 2026; na veia, o que viola o M2.2 é o volume, e a dose útil não cabe em 100 mL. O turfe puniu o milkshake por décadas e a meta-análise com 74 cavalos não achou efeito. Para o atleta, o risco real é o suplemento contaminado.",
+    "pergunta": "Se o milkshake não funciona nos cavalos, por que continuou sendo fraude e sendo punido?",
+    "transicao": "Isso é a regra do esporte. E a regra brasileira, o que diz?"
+  },
+  "91": {
+    "minutos": 4,
+    "mensagem": "A IN 28 limita a β-alanina a 2 g/dia, em doses de até 300 mg, só a partir de 19 anos — cerca de um terço da dose estudada, e a carga leva ~90 dias em vez de 28. Bicarbonato não existe como suplemento em cápsula: é fonte de sódio em bebida de eletrólitos ou antiácido de farmácia. A CFN 656 manda respeitar a IN 28, e não achamos parecer para os casos de fronteira: é zona cinzenta, não orientação jurídica — na dúvida, o CRN.",
+    "pergunta": "Quem aqui já viu β-alanina prescrita acima de 2 g/d? Com que justificativa no prontuário?",
+    "transicao": "Regra à parte, há quem não deva tomar nem a dose permitida."
+  },
+  "92": {
+    "minutos": 4,
+    "mensagem": "20 g é praticamente a dose de um atleta de 70 kg; num homem de 69 anos com rim doente, por uma semana, virou pH 7,61 e lesão renal. O semáforo muda com diurético, rim, idade, transtorno alimentar e idade abaixo de 19 anos. A β-alanina fica verde na maior parte, mas a regra brasileira a fecha para adolescentes.",
+    "pergunta": "Qual destes perfis vocês atendem mais — e quantos já tomam bicarbonato por conta própria?",
+    "transicao": "Mesmo no atleta liberado, o dia de prova cria problemas que o estudo não tem."
+  },
+  "93": {
+    "minutos": 4,
+    "mensagem": "Nos estudos a dose cai num horário controlado; no dia de prova há pesagem, chave imprevisível, remédio da manhã e controle de doping. Para Rafael, a pesagem colada na luta empurra a dose para antes da balança; para Carlos, o problema começa no diurético. São personagens fictícios, horários ilustrativos e janelas de Urwin 2023.",
+    "pergunta": "Em qual desses dias a dose aguda de bicarbonato simplesmente não cabe?",
+    "transicao": "Com o dia na mão, vamos decidir caso a caso."
+  },
+  "94": {
+    "minutos": 6,
+    "mensagem": "Cada caso segue a mesma ordem: o que a evidência diz para aquela prova, onde estão as armadilhas e só então a decisão. Júlia é candidata se testar antes; Rafael tem o dia contra a dose aguda; Carlos precisa do médico antes do tampão; em Bianca, a regra e a idade decidem antes da ciência. Deixe a turma votar antes de abrir cada veredito.",
+    "pergunta": "Antes de abrir: o que vocês decidiriam para este atleta, e por quê?",
+    "transicao": "O que se repetiu nos quatro casos vira um fluxo de raciocínio."
+  },
+  "95": {
+    "minutos": 4,
+    "mensagem": "Seis perguntas na ordem: a prova está na janela, há contraindicação, as regras permitem, testou no treino, registrou, decidiu. As três primeiras podem encerrar a conversa. O teste segue as quatro fases do AIS, e o registro com justificativa é exigência da CFN 656.",
+    "pergunta": "Em que passo vocês costumam pular direto para a dose?",
+    "transicao": "Se for para guardar só cinco coisas desta aula, são estas."
+  },
+  "96": {
+    "minutos": 3,
+    "mensagem": "O efeito é pequeno e tem endereço; bicarbonato é de horas e β-alanina de semanas; a dose é a mesma, o paciente não; intestino e relógio vêm antes do pódio; regra e produto também são evidência. Cada mensagem tem o número que a sustenta.",
+    "pergunta": "Qual dessas cinco muda alguma coisa no seu atendimento de segunda-feira?",
+    "transicao": "Agora podemos voltar às acusações do começo."
+  },
+  "97": {
+    "minutos": 3,
+    "mensagem": "As mesmas seis acusações do slide 11, agora com o que a aula acrescentou a cada uma. O quadro julga a acusação, não a molécula: o lactato é cúmplice, não autor; o bicarbonato não melhora qualquer prova; a β-alanina não funciona na primeira semana.",
+    "pergunta": "Quem mudou de voto desde o começo? Em qual acusação?",
+    "transicao": "Fica uma frase para fechar."
+  },
+  "99": {
+    "minutos": 1,
+    "mensagem": "Fechar sem prometer efeito: o tampão é ajuste fino de poucos segundos, para a prova certa, no atleta certo, testado antes.",
+    "pergunta": "",
+    "transicao": ""
+  }
+}

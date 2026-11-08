@@ -1,0 +1,44 @@
+{
+  "60": {
+    "minutos": 3,
+    "mensagem": "A carnosina foi achada na carne em 1900, mas a enzima que a fabrica só foi identificada em 2010. Os animais que vivem de esforço sem oxigênio — baleia, galgo, cavalo, peito de frango — carregam muito; o humano carrega pouco, e vegetarianos, mulheres e idosos, menos ainda.",
+    "pergunta": "Se a carnosina vem da carne, comer mais carne resolve? (Spoiler: em onívoros, a β-alanina da dieta não se associou à carnosina.)",
+    "transicao": "Para entender por que a dieta não basta, vamos montar a molécula peça por peça."
+  },
+  "61": {
+    "minutos": 4,
+    "mensagem": "A carnosina é β-alanina + histidina, montada no músculo pela CARNS1; a β-alanina é a peça que falta. O imidazol tem pKa 6,83, bem na faixa do músculo cansado, mas em humanos responde por ~7% do tampão. E engolir carnosina pronta não adianta: a carnosinase do soro a corta em pouco mais de um minuto.",
+    "pergunta": "Se a carnosina oral é destruída no sangue, por que ela subiu a carnosina muscular tanto quanto a β-alanina no estudo de Harris?",
+    "transicao": "Então o jogo é entregar β-alanina ao músculo. Quanto tempo leva para encher o tanque?"
+  },
+  "62": {
+    "minutos": 5,
+    "mensagem": "O que manda é a dose acumulada: no modelo de Rezende, metade do teto só chega com ~377 g, e 4 semanas a 6,4 g/dia (179 g) ficam em cerca de um terço. Só ~3% do que se engole vira carnosina, e tomar com refeição carrega mais. No Brasil, o rótulo de 2 g/dia estica os 179 g para ~90 dias; e ao parar, a carnosina leva de 6 a 15 semanas para voltar.",
+    "pergunta": "Para a Bianca, com 18 anos e rótulo brasileiro, o que decide primeiro: a fisiologia ou a regra?",
+    "transicao": "Quem descobriu que dava para encher esse tanque foi um cientista que já tinha enchido outro, bem mais rápido."
+  },
+  "63": {
+    "minutos": 3,
+    "mensagem": "Roger Harris liderou os estudos originais de creatina e, anos depois, os da β-alanina: patente depositada em 1997, cavalos em 1999, humanos em Chichester em 2006. A patente hoje pertence à NAI, fabricante do CarnoSyn, e os estudos declaram esses vínculos.",
+    "pergunta": "Um conflito de interesse declarado muda o quanto você confia num resultado? O que você procuraria antes de acreditar?",
+    "transicao": "E todo mundo que já tomou β-alanina conhece o primeiro efeito, aquele que aparece em minutos."
+  },
+  "64": {
+    "minutos": 3,
+    "mensagem": "O formigamento segue o pico plasmático: 248 µM com 1,6 g pura contra 82 µM na liberação lenta, com a mesma área sob a curva. O receptor é o MrgprD em neurônios da pele, e a via não usa histamina. É o único efeito colateral consistente (OR 8,9), e se resolve fracionando ou usando liberação lenta.",
+    "pergunta": "Seu atleta diz que a β-alanina 'está funcionando porque formiga'. O que você responde?",
+    "transicao": "Mecanismo e efeito colateral entendidos. Agora, a pergunta que importa: melhora o desempenho?"
+  },
+  "65": {
+    "minutos": 5,
+    "mensagem": "Quarenta ensaios dão um efeito global pequeno, 0,18, do mesmo tamanho do bicarbonato. Mas a separação é o que importa: em testes até a exaustão o efeito é 0,50; em provas de tempo ou distância fixos, 0,11 com intervalo cruzando o zero. Abaixo de 60 s, em sprints repetidos, no contrarrelógio de 1 h, na força e na composição corporal: nada.",
+    "pergunta": "A prova do Carlos é um 2.000 m com distância fixa. Qual das duas linhas do forest descreve o caso dele?",
+    "transicao": "Se o efeito é pequeno, onde ele deveria aparecer mais? Em quem treina no limite: a elite."
+  },
+  "66": {
+    "minutos": 4,
+    "mensagem": "Na elite, a β-alanina vive de 'quases': velocistas com carnosina +47% e o mesmo tempo de 400 m; remadores 4,3 s mais rápidos com P = 0,07. Com o mesmo efeito e 10 remadores por grupo, o P cairia para ~0,05 (cálculo): o estudo era pequeno para decidir. Diferente do Kern & Robinson, em que nada foi significativo e o resumo concluiu que funcionava.",
+    "pergunta": "4,3 s num 2.000 m com P = 0,07: você chamaria isso de efeito nulo, de efeito provável ou de 'não sabemos'?",
+    "transicao": "Duas testemunhas fortes ouvidas. Agora vêm as testemunhas fracas, e as alianças entre elas."
+  }
+}

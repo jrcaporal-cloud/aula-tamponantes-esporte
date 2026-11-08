@@ -1,0 +1,32 @@
+{
+  "70": {
+    "minutos": 3,
+    "mensagem": "Na dose certa (0,5 g/kg), o citrato leva o bicarbonato do sangue ao mesmo pico do bicarbonato de sódio; o que muda é o relógio: janela útil de 3 a 4 h, contra 2 a 3 h. Boa parte dos estudos nulos testou o citrato cedo demais, e nem o pico individual se repete de um dia para o outro. Ele também não é o tampão sem desconforto: os sintomas só chegam em outra hora, e cada dose carrega mais sódio.",
+    "pergunta": "Se o atleta tomar citrato no mesmo horário em que tomaria bicarbonato, em que ponto da curva ele vai competir?",
+    "transicao": "O citrato é uma testemunha honesta, só lenta. Agora vamos ao banco das que mal se sustentam."
+  },
+  "71": {
+    "minutos": 4,
+    "mensagem": "Ponho cada candidato a tampão num mapa de força da evidência por tamanho do efeito, com bicarbonato e β-alanina como régua. Lactato, fosfato, histidina, carnosina oral, anserina, água e dieta alcalinas e KHCO₃ ficam entre o nulo e o incerto, quase sempre com poucos estudos pequenos ou mecanismo que não é o pH. O carbonato de cálcio não é testemunha: é o placebo de vários desses ensaios.",
+    "pergunta": "Por que o antiácido de farmácia, que neutraliza ácido, não serve como tampão para o atleta?",
+    "transicao": "Uma dessas fichas, a dieta alcalina, nasceu de uma pista falsa. Vamos reabrir esse caso."
+  },
+  "72": {
+    "minutos": 3,
+    "mensagem": "Em 1988, a dieta pobre em carboidrato deixava o sangue mais ácido e encurtava o esforço de 210 para 179 s, e o pH virou o suspeito. Em 1996 o mesmo grupo corrigiu o pH com bicarbonato e o tempo não voltou: o pH andava junto com a fadiga, mas não era a causa. Quando duas variáveis mudam juntas, só a intervenção em uma delas separa cúmplice de culpado.",
+    "pergunta": "Que outra variável a dieta pobre em carboidrato mudou ao mesmo tempo que o pH?",
+    "transicao": "Se uma peça sozinha engana, será que duas peças juntas somam? Vamos às alianças."
+  },
+  "73": {
+    "minutos": 4,
+    "mensagem": "β-alanina e bicarbonato atuam em andares diferentes, e é a única combinação com sinal agrupado: SMD 0,32 contra 0,17–0,18 dos isolados, com estudos pequenos. No tatame da USP a soma quase fechou, mas o maior estudo, com 71 ciclistas, foi nulo. Cafeína, nitrato e o 'stack' completo não somaram: cada peça serve a uma tarefa, e o resto é extrapolação.",
+    "pergunta": "Se cafeína e bicarbonato rendem cerca de 2,5% cada, por que juntos não dão 5%?",
+    "transicao": "Até aqui o bicarbonato foi tomado para competir. E se ele for tomado para treinar?"
+  },
+  "74": {
+    "minutos": 3,
+    "mensagem": "Em mulheres ativas, treinar com bicarbonato antes de cada sessão não aumentou mais o tampão muscular, mas a resistência subiu mais: tempo até a fadiga +164% contra +123%. Em remadores de elite, quatro semanas de HIIT com bicarbonato não somaram nada aos 2.000 m. O nível do atleta, a dose de treino e o tipo de teste explicam parte da diferença; e o próprio treino já fabrica tampão, como mostram os vegetarianos da USP.",
+    "pergunta": "Por que um efeito que aparece em quem treina por saúde some em quem já está perto do teto?",
+    "transicao": "Vimos números de todo tipo. Agora vamos interrogar os próprios estudos: como um estudo engana sem mentir."
+  }
+}
