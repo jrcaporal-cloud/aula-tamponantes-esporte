@@ -3,17 +3,38 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { rng } from '../shared/math';
-import { ESOPHAGUS, GUT, STOMACH, VESSEL, buildLut, lutPoint } from './anatomy';
-import { HIDDEN, SPHERE_LO, glowMaterial, put } from './materials';
+import { ESOPHAGUS, GUT, STOMACH, VESSEL, buildLut, lutPoint, type Lut } from './anatomy';
+import { HIDDEN, SPHERE_LO, additiveMaterial, glowMaterial, pulseAt, putStretched } from './materials';
 import { SYS, type JourneyStateRef } from './state';
 
 /*
  * Dois fluxos ao longo de trilhas pré-amostradas (uma malha instanciada cada, escrita por quadro):
  *  - a dose (etapa 0): pontos ciano que fazem o percurso inteiro, do esôfago ao capilar;
  *  - o HCO₃⁻ no sangue: a densidade de íons acesos acompanha o nível de bicarbonato do quadro.
+ * Cada partícula deixa um rastro curto (instâncias aditivas atrás dela) e se estica no sentido do
+ * movimento. No sangue o fluxo é pulsátil: a onda de pulso (a mesma que acende a parede) empurra os íons.
  */
 
 const P = new THREE.Vector3();
+const Q = new THREE.Vector3();
+const DIR = new THREE.Vector3();
+const TRAIL = 3;
+
+/** Escreve cabeça esticada + rastro de uma partícula que anda pela trilha `lut`. */
+const writeParticle = (
+    head: THREE.InstancedMesh, tail: THREE.InstancedMesh, i: number, lut: Lut, u: number, a: number, b: number, s: number, gap: number, stretch: number,
+) => {
+    lutPoint(lut, u, a, b, P);
+    lutPoint(lut, Math.min(u + 0.002, 1), a, b, Q);
+    putStretched(head, i, P, DIR.subVectors(Q, P), s, s * stretch);
+    for (let j = 1; j <= TRAIL; j++) {
+        const uj = u - gap * j;
+        const k = 1 - j / (TRAIL + 1);
+        if (uj < 0 || s <= 1e-4) { tail.setMatrixAt(i * TRAIL + j - 1, HIDDEN); continue; }
+        lutPoint(lut, uj, a, b, Q);
+        putStretched(tail, i * TRAIL + j - 1, Q, DIR, s * (0.3 + 0.45 * k), s * stretch * (0.7 + 0.6 * k));
+    }
+};
 
 /** Percurso inteiro da dose: esôfago → estômago → intestino → veia → capilar. */
 const routeCurve = (): THREE.CatmullRomCurve3 => {
@@ -34,15 +55,18 @@ const ROUTE_LUT = buildLut({ curve: routeCurve(), radius: () => 0.32 }, 420);
 
 const DoseStream = ({ stateRef }: { stateRef: JourneyStateRef }) => {
     const mesh = useRef<THREE.InstancedMesh>(null);
+    const tail = useRef<THREE.InstancedMesh>(null);
     const mat = useMemo(() => glowMaterial(C.baseSoft, 1.5), []);
+    const tailMat = useMemo(() => additiveMaterial(C.base, 0.32, 1.2), []);
     const seeds = useMemo(() => {
         const r = rng(42);
         return Array.from({ length: STREAM_N }, () => ({ u0: r(), a: (r() - 0.5) * 1.1, b: (r() - 0.5) * 1.1, s: 0.07 + r() * 0.05 }));
     }, []);
-    useEffect(() => () => mat.dispose(), [mat]);
+    useEffect(() => () => { mat.dispose(); tailMat.dispose(); }, [mat, tailMat]);
     useFrame(({ clock }) => {
         const m = mesh.current;
-        if (!m) return;
+        const tl = tail.current;
+        if (!m || !tl) return;
         const w = stateRef.current.f.w[SYS.stream];
         const t = clock.elapsedTime;
         for (let i = 0; i < STREAM_N; i++) {
@@ -50,11 +74,17 @@ const DoseStream = ({ stateRef }: { stateRef: JourneyStateRef }) => {
             const u = (d.u0 + t * 0.03) % 1;
             // some nas pontas: nasce no esôfago, termina no capilar
             const edge = Math.min(u / 0.03, (1 - u) / 0.05, 1);
-            put(m, i, lutPoint(ROUTE_LUT, u, d.a, d.b, P), d.s * w * edge);
+            writeParticle(m, tl, i, ROUTE_LUT, u, d.a, d.b, d.s * w * edge, 0.003, 1.4);
         }
         m.instanceMatrix.needsUpdate = true;
+        tl.instanceMatrix.needsUpdate = true;
     });
-    return <instancedMesh ref={mesh} args={[SPHERE_LO, mat, STREAM_N]} frustumCulled={false} />;
+    return (
+        <group>
+            <instancedMesh ref={mesh} args={[SPHERE_LO, mat, STREAM_N]} frustumCulled={false} />
+            <instancedMesh ref={tail} args={[SPHERE_LO, tailMat, STREAM_N * TRAIL]} frustumCulled={false} />
+        </group>
+    );
 };
 
 const ION_N = 150;
@@ -62,7 +92,11 @@ const VESSEL_LUT = buildLut(VESSEL, 260);
 
 const BloodIons = ({ stateRef }: { stateRef: JourneyStateRef }) => {
     const mesh = useRef<THREE.InstancedMesh>(null);
+    const tail = useRef<THREE.InstancedMesh>(null);
+    /** Posição de cada íon ao longo do vaso, integrada por quadro (a velocidade pulsa). */
+    const pos = useRef<Float32Array | null>(null);
     const mat = useMemo(() => glowMaterial(C.base, 1.45), []);
+    const tailMat = useMemo(() => additiveMaterial(C.base, 0.22, 1.1), []);
     const seeds = useMemo(() => {
         const r = rng(7);
         return Array.from({ length: ION_N }, () => {
@@ -71,22 +105,36 @@ const BloodIons = ({ stateRef }: { stateRef: JourneyStateRef }) => {
             return { u0: r(), a: Math.cos(th) * rr, b: Math.sin(th) * rr, sp: 0.8 + r() * 0.4, s: 0.06 + r() * 0.03 };
         });
     }, []);
-    useEffect(() => () => mat.dispose(), [mat]);
-    useFrame(({ clock }) => {
+    useEffect(() => () => { mat.dispose(); tailMat.dispose(); }, [mat, tailMat]);
+    useFrame(({ clock }, delta) => {
         const m = mesh.current;
-        if (!m) return;
+        const tl = tail.current;
+        if (!m || !tl) return;
         const { f } = stateRef.current;
         const n = Math.round(ION_N * Math.min(Math.max(f.blood, 0), 1) * f.w[SYS.blood]);
         const t = clock.elapsedTime;
+        const dt = Math.min(delta, 0.05);
+        const us = pos.current ?? (pos.current = Float32Array.from(seeds, d => d.u0));
         for (let i = 0; i < ION_N; i++) {
-            if (i >= n) { m.setMatrixAt(i, HIDDEN); continue; }
             const d = seeds[i];
-            const u = (d.u0 + t * 0.028 * d.sp) % 1;
-            put(m, i, lutPoint(VESSEL_LUT, u, d.a, d.b, P), d.s);
+            const push = pulseAt(us[i], t);
+            us[i] = (us[i] + dt * 0.028 * d.sp * (0.55 + 1.5 * push)) % 1;
+            if (i >= n) {
+                m.setMatrixAt(i, HIDDEN);
+                for (let j = 0; j < TRAIL; j++) tl.setMatrixAt(i * TRAIL + j, HIDDEN);
+                continue;
+            }
+            writeParticle(m, tl, i, VESSEL_LUT, us[i], d.a, d.b, d.s * 0.9, 0.0035 * (1 + 1.2 * push), 1.15 + push * 0.8);
         }
         m.instanceMatrix.needsUpdate = true;
+        tl.instanceMatrix.needsUpdate = true;
     });
-    return <instancedMesh ref={mesh} args={[SPHERE_LO, mat, ION_N]} frustumCulled={false} />;
+    return (
+        <group>
+            <instancedMesh ref={mesh} args={[SPHERE_LO, mat, ION_N]} frustumCulled={false} />
+            <instancedMesh ref={tail} args={[SPHERE_LO, tailMat, ION_N * TRAIL]} frustumCulled={false} />
+        </group>
+    );
 };
 
 export const Flows = ({ stateRef }: { stateRef: JourneyStateRef }) => (

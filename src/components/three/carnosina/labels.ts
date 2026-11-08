@@ -34,7 +34,7 @@ const BY_STEP: readonly LabelSpec[][] = [
         L('livre', 'Peças livres', SLATE_LIGHT, at(S.blood, 6.5, -1.6, 1.2), -60, 110, 'β-alanina segue para o músculo'),
     ],
     [
-        L('fora', 'Fora da fibra', C.carnoSoft, at(S.membrane, 7, 3.2, 0), 40, 10, 'sangue / interstício'),
+        L('fora', 'Fora da fibra', C.carnoSoft, at(S.membrane, 0.6, 3.1, 0), 10, -20, 'sangue / interstício'),
         L('taut', 'TauT', '#7dd3c0', at(S.membrane, -3.2, 1.8, -0.6), -70, -30, 'β-alanina e taurina'),
         L('pat1', 'PAT1', '#93c5d8', at(S.membrane, 4.4, 1.8, -0.4), 60, -20, 'só β-alanina'),
         L('dentro', 'Sarcoplasma', SLATE_LIGHT, at(S.membrane, -6, -3.4, 2), -30, 50, 'dentro da fibra'),

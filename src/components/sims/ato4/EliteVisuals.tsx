@@ -2,10 +2,10 @@ import { motion } from 'framer-motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { br } from '../kit/format';
-import { KERN_RESULTS, ROW } from './eliteContent';
+import { ROW } from './eliteContent';
 import { tForP, twoGroup } from './stats';
 
-/** Quadros do slide 66: velocistas de 400 m, o IC do remo (com n ajustável) e o "spin". */
+/** Quadros do slide 66: velocistas de 400 m, o IC do remo (com n ajustável). O "spin" fica em EliteSpinVisual. */
 
 const BARS = [
     { label: 'Carnosina · sóleo', value: 47, text: '+47%', color: C.carno },
@@ -75,27 +75,3 @@ export const RowingCi = ({ n }: { n: number | null }) => {
         </svg>
     );
 };
-
-export const SpinCard = ({ reduce }: { reduce: boolean }) => (
-    <div className="h-full grid grid-cols-2 gap-3">
-        <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4 flex flex-col gap-3">
-            <span className="text-[16px] uppercase tracking-wider text-gray-300">Resultados</span>
-            {KERN_RESULTS.map(r => (
-                <div key={r.test} className="flex flex-col">
-                    <span className="text-[16px] text-gray-200">{r.test}</span>
-                    <span className="font-mono text-[1.1rem] font-semibold" style={{ color: C.co2 }}>{r.result}</span>
-                </div>
-            ))}
-            <span className="mt-auto text-[16px] leading-snug text-gray-300">Depois, 20 estudos: massa livre de gordura +0,05 kg (−0,71 a 0,82).</span>
-        </div>
-        <div className="relative rounded-xl border p-4 flex flex-col gap-3" style={{ borderColor: `${C.risk}80`, background: 'rgba(251,113,133,0.06)' }}>
-            <span className="text-[16px] uppercase tracking-wider text-gray-300">Conclusão do resumo</span>
-            <p className="font-display text-[1.45rem] leading-snug text-white">"parece aumentar o desempenho e a massa magra"</p>
-            <motion.span className="absolute right-4 bottom-4 rounded-lg border-2 px-3 py-1 font-display text-[1.6rem] font-semibold uppercase"
-                style={{ color: C.risk, borderColor: C.risk, rotate: -8 }}
-                initial={reduce ? false : { opacity: 0, scale: 1.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.35, delay: 0.7 }}>
-                spin
-            </motion.span>
-        </div>
-    </div>
-);

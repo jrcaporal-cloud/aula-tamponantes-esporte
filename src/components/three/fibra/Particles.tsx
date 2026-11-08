@@ -8,8 +8,9 @@ import { POOL_SIZES, type Sim } from './sim';
 import type { SimRef } from './types';
 
 /*
- * Íons em movimento: uma InstancedMesh por espécie (núcleo) + um Points aditivo (halo), os dois
- * lendo direto os arrays tipados da simulação. Matrizes escritas por quadro, sem estado do React.
+ * Íons em movimento: uma InstancedMesh por espécie (núcleo), um Points aditivo (halo) e um rastro
+ * (Points com o histórico curto de posições, afinando e apagando), todos lendo direto os arrays tipados
+ * da simulação. Matrizes e atributos escritos por quadro, sem estado do React.
  */
 
 const HALO_VS = `
@@ -31,6 +32,10 @@ void main() {
     gl_FragColor = vec4(uColor * a * uOpacity, a * uOpacity);
 }`;
 
+/** Amostras do rastro e intervalo entre elas (s): ~0,33 s de caminho visível. */
+const TRAIL_K = 11;
+const TRAIL_DT = 1 / 33;
+
 type PoolKey = keyof typeof POOL_SIZES;
 
 interface Species {
@@ -43,14 +48,16 @@ interface Species {
     spin: boolean;
     /** Lampejo ao nascer (H₂CO₃ → CO₂ + H₂O). */
     burst: boolean;
+    /** Força do rastro (0 = sem rastro). */
+    trail: number;
 }
 
 const SPECIES: readonly Species[] = [
-    { key: 'h', geo: SPHERE, size: 0.1, color: C.acid, halo: 0.75, spin: false, burst: false },
-    { key: 'lac', geo: ICO, size: 0.13, color: C.lactate, halo: 0.5, spin: true, burst: false },
-    { key: 'na', geo: SPHERE, size: 0.1, color: C.sodium, halo: 0.45, spin: false, burst: false },
-    { key: 'bic', geo: TREFOIL, size: 0.085, color: C.base, halo: 0.45, spin: true, burst: false },
-    { key: 'co2', geo: LINEAR3, size: 0.08, color: C.co2, halo: 0.4, spin: true, burst: true },
+    { key: 'h', geo: SPHERE, size: 0.11, color: C.acid, halo: 0.8, spin: false, burst: false, trail: 0.9 },
+    { key: 'lac', geo: ICO, size: 0.13, color: C.lactate, halo: 0.5, spin: true, burst: false, trail: 0.45 },
+    { key: 'na', geo: SPHERE, size: 0.1, color: C.sodium, halo: 0.45, spin: false, burst: false, trail: 0.5 },
+    { key: 'bic', geo: TREFOIL, size: 0.085, color: C.base, halo: 0.45, spin: true, burst: false, trail: 0.5 },
+    { key: 'co2', geo: LINEAR3, size: 0.08, color: C.co2, halo: 0.4, spin: true, burst: true, trail: 0.4 },
 ];
 
 const M = new THREE.Matrix4();
@@ -60,6 +67,63 @@ const P = new THREE.Vector3();
 const S = new THREE.Vector3();
 
 const poolOf = (sim: Sim, key: PoolKey): Pool => sim[key];
+
+interface Trail {
+    geo: THREE.BufferGeometry;
+    hist: Float32Array;
+    head: { k: number; acc: number };
+    lastAge: Float32Array;
+}
+
+/**
+ * Empurra uma amostra no histórico a cada TRAIL_DT e escreve o rastro: a amostra mais velha é a menor.
+ * Partícula que renasceu (idade voltou para trás) tem o histórico zerado na posição nova, sem risco
+ * atravessando a cena.
+ */
+const writeTrail = (pool: Pool, tr: Trail, dt: number) => {
+    const n = pool.n;
+    tr.head.acc += dt;
+    const push = tr.head.acc >= TRAIL_DT;
+    if (push) {
+        tr.head.acc %= TRAIL_DT;
+        tr.head.k = (tr.head.k + 1) % TRAIL_K;
+    }
+    const pos = tr.geo.getAttribute('position') as THREE.BufferAttribute;
+    const sc = tr.geo.getAttribute('aScale') as THREE.BufferAttribute;
+    const out = pos.array as Float32Array;
+    const outS = sc.array as Float32Array;
+    for (let i = 0; i < n; i++) {
+        const o = i * 3;
+        const reborn = pool.age[i] < tr.lastAge[i];
+        tr.lastAge[i] = pool.age[i];
+        const base = i * TRAIL_K * 3;
+        if (reborn) {
+            for (let k = 0; k < TRAIL_K; k++) {
+                tr.hist[base + k * 3] = pool.pos[o];
+                tr.hist[base + k * 3 + 1] = pool.pos[o + 1];
+                tr.hist[base + k * 3 + 2] = pool.pos[o + 2];
+            }
+        } else if (push) {
+            const h = base + tr.head.k * 3;
+            tr.hist[h] = pool.pos[o];
+            tr.hist[h + 1] = pool.pos[o + 1];
+            tr.hist[h + 2] = pool.pos[o + 2];
+        }
+        const s = pool.scale[i];
+        for (let a = 0; a < TRAIL_K; a++) {
+            // a = 0 é a amostra mais recente
+            const k = (tr.head.k - a + TRAIL_K) % TRAIL_K;
+            const src = base + k * 3;
+            const dst = (i * TRAIL_K + a) * 3;
+            out[dst] = tr.hist[src];
+            out[dst + 1] = tr.hist[src + 1];
+            out[dst + 2] = tr.hist[src + 2];
+            outS[i * TRAIL_K + a] = s > 0 ? s * (1 - a / TRAIL_K) ** 1.3 : 0;
+        }
+    }
+    pos.needsUpdate = true;
+    sc.needsUpdate = true;
+};
 
 const SpeciesMesh = ({ sp, simRef }: { sp: Species; simRef: SimRef }) => {
     const mesh = useRef<THREE.InstancedMesh>(null);
@@ -82,7 +146,26 @@ const SpeciesMesh = ({ sp, simRef }: { sp: Species; simRef: SimRef }) => {
     }, [n, sp]);
     useLayoutEffect(() => () => { halo.geo.dispose(); halo.mat.dispose(); }, [halo]);
 
-    useFrame(({ clock, gl, camera, size }) => {
+    const trailPts = useRef<THREE.Points>(null);
+    const trail = useMemo(() => {
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * TRAIL_K * 3), 3).setUsage(THREE.DynamicDrawUsage));
+        geo.setAttribute('aScale', new THREE.BufferAttribute(new Float32Array(n * TRAIL_K), 1).setUsage(THREE.DynamicDrawUsage));
+        geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1e4);
+        const mat = new THREE.ShaderMaterial({
+            vertexShader: HALO_VS,
+            fragmentShader: HALO_FS,
+            uniforms: { uSize: { value: sp.size * 5.5 }, uPx: { value: 400 }, uColor: { value: new THREE.Color(sp.color) }, uOpacity: { value: 0.5 * sp.trail } },
+            transparent: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+        });
+        // histórico circular: hist[k] = posições de TRAIL_K amostras atrás
+        return { geo, mat, hist: new Float32Array(n * TRAIL_K * 3), head: { k: 0, acc: 0 }, lastAge: new Float32Array(n).fill(1e9) };
+    }, [n, sp]);
+    useLayoutEffect(() => () => { trail.geo.dispose(); trail.mat.dispose(); }, [trail]);
+
+    useFrame(({ clock, gl, camera, size }, dt) => {
         const m = mesh.current;
         const pts = points.current;
         if (!m || !pts) return;
@@ -110,15 +193,20 @@ const SpeciesMesh = ({ sp, simRef }: { sp: Species; simRef: SimRef }) => {
         pos.needsUpdate = true;
         sc.needsUpdate = true;
         const fov = camera instanceof THREE.PerspectiveCamera ? camera.fov : 40;
-        (pts.material as THREE.ShaderMaterial).uniforms.uPx.value = (size.height * gl.getPixelRatio()) / (2 * Math.tan((fov * Math.PI) / 360));
+        const px = (size.height * gl.getPixelRatio()) / (2 * Math.tan((fov * Math.PI) / 360));
+        (pts.material as THREE.ShaderMaterial).uniforms.uPx.value = px;
+        const tm = trailPts.current?.material as THREE.ShaderMaterial | undefined;
+        if (tm) tm.uniforms.uPx.value = px;
+        writeTrail(pool, trail, dt);
     });
 
     return (
         <>
             <instancedMesh ref={mesh} args={[sp.geo, undefined, n]} frustumCulled={false} raycast={() => undefined}>
-                <meshBasicMaterial color={sp.color} toneMapped={false} />
+                <meshStandardMaterial color={sp.color} emissive={sp.color} emissiveIntensity={0.85} roughness={0.25} metalness={0.05} />
             </instancedMesh>
             <points ref={points} geometry={halo.geo} material={halo.mat} frustumCulled={false} raycast={() => undefined} />
+            {sp.trail > 0 && <points ref={trailPts} geometry={trail.geo} material={trail.mat} frustumCulled={false} raycast={() => undefined} />}
         </>
     );
 };

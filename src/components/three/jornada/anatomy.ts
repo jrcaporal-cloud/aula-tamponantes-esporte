@@ -32,7 +32,7 @@ export const STOMACH: Organ = {
 };
 
 export const ESOPHAGUS: Organ = {
-    curve: curve([[-9.4, 9.6, 0], [-9.6, 7.6, 0], [-10.1, 5.9, 0]]),
+    curve: curve([[-9.3, 9.0, 0], [-9.55, 7.4, 0], [-10.1, 5.9, 0]]),
     radius: () => 0.4,
 };
 
@@ -57,8 +57,15 @@ export const VESSEL: Organ = {
 /** Fibra: cilindro ao longo de x, embaixo do capilar. */
 export const FIBER = { x0: 8.2, x1: 15.6, y: -1.4, r: 1.45 } as const;
 export const MEMBRANE_Y = FIBER.y + FIBER.r;
+export const FIBER_ORGAN: Organ = {
+    curve: new THREE.LineCurve3(new THREE.Vector3(FIBER.x0, FIBER.y, 0), new THREE.Vector3(FIBER.x1, FIBER.y, 0)),
+    radius: () => FIBER.r,
+};
 export const CAPILLARY_Y = 1.1;
 export const MCT_X: readonly number[] = [9.1, 10.4, 11.7, 13.0, 14.3];
+
+/** Copo da dose: acima do esôfago, inclinado, despejando na boca do tubo. */
+export const CUP = { x: -10.5, y: 10.35, z: 0.2, r: 0.62, h: 1.5, tilt: -0.95 } as const;
 
 /** Pilha de sódio: base, três colunas (OMS, antiácido, esta dose), disco = 0,5 g de Na. */
 export const STACK = { y: -8.6, z: 1.6, xs: [7.2, 9.5, 12.0] as const, r: 0.7, disc: 0.17, gap: 0.03, grams: 0.5 } as const;
@@ -111,17 +118,34 @@ export const lutPoint = (l: Lut, u: number, a: number, b: number, out: THREE.Vec
     return out;
 };
 
+/** Relevo da parede: fração do raio externo onde fica a mucosa em (u, θ) — 1 = sem espessura. */
+export type Inset = (u: number, th: number) => number;
+
+export interface TubeOptions {
+    /** Relevo interno (pregas, rugas): as normais passam a ser recalculadas. */
+    inset?: Inset;
+    /** Comprimento e deslocamento do trecho em unidades de mundo (uv.x = posição ao longo do vaso). */
+    uvLen?: number;
+    uvOffset?: number;
+}
+
 /**
  * Tubo de raio variável. `arc` limita o ângulo: [π, 2π] é a metade de trás (o corte), [0, 2π] o tubo
  * inteiro. As normais apontam para fora; com DoubleSide, a face de dentro acende do lado certo.
+ * uv.x = distância ao longo do tubo (mundo), uv.y = arco percorrido (mundo): texturas sem esticar.
  */
-export const tubeGeometry = (o: Organ, tubular: number, radial: number, arc: readonly [number, number] = [0, Math.PI * 2]): THREE.BufferGeometry => {
+export const tubeGeometry = (
+    o: Organ, tubular: number, radial: number, arc: readonly [number, number] = [0, Math.PI * 2], opts: TubeOptions = {},
+): THREE.BufferGeometry => {
     const pos: number[] = [];
     const nor: number[] = [];
+    const uv: number[] = [];
     const idx: number[] = [];
     const pt = new THREE.Vector3();
     const n = new THREE.Vector3();
     const b = new THREE.Vector3();
+    const len = opts.uvLen ?? o.curve.getLength();
+    const off = opts.uvOffset ?? 0;
     for (let i = 0; i <= tubular; i++) {
         const u = i / tubular;
         o.curve.getPointAt(u, pt);
@@ -134,8 +158,10 @@ export const tubeGeometry = (o: Organ, tubular: number, radial: number, arc: rea
             const dx = n.x * cx + b.x * sy;
             const dy = n.y * cx + b.y * sy;
             const dz = n.z * cx + b.z * sy;
-            pos.push(pt.x + dx * r, pt.y + dy * r, pt.z + dz * r);
+            const rr = r * (opts.inset ? opts.inset(u, th) : 1);
+            pos.push(pt.x + dx * rr, pt.y + dy * rr, pt.z + dz * rr);
             nor.push(dx, dy, dz);
+            uv.push(off + u * len, (th - arc[0]) * Math.max(r, 0.05));
         }
     }
     for (let i = 0; i < tubular; i++) {
@@ -148,6 +174,66 @@ export const tubeGeometry = (o: Organ, tubular: number, radial: number, arc: rea
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+    g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    g.setIndex(idx);
+    if (opts.inset) {
+        // normais do relevo, com o sentido da convenção (para fora do eixo)
+        const ref = new THREE.Vector3().fromArray(nor, (radial >> 1) * 3);
+        g.computeVertexNormals();
+        const got = new THREE.Vector3().fromBufferAttribute(g.getAttribute('normal') as THREE.BufferAttribute, radial >> 1);
+        if (got.dot(ref) < 0) {
+            const na = g.getAttribute('normal') as THREE.BufferAttribute;
+            for (let k = 0; k < na.array.length; k++) (na.array as Float32Array)[k] *= -1;
+        }
+    }
+    return g;
+};
+
+/** Camada da parede no corte: posição na espessura (0 = mucosa, 1 = serosa) e cor. */
+export interface WallLayer { at: number; color: THREE.Color }
+
+/**
+ * Face do corte (θ fixo): a faixa entre a mucosa e a serosa, colorida por camadas — é ela que mostra
+ * a espessura da parede, como num modelo anatômico seccionado.
+ */
+export const cutFaceGeometry = (o: Organ, theta: number, inset: Inset, layers: readonly WallLayer[], tubular: number): THREE.BufferGeometry => {
+    const pos: number[] = [];
+    const nor: number[] = [];
+    const col: number[] = [];
+    const idx: number[] = [];
+    const pt = new THREE.Vector3();
+    const n = new THREE.Vector3();
+    const b = new THREE.Vector3();
+    const k = layers.length;
+    for (let i = 0; i <= tubular; i++) {
+        const u = i / tubular;
+        o.curve.getPointAt(u, pt);
+        frameAt(o.curve, u, n, b);
+        const r = o.radius(u);
+        const rIn = r * inset(u, theta);
+        const cx = Math.cos(theta);
+        const sy = Math.sin(theta);
+        const dx = n.x * cx + b.x * sy;
+        const dy = n.y * cx + b.y * sy;
+        const dz = n.z * cx + b.z * sy;
+        for (const L of layers) {
+            const rr = rIn + (r - rIn) * L.at;
+            pos.push(pt.x + dx * rr, pt.y + dy * rr, pt.z + dz * rr);
+            nor.push(b.x, b.y, b.z);
+            col.push(L.color.r, L.color.g, L.color.b);
+        }
+    }
+    for (let i = 0; i < tubular; i++) {
+        for (let j = 0; j < k - 1; j++) {
+            const a = i * k + j;
+            const c = a + k;
+            idx.push(a, c, a + 1, c, c + 1, a + 1);
+        }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
     g.setIndex(idx);
     return g;
 };

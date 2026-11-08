@@ -86,9 +86,9 @@ const FibraAcidaModal = ({ onClose }: Modal3DProps) => {
         >
             <div className="absolute top-0 bottom-0 left-0" style={{ right: PANEL_W }}>
                 <Canvas
-                    dpr={[1, 1.75]}
+                    dpr={[1, 1.5]}
                     camera={{ position: FIBER_STEPS[0].pose.pos as [number, number, number], fov: 40, near: 0.1, far: 300 }}
-                    gl={{ antialias: true, powerPreference: 'high-performance' }}
+                    gl={{ antialias: false, powerPreference: 'high-performance' }}
                     resize={{ offsetSize: true }}
                     className={`${pin || hovering ? 'cursor-pointer' : 'cursor-grab'} active:cursor-grabbing`}
                 >
@@ -114,7 +114,7 @@ const FibraAcidaModal = ({ onClose }: Modal3DProps) => {
                 <AnimatePresence>{!ready && <LoadingVeil reduced={reduced} />}</AnimatePresence>
             </div>
 
-            <header className="absolute z-[45] top-0 left-0 px-8 pt-6 pb-10 pointer-events-none bg-gradient-to-b from-[#04080F]/90 to-transparent" style={{ right: PANEL_W }}>
+            <header className="absolute z-[45] top-0 left-0 px-8 pt-6 pb-10 pointer-events-none bg-gradient-to-b from-[#04080F]/90 via-[#04080F]/70 to-transparent" style={{ right: PANEL_W }}>
                 <p className="text-[14px] font-mono uppercase tracking-[0.28em] text-orange-300/90 mb-1">Modelo 3D interativo · fibra muscular</p>
                 <h2 className="font-display text-3xl font-semibold text-white">O caminho do H⁺</h2>
                 <div className="flex flex-wrap items-center gap-3 mt-2">
@@ -140,7 +140,10 @@ const FibraAcidaModal = ({ onClose }: Modal3DProps) => {
                 </div>
             </aside>
 
-            <footer className="absolute bottom-6 flex justify-end pointer-events-none" style={{ right: PANEL_W + 24, left: 340 }}>
+            <footer className="absolute bottom-6 flex flex-col items-end gap-2 pointer-events-none" style={{ right: PANEL_W + 24, left: 340 }}>
+                <p className="px-3 py-1 rounded-full text-[14px] font-mono tracking-wide text-orange-100 bg-black/55 border border-orange-300/25 backdrop-blur-md" aria-hidden>
+                    <span className="text-orange-300">{step + 1}/{LAST + 1}</span> · {data.short}
+                </p>
                 <Timeline steps={FIBER_STEPS} step={step} accent={ACCENT} onGo={go} />
             </footer>
         </motion.div>

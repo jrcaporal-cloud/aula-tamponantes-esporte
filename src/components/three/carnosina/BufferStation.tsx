@@ -3,16 +3,19 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { putInstance, randoms, stationWeight, tmpColor, dummy, type TimeBox } from './common';
+import { flushGlow, moleculeMaterial, putGlow, tissueMaterial } from './fx';
 import { STATION, stationX } from './layout';
 import { autoPh, protonatedFraction } from './model';
 import { makeCarnosineWhole, RING_N } from './molecule';
 import { useCarnoSim } from './store';
+import { useGlowMesh } from './useGlow';
 import { useStructure } from './useStructure';
 
 /*
  * Etapa 6 — tampão: sarcoplasma com miofibrilas ao fundo, carnosinas e H⁺ (laranja). Quando o pH
  * cai, mais H⁺ livres aparecem e uma fração das carnosinas prende um H⁺ no anel imidazol (o anel
- * passa de ciano a laranja). A fração presa é a de Henderson–Hasselbalch com pKa 6,83 (cálculo).
+ * passa de ciano a laranja, com um clarão no instante da captura). A fração presa é a de
+ * Henderson–Hasselbalch com pKa 6,83 (cálculo).
  */
 
 const I = STATION.buffer;
@@ -26,7 +29,9 @@ const Myofibrils = () => {
     const { bind, lit } = useStructure('miofibrila');
     const rows = useMemo(() => Array.from({ length: 7 }, (_, k) => [-4.6 + k * 1.55, -7 - (k % 2) * 1.2] as const), []);
     const bandGeo = useMemo(() => new THREE.CylinderGeometry(0.72, 0.72, 0.14, 20), []);
-    const bandMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#fda4af', emissive: '#9f1239', emissiveIntensity: 0.5 }), []);
+    const bandMat = useMemo(() => new THREE.MeshPhysicalMaterial({ color: '#fda4af', emissive: '#9f1239', emissiveIntensity: 0.45, roughness: 0.4, clearcoat: 0.6 }), []);
+    const fibMat = useMemo(() => tissueMaterial('#9f1239', '#fecdd3', '#4c0519'), []);
+    useLayoutEffect(() => { fibMat.setValues({ emissiveIntensity: lit ? 1.1 : 0.35 }); }, [lit, fibMat]);
     useLayoutEffect(() => {
         const m = bands.current;
         if (!m) return;
@@ -38,9 +43,8 @@ const Myofibrils = () => {
     return (
         <group {...bind}>
             {rows.map(([y, z]) => (
-                <mesh key={y} position={[0, y, z]} rotation={[0, 0, Math.PI / 2]}>
-                    <cylinderGeometry args={[0.66, 0.66, 30, 20, 1, true]} />
-                    <meshStandardMaterial color="#9f1239" emissive="#4c0519" emissiveIntensity={lit ? 1.2 : 0.5} roughness={0.6} />
+                <mesh key={y} position={[0, y, z]} rotation={[0, 0, Math.PI / 2]} material={fibMat}>
+                    <cylinderGeometry args={[0.66, 0.66, 30, 28, 1, true]} />
                 </mesh>
             ))}
             <instancedMesh ref={bands} args={[bandGeo, bandMat, rows.length * 14]} />
@@ -59,10 +63,12 @@ export const BufferStation = ({ timeRef }: { timeRef: TimeBox }) => {
     const molBind = useStructure('imidazol').bind;
     const hBind = useStructure('hplus').bind;
     const geo = useMemo(() => makeCarnosineWhole(), []);
-    const mat = useMemo(() => new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.35, emissive: '#1e1b4b', emissiveIntensity: 0.35 }), []);
-    const ringMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.3, emissive: '#ffffff', emissiveIntensity: 0.25 }), []);
-    const hGeo = useMemo(() => new THREE.SphereGeometry(0.2, 12, 10), []);
-    const hMat = useMemo(() => new THREE.MeshBasicMaterial({ color: new THREE.Color(C.acid).multiplyScalar(1.8), toneMapped: false }), []);
+    const mat = useMemo(() => moleculeMaterial('#1e1b4b', 0.3), []);
+    const ringMat = useMemo(() => new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1, emissive: '#ffffff', emissiveIntensity: 0.3 }), []);
+    const hGeo = useMemo(() => new THREE.SphereGeometry(0.17, 14, 10), []);
+    const hMat = useMemo(() => new THREE.MeshBasicMaterial({ color: new THREE.Color(C.acidSoft).multiplyScalar(1.6), toneMapped: false }), []);
+    const hGlow = useGlowMesh(NP, C.acid, 1.5, 1.2);
+    const capture = useGlowMesh(NM + 1, '#fff7ed', 1.4, 2);
     const seeds = useMemo(() => Array.from({ length: NP }, (_, k) => randoms(1500 + k, 5)), []);
     // ordem em que as carnosinas recebem H⁺ (o herói é o primeiro)
     const rank = useMemo(() => [0, ...randoms(77, NM - 1).map((v, k) => ({ v, k: k + 1 })).sort((a, b) => a.v - b.v).map(o => o.k)], []);
@@ -111,11 +117,22 @@ export const BufferStation = ({ timeRef }: { timeRef: TimeBox }) => {
             if (k < NM) {
                 const b = bindP[k];
                 free.lerp(nWorld[k], THREE.MathUtils.smoothstep(b, 0, 1));
-                putInstance(protons.current, k, free.x, free.y, free.z, b > 0.01 ? (k === 0 ? 1.5 : 1) : 0);
+                const on = b > 0.01 ? (k === 0 ? 1.5 : 1) : 0;
+                putInstance(protons.current, k, free.x, free.y, free.z, on);
+                putGlow(hGlow, k, free.x, free.y, free.z, 1.1 * on, on ? 0.75 : 0);
+                // clarão da captura: acende quando o H⁺ chega ao anel (b perto de 1, ainda subindo)
+                const land = b > 0.75 && b < 1 ? Math.sin(((b - 0.75) / 0.25) * Math.PI) : 0;
+                putGlow(capture, k, nWorld[k].x, nWorld[k].y, nWorld[k].z, (k === 0 ? 3.2 : 2.2) * land, land);
             } else {
-                putInstance(protons.current, k, free.x, free.y, free.z, k - NM < nFree ? 1 : 0);
+                const on = k - NM < nFree ? 1 : 0;
+                putInstance(protons.current, k, free.x, free.y, free.z, on);
+                putGlow(hGlow, k, free.x, free.y, free.z, 1.1 * on, on * 0.6);
             }
         }
+        // anel do herói: halo permanente na cor do estado (ciano livre → laranja com H⁺)
+        putGlow(capture, NM, nWorld[0].x, nWorld[0].y, nWorld[0].z, 2.6, 0.18 + bindP[0] * 0.2);
+        flushGlow(hGlow);
+        flushGlow(capture);
         body.current.instanceMatrix.needsUpdate = true;
         ring.current.instanceMatrix.needsUpdate = true;
         if (ring.current.instanceColor) ring.current.instanceColor.needsUpdate = true;
@@ -130,6 +147,8 @@ export const BufferStation = ({ timeRef }: { timeRef: TimeBox }) => {
                 <instancedMesh ref={ring} args={[geo.ring, ringMat, NM]} frustumCulled={false} />
             </group>
             <instancedMesh ref={protons} args={[hGeo, hMat, NP]} frustumCulled={false} {...hBind} />
+            <primitive object={hGlow} />
+            <primitive object={capture} />
         </group>
     );
 };

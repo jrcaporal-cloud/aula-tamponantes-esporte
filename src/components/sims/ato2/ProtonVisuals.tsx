@@ -1,79 +1,62 @@
-import { motion } from 'framer-motion';
-import type { ReactNode } from 'react';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
-import { STEWART_SHARES } from './protonSources.content';
+import { Appear } from './protonSources.svg';
 
-/** Depoimentos visuais do slide 24: duas reações, a barra de Stewart e o gráfico do acordo. */
+/** Peças do slide 24: os glifos das três escolas e o gráfico do acordo (termômetro × fogo). */
 
-const Pill = ({ children, color, struck = false }: { children: ReactNode; color: string; struck?: boolean }) => (
-    <span className="mx-1 inline-flex items-center rounded-full border-2 px-2.5 py-0.5 font-semibold"
-        style={{ borderColor: color, color, background: `${color}22`, textDecoration: struck ? 'line-through' : 'none' }}>
-        {children}
-    </span>
+const P_COLOR = '#94A3B8';
+
+/** Glifo da 1ª escola: ATP (três fosfatos) soltando um H⁺. */
+const AtpGlyph = () => (
+    <>
+        <rect x={2} y={22} width={14} height={14} rx={4} fill="none" stroke={P_COLOR} strokeWidth={2} />
+        <line x1={16} x2={44} y1={29} y2={29} stroke={P_COLOR} strokeWidth={2} />
+        <circle cx={22} cy={29} r={5} fill={P_COLOR} />
+        <circle cx={34} cy={29} r={5} fill={P_COLOR} />
+        <circle cx={47} cy={36} r={5} fill={P_COLOR} />
+        <circle cx={46} cy={14} r={8} fill={C.acid} />
+    </>
 );
 
-const Reaction = ({ left, right, note, delay }: { left: ReactNode; right: ReactNode; note: string; delay: number }) => (
-    <motion.div className="flex items-center gap-4" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay }}>
-        <div className="flex flex-[1.4] items-center justify-end whitespace-nowrap font-mono text-[19px] text-white">{left}</div>
-        <span className="font-mono text-[24px] text-gray-400">→</span>
-        <div className="flex flex-1 items-center whitespace-nowrap font-mono text-[19px] text-white">{right}</div>
-        <span className="w-[150px] shrink-0 text-[15px] leading-snug text-gray-300">{note}</span>
-    </motion.div>
+/** Glifo da 2ª escola: ácido lático partindo em lactato⁻ + H⁺. */
+const LacticGlyph = () => (
+    <>
+        <circle cx={14} cy={28} r={10} fill="none" stroke={C.lactate} strokeWidth={2.5} />
+        <path d="M26,28 h10" stroke="rgba(255,255,255,0.5)" strokeWidth={2} strokeDasharray="3 3" />
+        <circle cx={44} cy={28} r={8} fill={C.acid} />
+    </>
 );
 
-export const AtpTestimony = () => (
-    <div className="flex flex-col gap-5">
-        <Reaction delay={0.1} left="ATP" right={<>ADP + Pi +<Pill color={C.acid}>H⁺</Pill></>} note="cada ATP quebrado libera um H⁺" />
-        <Reaction delay={0.5} left={<>piruvato + NADH +<Pill color={C.base} struck>H⁺</Pill></>} right="lactato + NAD⁺"
-            note="a LDH consome um H⁺ ao formar lactato" />
-    </div>
+/** Glifo da 3ª escola: balança de íons fortes inclinada. */
+const SidGlyph = () => (
+    <>
+        <line x1={6} x2={50} y1={16} y2={26} stroke="#E5E7EB" strokeWidth={2.5} strokeLinecap="round" />
+        <polygon points="28,21 22,42 34,42" fill="none" stroke={P_COLOR} strokeWidth={2} />
+        <circle cx={8} cy={10} r={4} fill="#E5E7EB" />
+        <circle cx={44} cy={20} r={4} fill={C.lactate} />
+        <circle cx={52} cy={20} r={4} fill={C.lactate} />
+        <circle cx={48} cy={42} r={7} fill={C.acid} />
+    </>
 );
 
-export const LacticTestimony = () => (
-    <div className="flex flex-col gap-5">
-        <Reaction delay={0.1} left="ácido lático" right={<>lactato⁻ +<Pill color={C.acid}>H⁺</Pill></>} note="1 H⁺ para cada lactato" />
-        <motion.p className="rounded-xl border border-yellow-300/30 bg-yellow-400/10 px-4 py-2.5 text-[16px] leading-snug text-yellow-50"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-            pKa do ácido lático ≈ 3,86 (constante de manual): no pH da célula, mais de 99,9% está dissociado.
-        </motion.p>
-    </div>
-);
+const GLYPHS = [AtpGlyph, LacticGlyph, SidGlyph] as const;
 
-const SHARE_COLOR: Record<(typeof STEWART_SHARES)[number]['id'], string> = {
-    sid: C.acid, atot: C.lactate, pco2: C.co2, ka: '#64748B',
+export const SchoolGlyph = ({ index, active }: { index: number; active: boolean }) => {
+    const G = GLYPHS[index];
+    return (
+        <svg viewBox="0 0 56 50" width={44} height={40} aria-hidden style={{ opacity: active ? 1 : 0.55, transition: 'opacity .4s' }}>
+            <G />
+        </svg>
+    );
 };
 
-export const StewartTestimony = () => (
-    <div className="flex flex-col gap-3">
-        <span className="text-[15px] text-gray-300">de onde vem a subida do [H⁺] intracelular no exercício intenso</span>
-        <div className="flex h-12 w-full overflow-hidden rounded-lg">
-            {STEWART_SHARES.map((s, i) => (
-                <motion.div key={s.id} className="flex h-full items-center justify-center font-mono text-[17px] font-bold text-gray-950"
-                    style={{ background: SHARE_COLOR[s.id] }}
-                    initial={{ width: 0 }} animate={{ width: `${s.pct}%` }} transition={{ duration: 0.6, delay: 0.15 * i }}>
-                    {s.pct}%
-                </motion.div>
-            ))}
-        </div>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-1">
-            {STEWART_SHARES.map(s => (
-                <span key={s.id} className="flex items-center gap-2 text-[15px] text-gray-200">
-                    <span className="h-3 w-3 shrink-0 rounded-sm" style={{ background: SHARE_COLOR[s.id] }} />
-                    {s.pct}% · {s.label}
-                </span>
-            ))}
-        </div>
-    </div>
-);
-
 const SW = 740;
-const SH = 216;
-const PX0 = 70;
-const PX1 = SW - 24;
-const PY0 = 20;
-const PY1 = SH - 50;
+const SH = 250;
+const PX0 = 62;
+const PX1 = 500;
+const PY0 = 18;
+const PY1 = SH - 56;
 const MAX = 25;
 const sx = (v: number) => PX0 + (v / MAX) * (PX1 - PX0);
 const sy = (v: number) => PY1 - (v / MAX) * (PY1 - PY0);
@@ -83,8 +66,29 @@ const POINTS = Array.from({ length: 18 }, (_, i) => {
     return { x, y: Math.max(0.3, 0.98 * x + 1.6 * Math.sin(i * 2.3)) };
 });
 
+/** Chama (o H⁺: o fogo), desenhada em torno de 0,0. */
+const Flame = () => (
+    <g>
+        <path d="M0,-46 C14,-28 26,-14 22,6 C19,22 8,30 0,30 C-8,30 -19,22 -22,6 C-25,-10 -10,-18 -6,-34 C-2,-24 2,-20 0,-46 Z"
+            fill={`${C.acid}44`} stroke={C.acid} strokeWidth={2.5} />
+        <path d="M0,-6 C7,2 10,10 8,18 C6,25 -6,25 -8,18 C-10,10 -4,6 0,-6 Z" fill={C.acid} />
+    </g>
+);
+
+/** Termômetro (o lactato: a medida), desenhado em torno de 0,0; o líquido sobe. */
+const Thermometer = ({ reduce }: { reduce: boolean }) => (
+    <g>
+        <rect x={-9} y={-46} width={18} height={66} rx={9} fill="rgba(255,255,255,0.05)" stroke="#E5E7EB" strokeWidth={2} />
+        <circle cy={30} r={14} fill={C.lactate} stroke="#E5E7EB" strokeWidth={2} />
+        <rect x={-4} y={reduce ? -36 : 20} width={8} height={reduce ? 60 : 4} rx={4} fill={C.lactate}>
+            {!reduce && <animate attributeName="y" from="20" to="-36" begin="0.3s" dur="1.2s" fill="freeze" />}
+            {!reduce && <animate attributeName="height" from="4" to="60" begin="0.3s" dur="1.2s" fill="freeze" />}
+        </rect>
+    </g>
+);
+
 export const AgreementPlot = ({ reduce }: { reduce: boolean }) => (
-    <svg viewBox={`0 0 ${SW} ${SH}`} width="100%" height={SH} role="img" aria-label="H⁺ gerado contra lactato: inclinação 0,98">
+    <svg viewBox={`0 0 ${SW} ${SH}`} width="100%" height={SH} role="img" aria-label="H⁺ gerado contra lactato: inclinação 0,98; o lactato é o termômetro, o H⁺ é o fogo">
         <line x1={PX0} x2={PX1} y1={PY1} y2={PY1} stroke="rgba(255,255,255,0.3)" />
         <line x1={PX0} x2={PX0} y1={PY0} y2={PY1} stroke="rgba(255,255,255,0.3)" />
         {[0, 5, 10, 15, 20, 25].map(t => (
@@ -102,6 +106,23 @@ export const AgreementPlot = ({ reduce }: { reduce: boolean }) => (
                 {!reduce && <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin={`${0.1 + i * 0.06}s`} fill="freeze" />}
             </circle>
         ))}
-        <SvgText x={sx(14)} y={sy(22)} text={`inclinação ${br(0.98, 2)} · r² = ${br(0.86, 2)}`} size={20} color="#fff" weight={700} />
+        <SvgText x={sx(11)} y={sy(3)} text={`inclinação ${br(0.98, 2)} · r² = ${br(0.86, 2)}`} size={19} color="#fff" weight={700} />
+
+        {/* termômetro × fogo */}
+        <line x1={530} x2={530} y1={10} y2={SH - 10} stroke="rgba(255,255,255,0.12)" />
+        <Appear reduce={reduce} begin={0.2}>
+            <g transform="translate(588 92)"><Thermometer reduce={reduce} /></g>
+            <SvgText x={588} y={160} text="lactato" size={17} anchor="middle" color={C.lactate} weight={700} />
+            <SvgText x={588} y={182} text="o termômetro" size={16} anchor="middle" color="#E5E7EB" />
+        </Appear>
+        <Appear reduce={reduce} begin={0.5}>
+            <g transform="translate(688 92)"><Flame /></g>
+            <SvgText x={688} y={160} text="H⁺" size={17} anchor="middle" color={C.acid} weight={700} />
+            <SvgText x={688} y={182} text="o fogo" size={16} anchor="middle" color="#E5E7EB" />
+        </Appear>
+        <Appear reduce={reduce} begin={0.9}>
+            <SvgText x={638} y={222} text="sobem juntos," size={16} anchor="middle" color="#CBD5E1" />
+            <SvgText x={638} y={242} text="quase 1 : 1" size={16} anchor="middle" color="#CBD5E1" />
+        </Appear>
     </svg>
 );

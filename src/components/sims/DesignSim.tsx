@@ -1,7 +1,8 @@
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { DESIGN_STEPS, type DesignVisual } from './ato6/designContent';
-import { CrossoverDiagram, LearningCurve, PriceBars, WashoutCurve } from './ato6/DesignVisuals';
+import { LearningCurve, WashoutCurve } from './ato6/DesignVisuals';
+import { CrossoverScheme, SamplePiles } from './ato6/DesignSchemes';
 import { IllustrativeChip, SimFrame } from './ato6/ui';
 import { StoryLayout } from './ato6/StoryLayout';
 
@@ -12,10 +13,10 @@ import { StoryLayout } from './ato6/StoryLayout';
  */
 
 const VISUALS: Record<DesignVisual, () => React.JSX.Element> = {
-    crossover: CrossoverDiagram,
+    crossover: CrossoverScheme,
     learning: LearningCurve,
     washout: WashoutCurve,
-    price: PriceBars,
+    price: SamplePiles,
 };
 
 const DesignSim = () => {

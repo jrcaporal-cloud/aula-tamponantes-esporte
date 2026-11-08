@@ -1,7 +1,7 @@
 import type { EvidenceKind } from './ui';
 
 /**
- * Slide 29 — "Então por que Tamponar Funciona?". Dossiê 03, Parte 4 e mapa das hipóteses:
+ * Slide 15 — "Então por que Tamponar Funciona?". Dossiê 03, Parte 4 e mapa das hipóteses:
  * BISHOP2004 (HCO₃⁻ 23,6 → 30,0; pH muscular de repouso e βm iguais), HOLLIDGE2000 (efluxo da
  * perna 10,0 × 4,2 mmol/min a 75% VO₂máx), MAINWOOD1975 (rã), STREET2005 (H⁺ 79 × 131 nM;
  * K⁺ 8,0 × 11,0 mM), RAYMER2004 (acidose intracelular adiada), CAIRNS2006.
@@ -76,3 +76,12 @@ export const HYPOTHESES = [
 
 /** Efluxo de lactato da perna a 75% VO₂máx (HOLLIDGE2000). */
 export const EFFLUX = { controle: 4.2, alcalose: 10.0 } as const;
+
+/** HCO₃⁻ de repouso no sangue, controle × bicarbonato 0,3 g/kg (BISHOP2004). */
+export const BLOOD_HCO3 = { repouso: 23.6, alcalose: 30.0 } as const;
+
+/** K⁺ intersticial aos 3 min, controle × citrato de sódio (STREET2005). */
+export const K_OUT = { controle: 11.0, alcalose: 8.0 } as const;
+
+/** Início da acidose intracelular no exercício progressivo de punho, em W (RAYMER2004, n = 6). */
+export const ACIDOSIS_ONSET_W = { controle: 1.17, alcalose: 1.28 } as const;

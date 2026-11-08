@@ -11,7 +11,8 @@ import { STEPS, STRUCTURES, type Pose, type StructureId } from './content';
 /*
  * Quem manda na câmera, em ordem de prioridade:
  *  1. voo (fixar uma estrutura ou recentrar), a partir de onde a câmera está;
- *  2. transição de etapa: segue a trilha das poses no mesmo T que anima a cena;
+ *  2. transição de etapa: segue a trilha das poses no mesmo T que anima a cena, com um recuo em arco
+ *     (a câmera abre o plano no meio do voo e volta a fechar na chegada, como um travelling de grua);
  *  3. varredura lenta depois de ~7 s sem toque (vai e volta ±17°: o corte só faz sentido de frente).
  * O toque do usuário desliga 1 e 2; a inatividade recomeça a contar quando ele solta.
  */
@@ -23,9 +24,13 @@ const SWEEP_RAMP = 2.5;
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
 const TP = new THREE.Vector3();
 const TT = new THREE.Vector3();
+const BACK = new THREE.Vector3();
+/** Recuo máximo no meio da transição: fração da distância percorrida, com teto (unidades de mundo). */
+const ARC_K = 0.2;
+const ARC_MAX = 6;
 
 interface Rig {
-    tween: { active: boolean; u: number; offP: THREE.Vector3; offT: THREE.Vector3 };
+    tween: { active: boolean; u: number; arc: number; offP: THREE.Vector3; offT: THREE.Vector3 };
     flight: { active: boolean; u: number; path: CameraPath | null; anim: gsap.core.Tween | null };
     idleAt: number;
     sweepT: number;
@@ -33,7 +38,7 @@ interface Rig {
 }
 
 const makeRig = (): Rig => ({
-    tween: { active: false, u: 1, offP: new THREE.Vector3(), offT: new THREE.Vector3() },
+    tween: { active: false, u: 1, arc: 0, offP: new THREE.Vector3(), offT: new THREE.Vector3() },
     flight: { active: false, u: 0, path: null, anim: null },
     idleAt: performance.now(),
     sweepT: 0,
@@ -94,6 +99,7 @@ export const CameraDirector = ({ step, reduced, pin, recenterKey, onSettled, tim
         tw.offT.copy(controls.target).sub(path.tgt(from, TT));
         tw.active = true;
         tw.u = 0;
+        tw.arc = reduced ? 0 : Math.min(path.pos(from, TP).distanceTo(path.pos(step, TT)) * ARC_K, ARC_MAX);
         r.flight.active = false;
         r.idleAt = performance.now();
         const dist = Math.abs(d);
@@ -101,7 +107,7 @@ export const CameraDirector = ({ step, reduced, pin, recenterKey, onSettled, tim
         const anim = gsap.to(time, {
             t: step,
             duration,
-            ease: 'power1.inOut',
+            ease: 'power2.inOut',
             onUpdate: () => { tw.u = anim.progress(); },
             onComplete: () => { tw.active = false; onSettled(step); },
         });
@@ -151,8 +157,13 @@ export const CameraDirector = ({ step, reduced, pin, recenterKey, onSettled, tim
         if (tw.active) {
             const T = timeRef.current.t;
             const fade = 1 - smoother(Math.min(tw.u * 1.25, 1));
-            camera.position.copy(path.pos(T, TP).addScaledVector(tw.offP, fade));
-            controls.target.copy(path.tgt(T, TT).addScaledVector(tw.offT, fade));
+            path.pos(T, TP);
+            path.tgt(T, TT);
+            // recuo em arco: afasta ao longo da linha de visada e sobe um pouco no meio do caminho
+            const bump = Math.sin(Math.PI * tw.u) * tw.arc;
+            BACK.subVectors(TP, TT).normalize();
+            camera.position.copy(TP).addScaledVector(BACK, bump).addScaledVector(Y_AXIS, bump * 0.3).addScaledVector(tw.offP, fade);
+            controls.target.copy(TT).addScaledVector(tw.offT, fade);
             controls.update();
             r.idleAt = now;
             return;

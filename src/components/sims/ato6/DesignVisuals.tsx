@@ -2,45 +2,10 @@ import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { WASHOUT } from './designContent';
 
-/** Os quatro desenhos do "Cruzado ou Paralelo?" (mesma caixa 696 × 440). */
+/** Desenhos dos passos 2 e 3 do "Cruzado ou Paralelo?" (caixa 696 × 440); passos 1 e 4 em DesignSchemes. */
 
 export const DV_W = 696;
 export const DV_H = 440;
-
-const Box = ({ x, y, w, label, color, sub }: { x: number; y: number; w: number; label: string; color: string; sub?: string }) => (
-    <g>
-        <rect x={x} y={y} width={w} height={64} rx={12} fill={`${color}22`} stroke={color} strokeWidth={2} />
-        <SvgText x={x + w / 2} y={y + (sub ? 28 : 38)} anchor="middle" text={label} color={color} size={17} weight={700} />
-        {sub && <SvgText x={x + w / 2} y={y + 50} anchor="middle" text={sub} color={C.muted} size={15} weight={500} />}
-    </g>
-);
-
-/** Duas sequências contrabalançadas: familiarização → bicarbonato/placebo → troca. */
-export const CrossoverDiagram = () => {
-    const rows = [
-        { label: 'Metade A', first: { t: 'Bicarbonato', c: C.base }, second: { t: 'Placebo', c: C.co2 } },
-        { label: 'Metade B', first: { t: 'Placebo', c: C.co2 }, second: { t: 'Bicarbonato', c: C.base } },
-    ];
-    return (
-        <svg width={DV_W} height={DV_H} viewBox={`0 0 ${DV_W} ${DV_H}`} role="img" aria-label="Desenho cruzado">
-            <SvgText x={32} y={44} text="Os mesmos atletas, em ordem sorteada" color={C.text} size={18} weight={700} />
-            {rows.map((r, i) => {
-                const y = 96 + i * 130;
-                return (
-                    <g key={r.label}>
-                        <SvgText x={32} y={y + 38} text={r.label} color={C.text} size={17} weight={700} />
-                        <Box x={130} y={y} w={150} label="Familiarização" color={C.muted} sub="teste sem nada" />
-                        <Box x={310} y={y} w={150} label={r.first.t} color={r.first.c} sub="sessão 1" />
-                        <line x1={468} x2={492} y1={y + 32} y2={y + 32} stroke={C.muted} strokeDasharray="3 4" strokeWidth={2} />
-                        <Box x={500} y={y} w={150} label={r.second.t} color={r.second.c} sub="sessão 2" />
-                    </g>
-                );
-            })}
-            <SvgText x={475} y={372} anchor="middle" text="dias de intervalo: o bicarbonato já saiu" color={C.muted} size={16} weight={500} />
-            <SvgText x={32} y={418} text="Efeito = sessão com bicarbonato − sessão com placebo, no mesmo atleta" color={C.baseSoft} size={17} />
-        </svg>
-    );
-};
 
 /** Curva de aprendizado: +1,2% da 1ª para a 2ª tentativa, +0,2% depois. */
 export const LearningCurve = () => {
@@ -112,33 +77,6 @@ export const WashoutCurve = () => {
             <SvgText x={x(gapW) + 12} y={112} text="2º período de um cruzado" color={C.lactate} size={16} weight={700} />
             <SvgText x={x(gapW) + 12} y={132} text="com 4 semanas de intervalo" color={C.lactate} size={16} weight={500} />
             <SvgText x={32} y={420} text="Ponto amarelo: o placebo do 2º período ainda teria carnosina extra." color={C.lactate} size={17} />
-        </svg>
-    );
-};
-
-/** Quantos atletas cada desenho pede (Hopkins 1999) × o estudo típico (~11). */
-export const PriceBars = () => {
-    const x = (n: number) => 70 + (n / 260) * 590;
-    const rows = [
-        { label: 'Cruzado, desfecho = a prova', lo: 16, hi: 65, color: C.base, y: 170 },
-        { label: 'Paralelo, desfecho = a prova', lo: 65, hi: 260, color: C.carno, y: 280 },
-    ];
-    return (
-        <svg width={DV_W} height={DV_H} viewBox={`0 0 ${DV_W} ${DV_H}`} role="img" aria-label="Tamanho de amostra por desenho">
-            <SvgText x={32} y={44} text="Atletas necessários (Hopkins 1999)" color={C.text} size={18} weight={700} />
-            {rows.map(r => (
-                <g key={r.label}>
-                    <SvgText x={x(r.lo)} y={r.y - 22} text={r.label} color={r.color} size={17} weight={700} />
-                    <rect x={x(r.lo)} y={r.y} width={x(r.hi) - x(r.lo)} height={36} rx={10} fill={r.color} fillOpacity={0.3} stroke={r.color} strokeWidth={2} />
-                    <SvgText x={x(r.lo) + 10} y={r.y + 25} text={`${r.lo}`} color={C.text} size={17} weight={700} />
-                    <SvgText x={x(r.hi) - 10} y={r.y + 25} anchor="end" text={`${r.hi}`} color={C.text} size={17} weight={700} />
-                </g>
-            ))}
-            <line x1={x(11)} x2={x(11)} y1={94} y2={350} stroke={C.lactate} strokeWidth={3} />
-            <SvgText x={x(11) + 8} y={100} text="~11: o estudo típico de tamponante" color={C.lactate} size={16} weight={700} />
-            <line x1={x(0)} x2={x(260)} y1={350} y2={350} stroke="rgba(255,255,255,0.35)" />
-            {[0, 65, 130, 195, 260].map(n => <SvgText key={n} x={x(n)} y={374} anchor="middle" text={`${n}`} color={C.muted} size={16} weight={500} />)}
-            <SvgText x={x(130)} y={400} anchor="middle" text="atletas por estudo" color={C.muted} size={16} weight={500} />
         </svg>
     );
 };

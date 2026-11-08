@@ -56,17 +56,57 @@ export const ControlsBox = ({ value, onChange }: { value: Controls; onChange: (c
     </div>
 );
 
-const LEGEND: readonly [string, string][] = [
-    [C.acid, 'H⁺'], [C.lactate, 'Lactato'], [C.base, 'HCO₃⁻ / tampões'], [C.carno, 'Carnosina'], [C.sodium, 'Na⁺'], [C.co2, 'CO₂'],
+type Glyph = 'ion' | 'hex' | 'trefoil' | 'dumbbell' | 'linear';
+
+/** Cada item da legenda com a mesma forma que tem no 3D. */
+const LEGEND: readonly { color: string; label: string; glyph: Glyph }[] = [
+    { color: C.acid, label: 'H⁺', glyph: 'ion' },
+    { color: C.lactate, label: 'Lactato', glyph: 'hex' },
+    { color: C.base, label: 'HCO₃⁻ / tampões', glyph: 'trefoil' },
+    { color: C.carno, label: 'Carnosina', glyph: 'dumbbell' },
+    { color: C.sodium, label: 'Na⁺', glyph: 'ion' },
+    { color: C.co2, label: 'CO₂', glyph: 'linear' },
 ];
 
+const GlyphIcon = ({ glyph, color }: { glyph: Glyph; color: string }) => (
+    <svg width={22} height={16} viewBox="0 0 22 16" aria-hidden className="shrink-0" style={{ filter: `drop-shadow(0 0 4px ${color}aa)` }}>
+        {glyph === 'ion' && <circle cx={11} cy={8} r={5} fill={color} />}
+        {glyph === 'hex' && <polygon points="11,2 16.2,5 16.2,11 11,14 5.8,11 5.8,5" fill={color} />}
+        {glyph === 'trefoil' && (
+            <g fill={color}>
+                <circle cx={11} cy={8.6} r={2.6} />
+                <circle cx={11} cy={3.6} r={2.6} />
+                <circle cx={6.6} cy={11.2} r={2.6} />
+                <circle cx={15.4} cy={11.2} r={2.6} />
+            </g>
+        )}
+        {glyph === 'dumbbell' && (
+            <g fill={color}>
+                <circle cx={6.5} cy={8} r={3.6} />
+                <rect x={8} y={6.8} width={6} height={2.4} rx={1} />
+                <circle cx={15.5} cy={8} r={4.3} />
+            </g>
+        )}
+        {glyph === 'linear' && (
+            <g fill={color}>
+                <circle cx={4.5} cy={8} r={3.2} />
+                <circle cx={11} cy={8} r={3.5} />
+                <circle cx={17.5} cy={8} r={3.2} />
+            </g>
+        )}
+    </svg>
+);
+
 export const Legend = () => (
-    <div className="mt-4 grid grid-cols-3 gap-x-3 gap-y-1.5">
-        {LEGEND.map(([c, l]) => (
-            <span key={l} className="flex items-center gap-2 text-[14px] text-gray-200 whitespace-nowrap">
-                <span className="w-3 h-3 rounded-full shrink-0" style={{ background: c, boxShadow: `0 0 8px ${c}` }} />{l}
-            </span>
-        ))}
+    <div className="mt-4">
+        <p className="text-[14px] font-mono uppercase tracking-wider text-gray-400 mb-1.5">Legenda · forma e cor como no 3D</p>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+            {LEGEND.map(({ color, label, glyph }) => (
+                <span key={label} className="flex items-center gap-2 text-[14px] text-gray-200 whitespace-nowrap">
+                    <GlyphIcon glyph={glyph} color={color} />{label}
+                </span>
+            ))}
+        </div>
     </div>
 );
 

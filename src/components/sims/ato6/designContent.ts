@@ -1,3 +1,5 @@
+import { C } from '../kit/palette';
+
 /** Passos do "Cruzado ou Paralelo?". Números: HOPKINS2001, BAGUET2009, HOPKINS1999, SAUNDERS2017_BJSM, AIS-SB2025. */
 
 export type DesignVisual = 'crossover' | 'learning' | 'washout' | 'price';
@@ -52,3 +54,13 @@ export const WASHOUT = {
     /** Um cruzado hipotético com 4 semanas de intervalo. */
     crossoverGap: 4,
 } as const;
+
+/** Esquema do cruzado: condição da sessão 1 de cada atleta (3 começam com bicarbonato, 3 com placebo). */
+export const CROSSOVER_ROWS: readonly ('bic' | 'pla')[] = ['bic', 'bic', 'bic', 'pla', 'pla', 'pla'];
+
+/** Atletas por estudo (HOPKINS1999, desfecho = a prova) × o estudo típico de tamponante (~11). */
+export const SAMPLE_PILES = [
+    { id: 'tipico', lo: 11, hi: 11, range: '~11', label: 'estudo típico', sub: 'de tamponante', color: C.lactate },
+    { id: 'cruzado', lo: 16, hi: 65, range: '16–65', label: 'cruzado', sub: 'desfecho = a prova', color: C.base },
+    { id: 'paralelo', lo: 65, hi: 260, range: '65–260', label: 'paralelo', sub: 'desfecho = a prova', color: C.carno },
+] as const;

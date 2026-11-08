@@ -4,7 +4,8 @@ import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
 import { ELITE_STEPS } from './ato4/eliteContent';
-import { RowingCi, SpinCard, SprintersVisual } from './ato4/EliteVisuals';
+import { RowingCi, SprintersVisual } from './ato4/EliteVisuals';
+import { SpinVisual } from './ato4/EliteSpinVisual';
 import { Narration, Shell, Takeaway } from './ato4/shell';
 import { Tabs, Tag } from './ato4/ui';
 
@@ -46,7 +47,7 @@ const EliteNearMissSim = () => {
                                     className="w-full cursor-pointer" style={{ accentColor: C.lactate }} />
                             </label>
                         )}
-                        {step === 3 && <SpinCard reduce={reduce} />}
+                        {step === 3 && <SpinVisual reduce={reduce} />}
                     </motion.div>
                 </Panel>
                 <Panel className="p-4 flex flex-col gap-3">

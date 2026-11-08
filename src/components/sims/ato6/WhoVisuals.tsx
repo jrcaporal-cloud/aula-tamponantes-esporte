@@ -1,10 +1,10 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { C, PANEL_BG } from '../kit/palette';
+import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { br } from '../kit/format';
-import { BICARB_BARS, CAST, TIERS } from './whoContent';
+import { TIERS } from './whoContent';
 
-/** Desenhos do "Quem é Estudado?" (caixa 696 × 440). */
+/** Desenhos dos passos 1 e 2 do "Quem é Estudado?" (caixa 696 × 440); passos 3 e 4 em WhoPictograms. */
 
 export const WV_W = 696;
 export const WV_H = 440;
@@ -65,39 +65,3 @@ export const TierBars = () => {
         </svg>
     );
 };
-
-/** Bicarbonato e mulheres: três recortes. */
-export const BicarbWomen = () => (
-    <svg width={WV_W} height={WV_H} viewBox={`0 0 ${WV_W} ${WV_H}`} role="img" aria-label="Estudos de bicarbonato com mulheres">
-        <SvgText x={28} y={40} text="Estudos de bicarbonato e mulheres" color={C.text} size={18} weight={700} />
-        {BICARB_BARS.map((b, i) => {
-            const y = 80 + i * 96;
-            return (
-                <g key={b.label}>
-                    <SvgText x={28} y={y + 4} text={b.label} color={C.text} size={17} />
-                    <rect x={28} y={y + 16} width={600} height={30} rx={8} fill="rgba(255,255,255,0.06)" />
-                    <rect x={28} y={y + 16} width={Math.max(600 * (b.pct / 100), 6)} height={30} rx={8} fill={WOMEN} fillOpacity={0.9} />
-                    <SvgText x={40 + 600 * (b.pct / 100)} y={y + 38} text={`${br(b.pct, b.pct % 1 ? 1 : 0)}%`} color={WOMEN} size={20} weight={700} />
-                    <SvgText x={628} y={y + 4} anchor="end" text={b.note} color={C.muted} size={15} weight={500} />
-                </g>
-            );
-        })}
-        <SvgText x={28} y={392} text="Efeito em mulheres (11 estudos): 0,37, CrI95% −0,06 a 0,92" color={WOMEN} size={17} weight={700} />
-        <SvgText x={28} y={418} text="Recortes diferentes de bases diferentes: o ponto comum é a escassez." color={C.muted} size={16} weight={500} />
-    </svg>
-);
-
-/** Os quatro personagens da aula (casos fictícios) contra o participante típico. */
-export const CastCards = () => (
-    <div className="p-4 grid grid-cols-2 gap-3" style={{ width: WV_W, height: WV_H }}>
-        {CAST.map(p => (
-            <div key={p.name} className="rounded-xl border border-white/10 p-4 flex flex-col gap-2" style={PANEL_BG}>
-                <p className="flex items-baseline justify-between gap-2">
-                    <span className="font-display text-[1.4rem] font-semibold text-white">{p.name}</span>
-                    <span className="text-[15px] text-gray-300">{p.who}</span>
-                </p>
-                <p className="text-[16px] leading-snug text-gray-100">{p.gap}</p>
-            </div>
-        ))}
-    </div>
-);

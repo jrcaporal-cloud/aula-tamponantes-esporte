@@ -1,7 +1,8 @@
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { WHO_STEPS, type WhoVisual } from './ato6/whoContent';
-import { BicarbWomen, CastCards, TierBars, Waffle } from './ato6/WhoVisuals';
+import { TierBars, Waffle } from './ato6/WhoVisuals';
+import { BicarbDots, CastVsTypical } from './ato6/WhoPictograms';
 import { StoryLayout } from './ato6/StoryLayout';
 import { SimFrame, Tag } from './ato6/ui';
 
@@ -14,8 +15,8 @@ import { SimFrame, Tag } from './ato6/ui';
 const VISUALS: Record<WhoVisual, () => React.JSX.Element> = {
     waffle: Waffle,
     tiers: TierBars,
-    bicarb: BicarbWomen,
-    cast: CastCards,
+    bicarb: BicarbDots,
+    cast: CastVsTypical,
 };
 
 const WhoIsStudiedSim = () => {

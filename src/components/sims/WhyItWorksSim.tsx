@@ -2,35 +2,20 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
-import { HYPOTHESES, WHY_STEPS } from './ato2/whyItWorks.content';
-import { MEM_H, MEM_W, MembraneScene } from './ato2/MembraneScene';
+import { WHY_STEPS } from './ato2/whyItWorks.content';
+import { MembraneScene, type MembraneStage } from './ato2/MembraneScene';
+import { AcidosisChart } from './ato2/whyItWorksAcidosis';
+import { MechanismMap } from './ato2/whyItWorksMap';
 import { SimShell, StepText, Tag } from './ato2/ui';
 import { useStepOverride } from './ato2/useStepOverride';
 
 /**
- * Slide 29 — "Então por que Tamponar Funciona?". A membrana em corte: o bicarbonato fica fora,
- * o gradiente puxa H⁺ e lactato pelo MCT, a glicólise acelera, o K⁺ cai e a acidose atrasa.
- * O botão alterna controle × alcalose em qualquer passo. Último passo: mapa das hipóteses.
+ * Slide 15 — "Então por que Tamponar Funciona?". Passos 1–3: a membrana em corte (bicarbonato barrado
+ * fora; gradiente e efluxo; glicólise e K⁺). Passo 4: pH da fibra no exercício progressivo, acidose
+ * adiada. Passo 5: a fibra com os cinco mecanismos acendendo. O botão alterna controle × alcalose.
  */
 
-const HypothesisMap = () => (
-    <div className="flex h-full flex-col gap-2 p-5" style={{ width: MEM_W, height: MEM_H }}>
-        <div className="grid grid-cols-[1.25fr_1fr_1fr] gap-3 border-b border-white/15 pb-2 text-[15px] font-semibold">
-            <span className="text-gray-300">hipótese</span>
-            <span style={{ color: C.ok }}>prova humana</span>
-            <span className="text-amber-200">animal / in vitro</span>
-        </div>
-        {HYPOTHESES.map((h, i) => (
-            <motion.div key={h.id} className="grid grid-cols-[1.25fr_1fr_1fr] gap-3 border-b border-white/5 py-2 text-[15px] leading-snug"
-                initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, delay: i * 0.12 }}>
-                <span className="font-semibold text-white">{h.label}</span>
-                <span className="text-gray-100">{h.human}</span>
-                <span className="text-gray-300">{h.other}</span>
-            </motion.div>
-        ))}
-        <p className="mt-auto text-[15px] leading-snug text-gray-300">Peso relativo de cada mecanismo: incerto. Fonte: mapa do dossiê 03 (Cairns 2006; Hostrup 2017).</p>
-    </div>
-);
+const CHIP = ['partículas ilustrativas', 'partículas ilustrativas', 'partículas ilustrativas', 'curvas ilustrativas', 'mapa do dossiê 03'] as const;
 
 const WhyItWorksSim = () => {
     const { step, setStep } = useSlideSteps(WHY_STEPS.length);
@@ -41,10 +26,10 @@ const WhyItWorksSim = () => {
 
     return (
         <SimShell tabs={WHY_STEPS.map(s => s.tab)} step={step} setStep={setStep} layoutId="why-tabs"
-            chips={<Tag kind="ilustrativo">partículas ilustrativas</Tag>}>
+            chips={<Tag kind="ilustrativo">{CHIP[step]}</Tag>}>
             <Panel className="shrink-0" glow={C.base}>
-                {summary ? <HypothesisMap /> : (
-                    <MembraneScene alkalosis={alkalosis} showEfflux={step >= 1} showK={step === 2} reduce={reduce} />
+                {summary ? <MechanismMap reduce={reduce} /> : step === 3 ? <AcidosisChart alkalosis={alkalosis} reduce={reduce} /> : (
+                    <MembraneScene alkalosis={alkalosis} stage={step as MembraneStage} reduce={reduce} />
                 )}
             </Panel>
             <Panel className="flex min-w-0 flex-1 flex-col gap-3 p-5">

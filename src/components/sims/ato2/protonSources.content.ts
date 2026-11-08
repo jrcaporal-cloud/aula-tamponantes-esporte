@@ -37,22 +37,22 @@ export const PROTON_STEPS = [
     {
         tab: '1ª testemunha',
         headline: '"O fogo é o ATP"',
-        text: 'Cada ATP quebrado solta um H⁺. Se o ATP vem da mitocôndria, o H⁺ é reciclado; acima do steady state, o ATP glicolítico deixa o H⁺ sobrar. A LDH, ao formar lactato, consome um H⁺: o lactato retardaria a acidose.',
+        text: 'Cada ATP quebrado solta um H⁺. Com ATP da mitocôndria, ele é reciclado; acima do steady state, o ATP glicolítico deixa o H⁺ sobrar. E a LDH, ao formar lactato, consome um H⁺.',
     },
     {
         tab: '2ª testemunha',
         headline: '"O fogo é o ácido lático"',
-        text: 'A réplica: somando a glicólise e a hidrólise do ATP glicolítico, a conta final é a do ácido lático — um H⁺ por lactato. No pH da célula, praticamente todo ácido lático está dissociado.',
+        text: 'A réplica: somando a glicólise e a hidrólise do ATP glicolítico, a conta final é a do ácido lático — um H⁺ por lactato. No pH da célula, ele está praticamente todo dissociado.',
     },
     {
         tab: '3ª testemunha',
         headline: '"Ninguém solta H⁺: a água obedece"',
-        text: 'Pela físico-química, o [H⁺] é variável dependente. Entra um ânion forte (lactato⁻), sai um cátion forte (K⁺), e a água se dissocia para manter a neutralidade. No exercício intenso, isso explica 62% da subida do H⁺.',
+        text: 'O [H⁺] é variável dependente: entra um ânion forte (lactato⁻), sai um cátion forte (K⁺), e a água se dissocia para manter a neutralidade. No exercício intenso, isso explica 62% da subida do H⁺.',
     },
     {
         tab: 'O ponto de acordo',
         headline: 'H⁺ e lactato sobem quase 1 para 1',
-        text: 'Medindo os dois no mesmo músculo, a inclinação foi 0,98. A contabilidade é disputada; a correlação, não. O lactato é o termômetro da acidose — não o fogo. A ligação só se desfaz quando a fosfocreatina acaba.',
+        text: 'No mesmo músculo, a inclinação foi 0,98: a contabilidade é disputada; a correlação, não. O lactato é o termômetro da acidose — não o fogo. A ligação só se desfaz quando a fosfocreatina acaba.',
     },
 ] as const;
 

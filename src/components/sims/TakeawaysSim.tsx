@@ -1,44 +1,72 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
-import { TAKEAWAYS } from './ato7/takeaways';
+import { PANEL_BG } from './kit/palette';
 import { SIM_H } from './ato7/shared';
+import { TakeawayVisual } from './ato7/takeawayVisuals';
+import { TAKEAWAYS } from './ato7/takeaways';
+import { FadeSwap, Source } from './ato7/ui';
 
-/** Slide 96 — O que Levar para Segunda-feira. Cinco mensagens reveladas uma a uma; a atual fica em destaque com o seu número. */
+/**
+ * Slide 96 — O que Levar para Segunda-feira. Cinco mensagens reveladas uma a uma:
+ * à esquerda a lista acumulada (a atual aberta com o seu texto); à direita, o desenho que conta a mensagem ativa.
+ */
 const TakeawaysSim = () => {
-    const { step } = useSlideSteps(TAKEAWAYS.length);
+    const { step, setStep } = useSlideSteps(TAKEAWAYS.length);
     const reduce = useReducedMotion();
+    const active = TAKEAWAYS[Math.min(step, TAKEAWAYS.length - 1)];
 
     return (
-        <ol className="not-prose m-0 flex w-full list-none flex-col gap-2.5 p-0 font-body text-white select-none" style={{ height: SIM_H }}>
-            {TAKEAWAYS.map((t, i) => {
-                const shown = i <= step;
-                const active = i === step;
-                return (
-                    <motion.li key={t.title} className="flex min-h-0 items-center gap-5 rounded-2xl border px-5"
-                        style={{
-                            flex: active ? 1.35 : 1,
-                            borderColor: active ? `${t.color}cc` : 'rgba(255,255,255,0.1)',
-                            background: active ? `linear-gradient(100deg, ${t.color}26, rgba(4,10,20,0.8) 55%)` : 'rgba(4,10,20,0.6)',
-                        }}
-                        initial={false} animate={{ opacity: shown ? (active ? 1 : 0.72) : 0, x: shown ? 0 : -20 }}
-                        transition={{ duration: reduce ? 0 : 0.4 }}>
-                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full font-display text-[22px] font-semibold"
-                            style={{ background: active ? t.color : 'rgba(255,255,255,0.1)', color: active ? '#04080F' : '#F3F4F6' }}>
-                            {i + 1}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                            <p className="m-0 font-display text-[23px] font-semibold leading-tight text-white">{t.title}</p>
-                            <p className="m-0 text-[17px] leading-snug text-gray-200">{t.text}</p>
-                            {active && <p className="m-0 mt-0.5 text-[15px] leading-tight text-gray-400">{t.source}</p>}
-                        </div>
-                        <div className="w-[230px] shrink-0 text-right">
-                            <p className="m-0 font-display text-[28px] font-semibold leading-none" style={{ color: t.color }}>{t.figure}</p>
-                            <p className="m-0 mt-1 text-[15px] leading-tight text-gray-300">{t.figureLabel}</p>
-                        </div>
-                    </motion.li>
-                );
-            })}
-        </ol>
+        <div className="not-prose flex w-full select-none gap-3 font-body text-white" style={{ height: SIM_H }}>
+            <ol className="m-0 flex w-[420px] shrink-0 list-none flex-col gap-2 p-0">
+                {TAKEAWAYS.map((t, i) => {
+                    const shown = i <= step;
+                    const isActive = i === step;
+                    return (
+                        <motion.li key={t.title} className="flex min-h-0" style={{ flex: isActive ? '1 1 auto' : '0 0 auto' }}
+                            initial={false} animate={{ opacity: shown ? (isActive ? 1 : 0.72) : 0.3 }} transition={{ duration: reduce ? 0 : 0.35 }}>
+                            <button type="button" onClick={() => setStep(i)} aria-current={isActive ? 'step' : undefined}
+                                className="flex w-full cursor-pointer items-start gap-3 rounded-2xl border px-4 py-2.5 text-left"
+                                style={{
+                                    ...PANEL_BG,
+                                    borderColor: isActive ? `${t.color}cc` : 'rgba(255,255,255,0.1)',
+                                    background: isActive ? `linear-gradient(100deg, ${t.color}26, rgba(4,10,20,0.8) 60%)` : PANEL_BG.background,
+                                }}>
+                                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-[19px] font-semibold"
+                                    style={{ background: isActive ? t.color : 'rgba(255,255,255,0.1)', color: isActive ? '#04080F' : '#F3F4F6' }}>
+                                    {i + 1}
+                                </span>
+                                <span className="flex min-w-0 flex-1 flex-col gap-1 self-stretch">
+                                    {shown ? (
+                                        <span className="font-display text-[18px] font-semibold leading-tight text-white">{t.title}</span>
+                                    ) : (
+                                        <span aria-hidden className="mt-2.5 h-3 w-3/4 rounded-full bg-white/10" />
+                                    )}
+                                    {isActive && <span className="text-[16px] leading-snug text-gray-200">{t.text}</span>}
+                                    {isActive && (
+                                        <span className="mt-auto flex flex-col gap-1 pt-2">
+                                            <span className="font-display text-[30px] font-semibold leading-none" style={{ color: t.color }}>{t.figure}</span>
+                                            <span className="text-[15px] leading-tight text-gray-300">{t.figureLabel}</span>
+                                        </span>
+                                    )}
+                                </span>
+                            </button>
+                        </motion.li>
+                    );
+                })}
+            </ol>
+
+            <div className="flex min-w-0 flex-1 flex-col rounded-2xl border p-4" style={{ ...PANEL_BG, borderColor: `${active.color}88` }}>
+                <FadeSwap id={step} className="flex min-h-0 flex-1 flex-col gap-2">
+                    <p className="m-0 font-mono text-[15px] uppercase tracking-wider" style={{ color: active.color }}>
+                        mensagem {step + 1} de {TAKEAWAYS.length}
+                    </p>
+                    <div className="flex min-h-0 flex-1 items-center">
+                        <TakeawayVisual index={step} label={`${active.title}: ${active.figure}, ${active.figureLabel}`} />
+                    </div>
+                    <Source>{active.source}</Source>
+                </FadeSwap>
+            </div>
+        </div>
     );
 };
 

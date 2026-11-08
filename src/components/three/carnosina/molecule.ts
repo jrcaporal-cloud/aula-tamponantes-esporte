@@ -69,15 +69,28 @@ const paint = (g: THREE.BufferGeometry, hex: string) => {
     return g;
 };
 
-const stick = (i: number, j: number, r: number, hex: string, seg: number) => {
+/** Cor do átomo `i` um pouco escurecida: cada metade do bastão leva a cor do átomo da ponta. */
+const atomHex = (i: number) => `#${new THREE.Color(COLOR[ATOMS[i].part][ATOMS[i].el]).multiplyScalar(0.82).getHexString()}`;
+
+const halfStick = (a: THREE.Vector3, b: THREE.Vector3, r: number, hex: string, seg: number) => {
+    const len = a.distanceTo(b);
+    const g = new THREE.CylinderGeometry(r, r, len, seg, 1, true);
+    const q = new THREE.Quaternion().setFromUnitVectors(UP, b.clone().sub(a).normalize());
+    g.applyQuaternion(q);
+    g.translate((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2);
+    return paint(g, hex);
+};
+
+/** Bastão entre dois átomos, em duas metades (cor de cada átomo); `hex` força uma cor só. */
+const stick = (i: number, j: number, r: number, hex: string | null, seg: number) => {
     tmpA.set(...ATOMS[i].p);
     tmpB.set(...ATOMS[j].p);
-    const len = tmpA.distanceTo(tmpB);
-    const g = new THREE.CylinderGeometry(r, r, len, seg, 1, true);
-    const q = new THREE.Quaternion().setFromUnitVectors(UP, tmpB.clone().sub(tmpA).normalize());
-    g.applyQuaternion(q);
-    g.translate((tmpA.x + tmpB.x) / 2, (tmpA.y + tmpB.y) / 2, (tmpA.z + tmpB.z) / 2);
-    return paint(g, hex);
+    const mid = tmpA.clone().lerp(tmpB, 0.5);
+    const g = mergeGeometries([
+        halfStick(tmpA.clone(), mid, r, hex ?? atomHex(i), seg),
+        halfStick(mid, tmpB.clone(), r, hex ?? atomHex(j), seg),
+    ]);
+    return g;
 };
 
 const ball = (i: number, seg: number) => {
@@ -88,11 +101,11 @@ const ball = (i: number, seg: number) => {
 };
 
 interface Detail { sphere: number; stick: number }
-const HI: Detail = { sphere: 22, stick: 10 };
-const LO: Detail = { sphere: 10, stick: 6 };
+const HI: Detail = { sphere: 32, stick: 14 };
+const LO: Detail = { sphere: 12, stick: 7 };
 
-const build = (atoms: number[], bonds: [number, number][], stickHex: string, d: Detail) => {
-    const parts = [...atoms.map(i => ball(i, d.sphere)), ...bonds.map(([i, j]) => stick(i, j, 0.13, stickHex, d.stick))];
+const build = (atoms: number[], bonds: [number, number][], d: Detail) => {
+    const parts = [...atoms.map(i => ball(i, d.sphere)), ...bonds.map(([i, j]) => stick(i, j, 0.14, null, d.stick))];
     const g = mergeGeometries(parts);
     parts.forEach(p => p.dispose());
     return g;
@@ -104,10 +117,10 @@ const range = (a: number, b: number) => Array.from({ length: b - a }, (_, k) => 
 export const makeCarnosineParts = (lo = false) => {
     const d = lo ? LO : HI;
     return {
-        ba: build(range(0, 5), BONDS_BA, '#A78BFA', d),
-        his: build(range(5, 11), BONDS_HIS, '#94A3B8', d),
-        ring: build(range(11, 16), BONDS_RING, '#22D3EE', d),
-        amide: stick(AMIDE[0], AMIDE[1], 0.15, '#E9D5FF', d.stick),
+        ba: build(range(0, 5), BONDS_BA, d),
+        his: build(range(5, 11), BONDS_HIS, d),
+        ring: build(range(11, 16), BONDS_RING, d),
+        amide: stick(AMIDE[0], AMIDE[1], 0.16, '#F5F0FF', d.stick),
     };
 };
 

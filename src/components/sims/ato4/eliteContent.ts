@@ -38,8 +38,18 @@ export const ELITE_STEPS: readonly EliteStep[] = [
 /** Remo 2.000 m: diferença β-alanina − placebo (s; positivo = mais rápido). */
 export const ROW = { diff: 4.3, before: -0.3, n1: 8, n2: 9, p: 0.07 } as const;
 
-export const KERN_RESULTS: readonly { test: string; result: string }[] = [
-    { test: 'Shuttle de 300 jardas (futebol)', result: '−1,1 s × −0,4 s · n.s.' },
-    { test: 'Massa magra (wrestlers)', result: '+1,1 lb × −0,98 lb · n.s.' },
-    { test: 'Todos os testes', result: 'p > 0,05' },
+/** Kern & Robinson 2011 (KERN2011): a conclusão do resumo, citada como exemplo de "spin". */
+export const KERN_QUOTE = 'parece aumentar o desempenho e a massa magra';
+
+/** Pares β-alanina × placebo de KERN2011 (nenhum significativo). Valores em s e lb, como no artigo. */
+export const KERN_PAIRS: readonly { label: string; ba: number; pl: number; baText: string; plText: string }[] = [
+    { label: 'Shuttle de 300 jardas (futebol)', ba: -1.1, pl: -0.4, baText: '−1,1 s', plText: '−0,4 s' },
+    { label: 'Massa magra (wrestlers)', ba: 1.1, pl: -0.98, baText: '+1,1 lb', plText: '−0,98 lb' },
 ];
+
+/** Meta-análise de composição corporal (ASHTARYLARKY2022): 20 estudos, massa livre de gordura. */
+export const MLG_META = {
+    label: 'Depois, 20 estudos: massa livre de gordura',
+    est: 0.05, lo: -0.71, hi: 0.82,
+    verdict: '+0,05 kg: o intervalo cruza o zero',
+} as const;

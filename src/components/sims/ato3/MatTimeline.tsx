@@ -3,7 +3,7 @@ import { SvgText } from '../kit/ui';
 import { shape } from './pico';
 import { DAY_END, FIGHTS, WEIGH_IN, type DoseTiming } from './tatame';
 
-/** Dia de competição ILUSTRATIVO do Rafael (viewBox 1096 × 270): dose, curva de HCO₃⁻, pesagem e lutas. */
+/** Slide 26 — dia de competição ILUSTRATIVO do Rafael (viewBox 1096 × 270): dose, curva de HCO₃⁻, pesagem e lutas. */
 
 export const TW = 1096;
 export const TH = 270;
@@ -46,6 +46,9 @@ export const MatTimeline = ({ timing }: { timing: DoseTiming }) => {
                         <rect x={sx(f.start)} y={BASE + 14} width={Math.max(sx(f.start + f.dur) - sx(f.start), 18)} height={30} rx={6}
                             fill={color} opacity={covered ? 0.9 : 0.45} />
                         <SvgText x={sx(f.start) + 12} y={BASE + 66} text={`luta ${i + 1}`} anchor="middle" size={16} weight={700} color={color} />
+                        {!covered && i === 0 && (
+                            <SvgText x={sx(f.start) + 24} y={BASE + 36} text="sem tampão" size={16} weight={700} color={C.co2} />
+                        )}
                     </g>
                 );
             })}

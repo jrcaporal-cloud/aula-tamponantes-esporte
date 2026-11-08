@@ -3,7 +3,8 @@ import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
 import { BRAZIL_STEPS, type BrazilVisual } from './ato7/brazil';
-import { CfnZones, LabelDay, LoadRace, Shelves } from './ato7/BrazilVisuals';
+import { LabelDay, LoadRace } from './ato7/BrazilVisuals';
+import { BicarbShelves, CfnFlow } from './ato7/BrazilScenes';
 import { Chip, FadeSwap, Shell, StoryPanel } from './ato7/ui';
 
 /**
@@ -15,8 +16,8 @@ import { Chip, FadeSwap, Shell, StoryPanel } from './ato7/ui';
 const VISUALS: Record<BrazilVisual, ComponentType> = {
     rotulo: LabelDay,
     relogio: LoadRace,
-    bicarbonato: Shelves,
-    cfn: CfnZones,
+    bicarbonato: BicarbShelves,
+    cfn: CfnFlow,
 };
 
 const COLOR: Record<BrazilVisual, string> = {

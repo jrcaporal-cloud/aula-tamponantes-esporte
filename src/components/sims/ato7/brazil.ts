@@ -66,19 +66,29 @@ export const SHELVES = [
     {
         id: 'liquido', mark: 'sim', title: 'Suplemento líquido de eletrólitos',
         text: 'Bicarbonato ou citrato só como fonte de sódio: 460 a 1.150 mg de Na por litro.',
+        short: 'Líquido de eletrólitos', sub: ['só como fonte de sódio:', '460–1.150 mg de Na/L'],
     },
     {
         id: 'capsula', mark: 'nao', title: 'Cápsula de bicarbonato para tamponar',
         text: 'Não está prevista como suplemento alimentar regularizado.',
+        short: 'Cápsula para tamponar', sub: ['não prevista como', 'suplemento alimentar'],
     },
     {
         id: 'farmacia', mark: 'med', title: 'Pó da farmácia',
         text: 'Medicamento antiácido: 2,5 g por dose, meia hora antes das refeições.',
+        short: 'Pó da farmácia', sub: ['medicamento antiácido:', '2,5 g por dose'],
     },
 ] as const;
 
-export const CFN_DUTIES = [
-    'Respeitar as listas de constituintes da IN 28 (art. 3º, VIII).',
+/** O caminho da norma (CFN 656, art. 3º, VIII → IN 28). */
+export const CFN_FLOW = [
+    { title: 'CFN 656/2020', sub: 'norma do nutricionista', arrow: 'remete às listas' },
+    { title: 'IN 28 · Anvisa', sub: 'listas e limites' },
+    { title: 'Prescrição', sub: 'do suplemento' },
+] as const;
+
+/** Os demais deveres da 656 (art. 3º, VI, VII e XII; parágrafo único). */
+export const CFN_ALSO = [
     'Fora do UL, só com alto grau de evidência de eficácia e segurança (VII).',
     'Considerar interações com fármacos e contraindicações (VI).',
     'Registrar via, composição, posologia e justificativa (XII).',

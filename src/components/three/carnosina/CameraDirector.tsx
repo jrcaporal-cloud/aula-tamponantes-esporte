@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import * as THREE from 'three';
@@ -14,12 +14,32 @@ import { poseOf, type StructureId } from './structures';
  *  1. voo (fixar uma estrutura, soltar ou recentrar), saindo de onde a câmera está;
  *  2. troca de etapa: a câmera segue a trilha das poses no mesmo T que acende as estações.
  * O primeiro toque do usuário no canvas desliga os dois; a etapa continua valendo (T segue).
+ * Toque de cinema (fora do modo de movimento reduzido): no voo entre estações a lente abre um pouco no
+ * meio do caminho e fecha ao chegar; parada, a câmera respira (deriva lenta de poucos décimos) até o
+ * usuário tocar.
  */
 
 interface Tween { active: boolean; u: number; offP: THREE.Vector3; offT: THREE.Vector3 }
 interface Flight { active: boolean; u: number; path: CameraPath | null; anim: gsap.core.Tween | null }
+interface Idle { active: boolean; t0: number; pos: THREE.Vector3; tgt: THREE.Vector3 }
+
+const BASE_FOV = 40;
+/** Quanto a lente abre no meio de um voo longo (graus). */
+const FOV_SWELL = 6;
+/** Amplitude da respiração parada (unidades de cena) e tempo até ela entrar inteira (s). */
+const SWAY = 0.55;
+const SWAY_RAMP = 2.5;
 
 const stepPose = (step: number): Pose => CARNO_STEPS[step].cam;
+
+/** Lente: abre no meio do voo entre estações (k = 0–1), volta ao normal no fim. */
+const setFov = (camera: THREE.Camera, k: number) => {
+    const cam = camera as THREE.PerspectiveCamera;
+    const fov = BASE_FOV + FOV_SWELL * k;
+    if (!cam.isPerspectiveCamera || Math.abs(cam.fov - fov) < 0.01) return;
+    cam.fov = fov;
+    cam.updateProjectionMatrix();
+};
 
 interface CameraDirectorProps {
     step: number;
@@ -37,17 +57,31 @@ export const CameraDirector = ({ step, reduced, pin, recenterKey, onSettled, tim
     const path = useMemo(() => buildStepPath(CARNO_STEPS), []);
     const tween = useRef<Tween>({ active: false, u: 1, offP: new THREE.Vector3(), offT: new THREE.Vector3() });
     const flight = useRef<Flight>({ active: false, u: 0, path: null, anim: null });
+    const idle = useRef<Idle>({ active: false, t0: 0, pos: new THREE.Vector3(), tgt: new THREE.Vector3() });
+    const swell = useRef(0);
+    const clock = useThree(s => s.clock);
     const stepRef = useRef(step);
     const prev = useRef({ pin, key: recenterKey });
     const tp = useMemo(() => new THREE.Vector3(), []);
     const tt = useMemo(() => new THREE.Vector3(), []);
+    const right = useMemo(() => new THREE.Vector3(), []);
+
+    /** Começa a respirar a partir da pose atual (só sem movimento reduzido). */
+    const startIdle = useCallback(() => {
+        if (reduced || !controls) return;
+        const i = idle.current;
+        i.active = true;
+        i.t0 = clock.elapsedTime;
+        i.pos.copy(camera.position);
+        i.tgt.copy(controls.target);
+    }, [reduced, clock, camera, controls]);
 
     useEffect(() => { stepRef.current = step; }, [step]);
 
     // toque do usuário: assume o comando da câmera
     useEffect(() => {
         const el = gl.domElement;
-        const onDown = () => { tween.current.active = false; flight.current.active = false; };
+        const onDown = () => { tween.current.active = false; flight.current.active = false; idle.current.active = false; };
         el.addEventListener('pointerdown', onDown);
         el.addEventListener('wheel', onDown, { passive: true });
         return () => {
@@ -68,18 +102,20 @@ export const CameraDirector = ({ step, reduced, pin, recenterKey, onSettled, tim
         tw.active = true;
         tw.u = 0;
         flight.current.active = false;
+        idle.current.active = false;
+        swell.current = reduced || dist < 0.5 ? 0 : Math.min(dist, 1.5) / 1.5;
         const duration = reduced ? 0.35 : step > from
             ? (dist <= 1.01 ? 3.2 : Math.min(2 + dist * 0.7, 5.5))
             : Math.min(1.4 + dist * 0.4, 3.2);
         const anim = gsap.to(time, {
             t: step,
             duration: Math.max(duration, 0.05),
-            ease: 'power1.inOut',
+            ease: 'power2.inOut',
             onUpdate: () => { tw.u = anim.progress(); },
-            onComplete: () => { tw.active = false; onSettled(step); },
+            onComplete: () => { tw.active = false; startIdle(); onSettled(step); },
         });
         return () => { anim.kill(); };
-    }, [step, controls, camera, path, reduced, onSettled, timeRef, tp, tt]);
+    }, [step, controls, camera, path, reduced, onSettled, timeRef, tp, tt, startIdle]);
 
     // voo: fixar (close-up), soltar ou recentrar (pose da etapa)
     useEffect(() => {
@@ -98,21 +134,35 @@ export const CameraDirector = ({ step, reduced, pin, recenterKey, onSettled, tim
         f.u = 0;
         f.active = true;
         tween.current.active = false;
+        idle.current.active = false;
         f.anim?.kill();
-        f.anim = gsap.to(f, { u: 1, duration: reduced ? 0.3 : 1.15, ease: 'power2.inOut', onComplete: () => { f.active = false; } });
+        f.anim = gsap.to(f, { u: 1, duration: reduced ? 0.3 : 1.25, ease: 'power3.inOut', onComplete: () => { f.active = false; startIdle(); } });
         return () => { f.anim?.kill(); f.active = false; };
-    }, [pin, recenterKey, controls, camera, reduced]);
+    }, [pin, recenterKey, controls, camera, reduced, startIdle]);
 
-    useFrame(() => {
+    useFrame(({ clock: c }) => {
         if (!controls) return;
         const f = flight.current;
+        const tw = tween.current;
+        setFov(camera, tw.active ? Math.sin(Math.PI * tw.u) * swell.current : 0);
+        const i = idle.current;
+        if (i.active && !f.active && !tw.active) {
+            const age = c.elapsedTime - i.t0;
+            const ramp = smoother(Math.min(age / SWAY_RAMP, 1));
+            right.subVectors(i.pos, i.tgt).cross(camera.up).normalize();
+            camera.position.copy(i.pos)
+                .addScaledVector(right, Math.sin(age * 0.23) * SWAY * ramp)
+                .addScaledVector(camera.up, Math.sin(age * 0.17 + 1.1) * SWAY * 0.45 * ramp);
+            controls.target.copy(i.tgt);
+            controls.update();
+            return;
+        }
         if (f.active && f.path) {
             camera.position.copy(f.path.pos(f.u, tp));
             controls.target.copy(f.path.tgt(f.u, tt));
             controls.update();
             return;
         }
-        const tw = tween.current;
         if (!tw.active) return;
         const T = timeRef.current.t;
         const fade = 1 - smoother(Math.min(tw.u * 1.25, 1));

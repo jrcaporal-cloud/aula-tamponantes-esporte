@@ -1,12 +1,12 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { Ban, Check, CircleHelp, Pill } from 'lucide-react';
+import { Ban } from 'lucide-react';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
-import { AIS_DOSES, CFN_DUTIES, GRAY_ZONES, LABEL_DOSES, LOAD_RACES, LOAD_TARGET_G, NOT_AUTHORIZED, SHELVES } from './brazil';
+import { AIS_DOSES, LABEL_DOSES, LOAD_RACES, LOAD_TARGET_G, NOT_AUTHORIZED } from './brazil';
 import { useRamp } from './useRamp';
 
-/** Visuais do slide 91 (E no Brasil?). Área útil: 650 × 410. */
+/** Visuais dos passos 1 e 2 do slide 91 (E no Brasil?); passos 3 e 4 em BrazilScenes. Área útil: 650 × 410. */
 const W = 650;
 
 const hourX = (h: number) => 150 + ((h - 6) / 16) * (W - 230);
@@ -93,65 +93,3 @@ export const LoadRace = () => {
         </svg>
     );
 };
-
-const SHELF_LOOK = {
-    sim: { Icon: Check, color: C.ok, tag: 'permitido' },
-    nao: { Icon: Ban, color: C.risk, tag: 'não existe' },
-    med: { Icon: Pill, color: C.lactate, tag: 'medicamento' },
-} as const;
-
-/** Passo 3: três prateleiras e a conta do sódio. */
-export const Shelves = () => (
-    <div className="flex h-full flex-col gap-3">
-        {SHELVES.map((s, i) => {
-            const look = SHELF_LOOK[s.mark];
-            return (
-                <motion.div key={s.id} className="flex items-center gap-4 rounded-xl border px-4 py-3"
-                    style={{ borderColor: `${look.color}77`, background: `${look.color}10` }}
-                    initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 + i * 0.15 }}>
-                    <look.Icon size={30} color={look.color} aria-hidden className="shrink-0" />
-                    <div className="min-w-0 flex-1">
-                        <p className="m-0 font-display text-[20px] font-semibold leading-tight text-white">{s.title}</p>
-                        <p className="m-0 mt-0.5 text-[16px] leading-snug text-gray-200">{s.text}</p>
-                    </div>
-                    <span className="shrink-0 font-mono text-[15px] uppercase" style={{ color: look.color }}>{look.tag}</span>
-                </motion.div>
-            );
-        })}
-        <div className="mt-auto rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3">
-            <p className="m-0 text-[17px] leading-snug text-gray-100">
-                A dose de 70 kg (21 g) leva <strong style={{ color: C.sodium }}>5,75 g de sódio</strong>: o mesmo que
-                <strong style={{ color: C.sodium }}> 5 litros</strong> da bebida de eletrólitos mais salgada que a IN 28 admite.
-            </p>
-            <p className="m-0 mt-1 text-[15px] text-gray-300">Cálculo: 5,75 g ÷ 1,15 g/L (ISSN 2026; IN 28).</p>
-        </div>
-    </div>
-);
-
-/** Passo 4: o que a 656 exige e as duas zonas cinzentas. */
-export const CfnZones = () => (
-    <div className="flex h-full flex-col gap-3">
-        <p className="m-0 font-mono text-[15px] uppercase tracking-wider text-gray-300">O que a 656 exige</p>
-        <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
-            {CFN_DUTIES.map(d => (
-                <li key={d} className="flex gap-2 text-[16px] leading-snug text-gray-100">
-                    <Check size={17} color={C.ok} className="mt-[3px] shrink-0" aria-hidden /> {d}
-                </li>
-            ))}
-        </ul>
-        <div className="grid flex-1 grid-cols-2 gap-3">
-            {GRAY_ZONES.map((z, i) => (
-                <motion.div key={z.id} className="flex flex-col gap-1.5 rounded-xl border border-dashed px-4 py-3"
-                    style={{ borderColor: `${C.co2}aa`, background: 'repeating-linear-gradient(135deg, rgba(148,163,184,0.07) 0 10px, rgba(148,163,184,0.02) 10px 20px)' }}
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.2 }}>
-                    <span className="flex items-center gap-2 font-mono text-[15px] uppercase tracking-wider text-slate-300">
-                        <CircleHelp size={17} aria-hidden /> zona cinzenta
-                    </span>
-                    <p className="m-0 font-display text-[19px] font-semibold leading-tight text-white">{z.title}</p>
-                    <p className="m-0 text-[15px] leading-snug text-gray-200">{z.why}</p>
-                    <p className="m-0 mt-auto text-[15px] font-semibold text-slate-300">Parecer específico do CFN: não localizado.</p>
-                </motion.div>
-            ))}
-        </div>
-    </div>
-);

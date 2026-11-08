@@ -67,3 +67,31 @@ export const DISCLOSURES: readonly string[] = [
     'Harris: consultor não remunerado da NAI',
     'NAI forneceu CarnoSyn e placebo; financiamento parcial (e FAPESP)',
 ];
+
+/* ——— Dados dos quadros visuais (mesmos números dos fatos acima; dossiê 06, H3 e HARRIS2006) ——— */
+
+/** Clin Sci 1992: 5 g por tomada, 4 a 6 tomadas ao dia; 5 g = creatina de 1,1 kg de bife cru. */
+export const CREATINE = { doseG: 5, timesPerDay: '4 a 6×/dia', minDays: '≥ 2 dias', meat: '1,1 kg' } as const;
+
+/** Dunnett & Harris 1999: 6 puro-sangues, 3 tomadas por dia durante 30 dias. */
+export const HORSE_TRIAL = { horses: 6, days: 30, perDay: 3 } as const;
+
+/** Estudo humano descrito na própria patente: 6 pessoas, sem mudança aparente de carnosina. */
+export const PATENT_HUMANS = 6;
+
+export interface CarnosineBar {
+    study: string;
+    label: string;
+    pct: number;
+}
+
+/** Aumento da carnosina muscular: Harris 2006 (4 semanas) e Hill 2007 (4 e 10 semanas). */
+export const CARNOSINE_BARS: readonly CarnosineBar[] = [
+    { study: 'Harris 2006', label: '3,2 g/dia', pct: 42.1 },
+    { study: 'Harris 2006', label: '6,4 g/dia', pct: 64.2 },
+    { study: 'Hill 2007', label: '4 sem', pct: 58.8 },
+    { study: 'Hill 2007', label: '10 sem', pct: 80.1 },
+];
+
+/** Hill 2007: trabalho total no teste a 110% da potência máxima, 4 semanas. */
+export const WORK_GAIN_PCT = 13.0;

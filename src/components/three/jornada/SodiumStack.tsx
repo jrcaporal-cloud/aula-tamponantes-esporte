@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { C } from '../../sims/kit/palette';
 import { STACK, stackHeight } from './anatomy';
 import { ANTACID_NA_G, WHO_NA_G } from './dose';
-import { HIDDEN, rimMaterial } from './materials';
+import { HIDDEN, bubbleMaterial, rimMaterial } from './materials';
 import { useStructure } from './selection';
 import { SYS, type JourneyStateRef } from './state';
 
@@ -12,6 +13,8 @@ import { SYS, type JourneyStateRef } from './state';
  * Balanço do sódio: uma pilha de discos (0,5 g de Na cada) que cresce até o sódio desta dose, ao lado
  * de duas colunas de referência em contorno — o teto diário da OMS (2 g) e o máximo de 24 h do rótulo
  * de antiácido (4,6 g). A pilha se monta quando a câmera chega e acompanha os controles de dose.
+ * Colunas de referência em vidro com um anel fino a cada 0,5 g (a mesma régua dos discos); discos
+ * de borda arredondada sobre um pedestal escuro com filete de luz.
  */
 
 const MAX_DISCS = 32;
@@ -22,19 +25,52 @@ const Q = new THREE.Quaternion();
 const P = new THREE.Vector3();
 const S = new THREE.Vector3();
 
+/** Disco com a borda arredondada (perfil girado), altura STACK.disc, centrado na origem. */
+const discGeometry = (): THREE.LatheGeometry => {
+    const h = STACK.disc / 2;
+    const r = STACK.r;
+    const e = 0.045;
+    const pts: THREE.Vector2[] = [new THREE.Vector2(0, -h)];
+    for (let i = 0; i <= 4; i++) {
+        const a = -Math.PI / 2 + (i / 4) * (Math.PI / 2);
+        pts.push(new THREE.Vector2(r - e + Math.cos(a) * e, -h + e + Math.sin(a) * e));
+    }
+    for (let i = 0; i <= 4; i++) {
+        const a = (i / 4) * (Math.PI / 2);
+        pts.push(new THREE.Vector2(r - e + Math.cos(a) * e, h - e + Math.sin(a) * e));
+    }
+    pts.push(new THREE.Vector2(0, h));
+    return new THREE.LatheGeometry(pts, 48);
+};
+
 const Ghost = ({ x, grams }: { x: number; grams: number }) => {
     const h = stackHeight(grams / STACK.grams);
-    const geo = useMemo(() => new THREE.CylinderGeometry(STACK.r, STACK.r, h, 40, 1, true), [h]);
-    const edges = useMemo(() => new THREE.EdgesGeometry(new THREE.CylinderGeometry(STACK.r, STACK.r, h, 40)), [h]);
-    const mats = useMemo(() => ({
-        fill: new THREE.MeshBasicMaterial({ color: C.co2, transparent: true, opacity: 0.12, depthWrite: false, side: THREE.DoubleSide }),
-        line: new THREE.LineBasicMaterial({ color: C.co2, transparent: true, opacity: 0.85 }),
-    }), []);
-    useEffect(() => () => { geo.dispose(); edges.dispose(); mats.fill.dispose(); mats.line.dispose(); }, [geo, edges, mats]);
+    const ticks = Math.floor(grams / STACK.grams);
+    const geo = useMemo(() => ({
+        glass: new THREE.CylinderGeometry(STACK.r * 1.04, STACK.r * 1.04, h, 48, 1, true),
+        ring: new THREE.TorusGeometry(STACK.r * 1.04, 0.012, 6, 64),
+        top: new THREE.TorusGeometry(STACK.r * 1.04, 0.03, 8, 64),
+    }), [h]);
+    const mats = useMemo(() => {
+        const glass = bubbleMaterial('#cbd5e1', { rim: 0.9, body: 0.05, spec: 0.9 });
+        glass.side = THREE.DoubleSide;
+        return {
+            glass,
+            ring: new THREE.MeshBasicMaterial({ color: C.co2, transparent: true, opacity: 0.45, depthWrite: false }),
+            top: rimMaterial(C.co2, 1.1),
+        };
+    }, []);
+    useEffect(() => () => {
+        Object.values(geo).forEach(g => g.dispose());
+        Object.values(mats).forEach(m => m.dispose());
+    }, [geo, mats]);
     return (
-        <group position={[x, STACK.y + h / 2, STACK.z]}>
-            <mesh geometry={geo} material={mats.fill} />
-            <lineSegments geometry={edges} material={mats.line} />
+        <group position={[x, STACK.y, STACK.z]}>
+            <mesh geometry={geo.glass} material={mats.glass} position={[0, h / 2, 0]} renderOrder={2} />
+            {Array.from({ length: ticks }, (_, i) => (
+                <mesh key={i} geometry={geo.ring} material={mats.ring} position={[0, (i + 1) * STEP_H, 0]} rotation={[Math.PI / 2, 0, 0]} />
+            ))}
+            <mesh geometry={geo.top} material={mats.top} position={[0, h, 0]} rotation={[Math.PI / 2, 0, 0]} />
         </group>
     );
 };
@@ -44,13 +80,18 @@ export const SodiumStack = ({ stateRef }: { stateRef: JourneyStateRef }) => {
     const root = useRef<THREE.Group>(null);
     const level = useRef(0);
     const { bind, lit } = useStructure('sodio');
-    const disc = useMemo(() => new THREE.CylinderGeometry(STACK.r, STACK.r, STACK.disc, 40), []);
-    const base = useMemo(() => new THREE.BoxGeometry(7.2, 0.12, 2.4), []);
+    const disc = useMemo(() => discGeometry(), []);
+    const base = useMemo(() => new RoundedBoxGeometry(7.4, 0.28, 2.6, 4, 0.12), []);
+    const edge = useMemo(() => new THREE.BoxGeometry(7.0, 0.025, 0.025), []);
     const mats = useMemo(() => ({
-        disc: new THREE.MeshStandardMaterial({ color: C.sodium, emissive: C.sodium, emissiveIntensity: 0.3, roughness: 0.45, metalness: 0.1 }),
-        base: rimMaterial(C.co2, 0.15),
+        disc: new THREE.MeshPhysicalMaterial({
+            color: C.sodium, emissive: C.sodium, emissiveIntensity: 0.22, roughness: 0.3, metalness: 0.05,
+            clearcoat: 1, clearcoatRoughness: 0.15, sheen: 0.6, sheenColor: new THREE.Color('#ecfccb'),
+        }),
+        base: new THREE.MeshPhysicalMaterial({ color: '#0b1524', roughness: 0.25, metalness: 0.3, clearcoat: 1, clearcoatRoughness: 0.1 }),
+        edge: rimMaterial(C.sodium, 0.9),
     }), []);
-    useEffect(() => () => { disc.dispose(); base.dispose(); mats.disc.dispose(); mats.base.dispose(); }, [disc, base, mats]);
+    useEffect(() => () => { disc.dispose(); base.dispose(); edge.dispose(); Object.values(mats).forEach(m => m.dispose()); }, [disc, base, edge, mats]);
 
     useFrame((_, delta) => {
         const m = mesh.current;
@@ -68,12 +109,13 @@ export const SodiumStack = ({ stateRef }: { stateRef: JourneyStateRef }) => {
             m.setMatrixAt(i, M.compose(P, Q, S.set(1, fill, 1)));
         }
         m.instanceMatrix.needsUpdate = true;
-        (m.material as THREE.MeshStandardMaterial).emissiveIntensity = lit ? 0.75 : 0.3;
+        (m.material as THREE.MeshPhysicalMaterial).emissiveIntensity = lit ? 0.7 : 0.22;
     });
 
     return (
         <group ref={root} visible={false}>
-            <mesh geometry={base} material={mats.base} position={[(STACK.xs[0] + STACK.xs[2]) / 2, STACK.y - 0.06, STACK.z]} {...bind} />
+            <mesh geometry={base} material={mats.base} position={[(STACK.xs[0] + STACK.xs[2]) / 2, STACK.y - 0.15, STACK.z]} {...bind} />
+            <mesh geometry={edge} material={mats.edge} position={[(STACK.xs[0] + STACK.xs[2]) / 2, STACK.y - 0.08, STACK.z + 1.31]} />
             <Ghost x={STACK.xs[0]} grams={WHO_NA_G} />
             <Ghost x={STACK.xs[1]} grams={ANTACID_NA_G} />
             <instancedMesh ref={mesh} args={[disc, mats.disc, MAX_DISCS]} frustumCulled={false} {...bind} />

@@ -2,9 +2,17 @@ import type { Signal } from './shared';
 
 /** Slide 94 — Quatro Casos, Quatro Vereditos. Personagens FICTÍCIOS (dossiê 06, Parte 5). */
 
+/** Pictograma do esporte do personagem. */
+export type Sport = 'corrida' | 'jiu-jitsu' | 'remo' | 'natação';
+
 export interface CaseVerdict {
     id: string;
     name: string;
+    sport: Sport;
+    /** Duração do esforço em segundos [de, até] — a mesma do texto `effort`, para a régua. */
+    effortSec: readonly [number, number];
+    /** Palavra do carimbo (resumo do veredito). */
+    stamp: string;
     profile: string;
     effort: string;
     dilemma: string;
@@ -18,7 +26,7 @@ export interface CaseVerdict {
 
 export const CASES: readonly CaseVerdict[] = [
     {
-        id: 'julia', name: 'Júlia', profile: '24 anos · 800 m · 54 kg', effort: '~2 min de esforço',
+        id: 'julia', name: 'Júlia', sport: 'corrida', effortSec: [120, 120], stamp: 'Candidata', profile: '24 anos · 800 m · 54 kg', effort: '~2 min de esforço',
         dilemma: 'Eliminatória e final em dias seguidos. Nunca usou bicarbonato.',
         math: '0,3 g/kg = 16,2 g · 4,4 g de Na',
         evidence: [
@@ -39,7 +47,7 @@ export const CASES: readonly CaseVerdict[] = [
         ],
     },
     {
-        id: 'rafael', name: 'Rafael', profile: '28 anos · jiu-jítsu leve · 76 kg', effort: 'até 5 lutas de 6–10 min',
+        id: 'rafael', name: 'Rafael', sport: 'jiu-jitsu', effortSec: [360, 600], stamp: 'Sem dose aguda', profile: '28 anos · jiu-jítsu leve · 76 kg', effort: 'até 5 lutas de 6–10 min',
         dilemma: 'Pesagem com quimono imediatamente antes da 1ª luta. Corta peso.',
         math: '0,3 g/kg = 22,8 g · 6,2 g de Na · ~760 mL',
         evidence: [
@@ -60,7 +68,7 @@ export const CASES: readonly CaseVerdict[] = [
         ],
     },
     {
-        id: 'carlos', name: 'Carlos', profile: '58 anos · remo master · 82 kg', effort: '2.000 m em ~7 min',
+        id: 'carlos', name: 'Carlos', sport: 'remo', effortSec: [420, 420], stamp: 'Médico primeiro', profile: '58 anos · remo master · 82 kg', effort: '2.000 m em ~7 min',
         dilemma: 'Hipertenso com hidroclorotiazida + losartana. Compete sob o Código.',
         math: '0,3 g/kg = 24,6 g · 6,7 g de Na',
         evidence: [
@@ -81,7 +89,7 @@ export const CASES: readonly CaseVerdict[] = [
         ],
     },
     {
-        id: 'bianca', name: 'Bianca', profile: '18 anos · natação 200 m · 60 kg', effort: '~2 min, manhã e tarde',
+        id: 'bianca', name: 'Bianca', sport: 'natação', effortSec: [120, 120], stamp: 'Regra primeiro', profile: '18 anos · natação 200 m · 60 kg', effort: '~2 min, manhã e tarde',
         dilemma: 'Ovolactovegetariana. Seletiva estadual, treina 2×/dia.',
         math: '0,3 g/kg = 18 g · 4,9 g de Na',
         evidence: [
@@ -102,6 +110,9 @@ export const CASES: readonly CaseVerdict[] = [
         ],
     },
 ];
+
+/** Janela do tampão na régua do tempo (ISSN 2021: 30 s a ~12 min). */
+export const WINDOW_SEC = [30, 720] as const;
 
 /** 2 passos por caso (raciocínio → veredito) + o quadro final. */
 export const CASE_STEP_COUNT = CASES.length * 2 + 1;

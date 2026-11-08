@@ -33,7 +33,7 @@ const Row = ({ name, color, ticks, valueRef, markerRef }: RowProps) => (
         <span className="w-[52px] text-[14px] font-semibold text-gray-200 leading-[10px] pt-0.5">{name}</span>
         <div className="relative flex-1 h-[8px] mt-0.5 rounded-full" style={{ background: `linear-gradient(90deg, ${C.acid}B0, #334155 55%, ${C.base}B0)` }}>
             {ticks.map(([ph, l]) => <Tick key={l} ph={ph} label={l} />)}
-            <div ref={markerRef} className="absolute top-1/2 w-3.5 h-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white" style={{ background: color, left: '50%' }} />
+            <div ref={markerRef} className="absolute top-1/2 w-3.5 h-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white" style={{ background: color, left: '50%', boxShadow: `0 0 10px ${color}, 0 0 2px #000` }} />
         </div>
         <span ref={valueRef} className="w-[46px] text-right text-[18px] leading-[12px] font-mono font-semibold" style={{ color }}>–</span>
     </div>

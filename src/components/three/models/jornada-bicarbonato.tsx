@@ -150,7 +150,7 @@ const JornadaBicarbonato = ({ onClose }: Modal3DProps) => {
                 <AnimatePresence>{!ready && <LoadingVeil reduced={reduced} />}</AnimatePresence>
             </div>
 
-            <header className="absolute z-[45] top-0 left-0 px-8 pt-6 pb-10 pointer-events-none bg-gradient-to-b from-[#04080f]/90 to-transparent" style={{ right: PANEL_W + 160 }}>
+            <header className="absolute z-[45] top-0 left-0 px-8 pt-6 pb-10 pointer-events-none bg-gradient-to-b from-[#04080f]/90 via-[#04080f]/55 to-transparent" style={{ right: PANEL_W }}>
                 <p className="text-[14px] font-mono uppercase tracking-[0.28em] text-cyan-300/90 mb-1">Modelo 3D interativo · bicarbonato de sódio</p>
                 <h2 className="font-display text-3xl font-semibold text-white">Do copo ao músculo</h2>
                 <div className="flex flex-wrap items-center gap-3 mt-2">

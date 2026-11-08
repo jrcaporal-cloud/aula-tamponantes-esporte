@@ -22,7 +22,7 @@ const Cell = ({ label, value, unit, chip, color = C.text, wide }: CellProps) => 
     <div className={`${wide ? 'flex-[1.6]' : 'flex-1'} min-w-0 rounded-lg px-2.5 py-1.5 bg-white/[0.04] border border-white/10`}>
         <p className="text-[14px] text-gray-400 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">{label}{chip && <Chip kind={chip} />}</p>
         <p className="flex items-baseline gap-1 leading-tight whitespace-nowrap">
-            <span className="text-[19px] font-mono font-semibold tabular-nums" style={{ color }}>{value}</span>
+            <span className={`${wide ? 'text-[16px]' : 'text-[19px]'} font-mono font-semibold tabular-nums overflow-hidden text-ellipsis`} style={{ color }}>{value}</span>
             {unit && <span className="text-[14px] text-gray-400">{unit}</span>}
         </p>
     </div>
@@ -30,9 +30,13 @@ const Cell = ({ label, value, unit, chip, color = C.text, wide }: CellProps) => 
 
 const Meter = ({ label, value, color }: { label: string; value: number; color: string }) => (
     <div className="flex-1 min-w-0 rounded-lg px-2.5 py-1.5 bg-white/[0.04] border border-white/10">
-        <p className="text-[14px] text-gray-400 leading-tight whitespace-nowrap">{label}<Chip kind="ilus" /></p>
-        <div className="mt-1.5 h-3 rounded-full bg-white/10 overflow-hidden">
-            <div className="h-full rounded-full transition-[width] duration-700" style={{ width: `${Math.min(value / 1.5, 1) * 100}%`, background: color }} />
+        <p className="text-[14px] text-gray-400 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">{label}</p>
+        <div className="flex items-center mt-1">
+            <div className="flex-1 h-3 rounded-full bg-white/10 overflow-hidden">
+                <div className="h-full rounded-full transition-[width] duration-700"
+                    style={{ width: `${Math.min(value / 1.5, 1) * 100}%`, background: `linear-gradient(90deg, ${color}66, ${color})`, boxShadow: `0 0 12px ${color}88` }} />
+            </div>
+            <Chip kind="ilus" />
         </div>
     </div>
 );

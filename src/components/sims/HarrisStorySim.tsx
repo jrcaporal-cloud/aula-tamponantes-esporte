@@ -3,7 +3,8 @@ import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
 import { HARRIS_STEPS } from './ato4/harrisContent';
-import { ChichesterVisual, DisclosureVisual, PatentVisual, TanksVisual } from './ato4/HarrisVisuals';
+import { ChichesterVisual, DisclosureVisual } from './ato4/HarrisCharts';
+import { PatentVisual, TanksVisual } from './ato4/HarrisVisuals';
 import { Narration, Shell, Takeaway } from './ato4/shell';
 
 /**
@@ -53,8 +54,8 @@ const HarrisStorySim = () => {
                 <Panel state="active" glow={step === 0 ? C.base : step === 3 ? C.lactate : C.carno} className="p-4">
                     <motion.div key={step} className="h-full" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
                         {step === 0 && <TanksVisual reduce={reduce} />}
-                        {step === 1 && <PatentVisual />}
-                        {step === 2 && <ChichesterVisual />}
+                        {step === 1 && <PatentVisual reduce={reduce} />}
+                        {step === 2 && <ChichesterVisual reduce={reduce} />}
                         {step === 3 && <DisclosureVisual reduce={reduce} />}
                     </motion.div>
                 </Panel>

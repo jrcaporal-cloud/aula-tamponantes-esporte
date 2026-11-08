@@ -103,7 +103,7 @@ const CarnosinaModal = ({ onClose }: Modal3DProps) => {
         <motion.div role="dialog" aria-label="Carnosina em 3D" className="absolute inset-0 z-50 bg-[#05040f] font-body"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}>
             <div className="absolute top-0 bottom-0 left-0" style={{ right: PANEL_W }}>
-                <Canvas dpr={[1, 1.75]} camera={{ position: [...CARNO_STEPS[0].cam.pos], fov: 40, near: 0.1, far: 900 }}
+                <Canvas dpr={[1, 1.5]} camera={{ position: [...CARNO_STEPS[0].cam.pos], fov: 40, near: 0.1, far: 900 }}
                     gl={{ antialias: false, powerPreference: 'high-performance' }} resize={{ offsetSize: true }}
                     className={`${pin || hovering ? 'cursor-pointer' : 'cursor-grab'} active:cursor-grabbing`}>
                     <Suspense fallback={null}>

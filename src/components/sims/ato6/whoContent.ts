@@ -51,15 +51,18 @@ export const TIERS = [
     { tier: 5, name: 'classe mundial', pct: 0.5 },
 ] as const;
 
-export const BICARB_BARS = [
-    { label: 'incluíram ao menos uma mulher', pct: 20, note: 'Saunders 2022 · 30 de 149' },
-    { label: 'analisaram mulheres à parte', pct: 7.4, note: 'Saunders 2022 · 11 de 149' },
-    { label: 'estudos com mulheres (auditoria)', pct: 4, note: 'AIS 2025' },
+export const CAST = [
+    { name: 'Júlia', who: '24 a · 800 m', woman: true, diffs: ['mulher'], gap: 'Mulher: 23% dos participantes; só 14% dos estudos com mulheres tentaram definir a fase do ciclo.' },
+    { name: 'Rafael', who: '28 a · jiu-jítsu', woman: false, diffs: ['luta: sem desfecho contínuo'], gap: 'O perfil mais estudado — mas luta não tem desfecho contínuo como um contrarrelógio.' },
+    { name: 'Carlos', who: '58 a · remo master', woman: false, diffs: ['58 anos', 'diurético'], gap: 'Hipertenso, com diurético: vale perguntar se algum ensaio incluiu alguém assim.' },
+    { name: 'Bianca', who: '18 a · natação 200 m', woman: true, diffs: ['mulher', 'vegetariana'], gap: 'Mulher e vegetariana: grupos com carnosina menor e pouco estudados (AIS 2025).' },
 ] as const;
 
-export const CAST = [
-    { name: 'Júlia', who: '24 a · 800 m', gap: 'Mulher: 23% dos participantes; só 14% dos estudos com mulheres tentaram definir a fase do ciclo.' },
-    { name: 'Rafael', who: '28 a · jiu-jítsu', gap: 'O perfil mais estudado — mas luta não tem desfecho contínuo como um contrarrelógio.' },
-    { name: 'Carlos', who: '58 a · remo master', gap: 'Hipertenso, com diurético: vale perguntar se algum ensaio incluiu alguém assim.' },
-    { name: 'Bianca', who: '18 a · natação 200 m', gap: 'Mulher e vegetariana: grupos com carnosina menor e pouco estudados (AIS 2025).' },
-] as const;
+/** O participante típico da literatura (narração do passo 4). */
+export const TYPICAL = ['homem', 'jovem', 'universitário', 'laboratório'] as const;
+
+/** Saunders 2022: estudos de bicarbonato (149), com alguma mulher (30) e com análise feminina à parte (11). */
+export const BICARB_STUDIES = { total: 149, withWomen: 30, separate: 11 } as const;
+
+/** Efeito em mulheres nas 11 análises (Saunders 2022): 0,37, CrI95% −0,06 a 0,92. */
+export const WOMEN_EFFECT = { est: 0.37, lo: -0.06, hi: 0.92 } as const;

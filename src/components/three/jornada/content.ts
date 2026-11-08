@@ -20,7 +20,7 @@ export const STEPS: readonly JourneyStep[] = [
     {
         badge: 'Percurso', title: 'Do copo ao músculo', short: 'O percurso inteiro',
         sources: 'ISSN 2021 (Grgic et al.) · Bishop et al. 2004',
-        pose: { pos: [1.4, 2.0, 41], tgt: [1.4, 1.6, 0] },
+        pose: { pos: [1.4, 3.4, 43], tgt: [1.4, 2.8, 0] },
     },
     {
         badge: 'Estômago', title: 'O pó encontra o ácido', short: 'Estômago: CO₂',
@@ -45,7 +45,7 @@ export const STEPS: readonly JourneyStep[] = [
     {
         badge: 'Balanço', title: 'A conta do sódio', short: 'Balanço: sódio',
         sources: 'OMS (sódio) · rótulo FDA de antiácido · Boegman et al. 2020 · cálculo próprio',
-        pose: { pos: [9.8, -4.6, 18.5], tgt: [9.8, -5.6, 0] },
+        pose: { pos: [9.8, -5.6, 17], tgt: [9.8, -8.2, 0] },
     },
 ];
 
