@@ -58,3 +58,13 @@ npm run build    # tsc + vite build
 npm run lint
 npm test         # estrutura da aula: atos, notas, versões por tempo, fontes, modelos 3D
 ```
+
+## Publicar
+
+Online em https://jrcaporal-cloud.github.io/aula-tamponantes-esporte/ (GitHub Pages, branch `gh-pages`).
+
+```bash
+npm run publicar
+```
+
+Roda os testes, compila e envia `dist/` para o branch `gh-pages`. O código-fonte fica na `main` (`git push` normal).
