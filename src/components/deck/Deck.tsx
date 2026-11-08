@@ -15,6 +15,11 @@ import { useSlideStepStore } from '../../store/useSlideSteps';
 import { PRESENTER_CHANNEL, openPresenterWindow, type PresenterMessage } from './presenterChannel';
 import { toggleDetails } from '../../lib/detailsEvent';
 import { MODALS_3D, preloadAll3D } from '../three/registry';
+import { InquiryBoard } from './InquiryBoard';
+import { boardForCrossing, boardForCurrent, ROMANS, type BoardState } from './inquiry';
+
+const boardTitle = (b: BoardState | null) =>
+    b === null ? null : b.ended !== null ? `Quadro do inquérito · fim do Ato ${ROMANS[b.ended]}` : 'Quadro do inquérito (Q)';
 
 const renderSlide = ({ slide }: DeckSlide) => {
     if (slide.id === 0) return <TitleSlide slide={slide} />;
@@ -39,13 +44,37 @@ export const Deck = () => {
     const toggleOverview = useCallback(() => setOverview(o => !o), []);
     const closeOverlays = useCallback(() => setOverview(false), []);
 
+    // Quadro do inquérito: aparece ao cruzar de um ato para o seguinte, antes do 1º slide do novo ato.
+    const [board, setBoard] = useState<BoardState | null>(null);
+    const boardRef = useRef<BoardState | null>(null);
+    useEffect(() => { boardRef.current = board; }, [board]);
+    const closeBoardNow = useCallback(() => setBoard(null), []);
+    const onBeforeAdvance = useCallback((from: number, to: number) => {
+        const crossing = boardForCrossing(DECK[from].section, DECK[to].section, to);
+        if (!crossing) return false;
+        setBoard(crossing);
+        return true;
+    }, []);
+
     const { index, direction, goTo, next, prev } = useDeckNavigation({
         total: DECK.length,
-        paused: modalOpen,
+        paused: modalOpen || board !== null,
         rootRef,
         onToggleOverview: toggleOverview,
         onCloseOverlays: closeOverlays,
+        onBeforeAdvance,
+        onHashJump: closeBoardNow,
     });
+
+    const closeBoard = closeBoardNow;
+    const continueBoard = useCallback(() => {
+        const target = boardRef.current?.target ?? null;
+        setBoard(null);
+        if (target !== null) goTo(target);
+    }, [goTo]);
+    // Passador, botões e janela do apresentador: com o quadro aberto, avançar segue para o ato novo.
+    const advance = useCallback(() => (boardRef.current ? continueBoard() : next()), [continueBoard, next]);
+    const back = useCallback(() => (boardRef.current ? closeBoard() : prev()), [closeBoard, prev]);
 
     const current = DECK[index];
     const model3D = MODEL_3D_BY_SLIDE.get(current.slide.id) ?? null;
@@ -67,14 +96,15 @@ export const Deck = () => {
     const step = useSlideStepStore(st => st.step);
     const stepCount = useSlideStepStore(st => st.count);
     const channelRef = useRef<BroadcastChannel | null>(null);
-    const navRef = useRef({ next, prev, goTo });
-    useEffect(() => { navRef.current = { next, prev, goTo }; }, [next, prev, goTo]);
-    const stateRef = useRef({ index, step, stepCount });
+    const navRef = useRef({ next: advance, prev: back, goTo });
+    useEffect(() => { navRef.current = { next: advance, prev: back, goTo }; }, [advance, back, goTo]);
+    const boardLabel = boardTitle(board);
+    const stateRef = useRef({ index, step, stepCount, board: boardLabel });
 
     useEffect(() => {
-        stateRef.current = { index, step, stepCount };
-        channelRef.current?.postMessage({ type: 'state', index, step, stepCount } satisfies PresenterMessage);
-    }, [index, step, stepCount]);
+        stateRef.current = { index, step, stepCount, board: boardLabel };
+        channelRef.current?.postMessage({ type: 'state', index, step, stepCount, board: boardLabel } satisfies PresenterMessage);
+    }, [index, step, stepCount, boardLabel]);
 
     useEffect(() => {
         const channel = new BroadcastChannel(PRESENTER_CHANNEL);
@@ -94,6 +124,7 @@ export const Deck = () => {
             if (modalOpen || e.metaKey || e.ctrlKey || e.altKey) return;
             if (e.key === 'p' || e.key === 'P') openPresenterWindow(stateRef.current.index);
             if (e.key === 'd' || e.key === 'D') toggleDetails();
+            if (e.key === 'q' || e.key === 'Q') setBoard(b => (b ? null : boardForCurrent(DECK[stateRef.current.index].section)));
         };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
@@ -102,11 +133,11 @@ export const Deck = () => {
 
     // Atalho "3" abre o modelo 3D do slide, quando ele tem um.
     useEffect(() => {
-        if (!model3D || modalOpen) return;
+        if (!model3D || modalOpen || board) return;
         const onKey = (e: KeyboardEvent) => { if (e.key === '3') setOpen3D(model3D); };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
-    }, [model3D, modalOpen]);
+    }, [model3D, modalOpen, board]);
 
     // Controles e cursor somem quando o mouse fica parado (projeção limpa).
     useEffect(() => {
@@ -158,12 +189,16 @@ export const Deck = () => {
                 section={current.section}
                 idle={idle}
                 has3D={has3D}
-                onPrev={prev}
-                onNext={next}
+                onPrev={back}
+                onNext={advance}
                 onOverview={toggleOverview}
                 on3D={() => setOpen3D(model3D)}
                 onPresenter={() => openPresenterWindow(index)}
             />
+
+            <AnimatePresence>
+                {board && <InquiryBoard key={`${board.ended}-${board.upcoming}`} board={board} onContinue={continueBoard} onBack={closeBoard} />}
+            </AnimatePresence>
 
             <AnimatePresence>
                 {overview && (

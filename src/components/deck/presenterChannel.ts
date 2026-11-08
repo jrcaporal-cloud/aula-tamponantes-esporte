@@ -4,7 +4,8 @@
  */
 export const PRESENTER_CHANNEL = 'aula-doping-apresentador';
 
-export type DeckState = { type: 'state'; index: number; step: number; stepCount: number };
+/** `board`: título do quadro do inquérito quando ele está na tela (entre atos ou na tecla Q). */
+export type DeckState = { type: 'state'; index: number; step: number; stepCount: number; board?: string | null };
 export type PresenterCommand =
     | { type: 'next' }
     | { type: 'prev' }

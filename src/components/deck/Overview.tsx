@@ -13,6 +13,7 @@ const SHORTCUTS: [string, string][] = [
     ['→ / Espaço / PgDn', 'avançar'],
     ['← / PgUp', 'voltar'],
     ['G', 'visão geral'],
+    ['Q', 'quadro do inquérito'],
     ['F', 'tela cheia'],
     ['P', 'modo apresentador'],
     ['Home / End', 'início / fim'],

@@ -37,13 +37,17 @@ interface DeckNavigationOptions {
     rootRef: React.RefObject<HTMLElement | null>;
     onToggleOverview: () => void;
     onCloseOverlays: () => void;
+    /** Chamado antes de avançar de slide; devolve true para segurar a troca (ex.: quadro entre atos). */
+    onBeforeAdvance?: (from: number, to: number) => boolean;
+    /** Salto pelo endereço (#/n): fecha o que estiver aberto por cima do slide. */
+    onHashJump?: () => void;
 }
 
 /**
  * Teclado, passador (PageUp/PageDown), roda do mouse e #hash da URL.
  * O hash permite recarregar a página e voltar ao mesmo slide (ex.: …/#/12).
  */
-export const useDeckNavigation = ({ total, paused, rootRef, onToggleOverview, onCloseOverlays }: DeckNavigationOptions) => {
+export const useDeckNavigation = ({ total, paused, rootRef, onToggleOverview, onCloseOverlays, onBeforeAdvance, onHashJump }: DeckNavigationOptions) => {
     const [index, setIndex] = useState(() => readHash(total));
     const [direction, setDirection] = useState<1 | -1>(1);
     const wheelAcc = useRef(0);
@@ -63,9 +67,14 @@ export const useDeckNavigation = ({ total, paused, rootRef, onToggleOverview, on
     // O passador percorre os passos do slide antes de trocar de slide.
     const next = useCallback(() => {
         const { step, count, setStep } = useSlideStepStore.getState();
-        if (step < count - 1) setStep(step + 1);
-        else goTo(indexRef.current + 1);
-    }, [goTo]);
+        if (step < count - 1) {
+            setStep(step + 1);
+            return;
+        }
+        const to = indexRef.current + 1;
+        if (to < total && onBeforeAdvance?.(indexRef.current, to)) return;
+        goTo(to);
+    }, [goTo, total, onBeforeAdvance]);
 
     const prev = useCallback(() => {
         const { step, setStep } = useSlideStepStore.getState();
@@ -89,10 +98,13 @@ export const useDeckNavigation = ({ total, paused, rootRef, onToggleOverview, on
     }, [index, step, pendingStep]);
 
     useEffect(() => {
-        const onHashChange = () => goTo(readHash(total));
+        const onHashChange = () => {
+            onHashJump?.();
+            goTo(readHash(total));
+        };
         window.addEventListener('hashchange', onHashChange);
         return () => window.removeEventListener('hashchange', onHashChange);
-    }, [goTo, total]);
+    }, [goTo, total, onHashJump]);
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {

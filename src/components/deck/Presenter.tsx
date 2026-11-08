@@ -114,6 +114,7 @@ export const Presenter = () => {
     const [index, setIndex] = useState(0);
     const [step, setStep] = useState(0);
     const [stepCount, setStepCount] = useState(1);
+    const [board, setBoard] = useState<string | null>(null);
     const [connected, setConnected] = useState(false);
     const [notes, setNotes] = useState(loadNotes);
     const [now, setNow] = useState(() => new Date());
@@ -130,6 +131,7 @@ export const Presenter = () => {
             setIndex(e.data.index);
             setStep(e.data.step);
             setStepCount(e.data.stepCount);
+            setBoard(e.data.board ?? null);
         };
         channel.postMessage({ type: 'hello' } satisfies PresenterCommand);
         return () => channel.close();
@@ -184,6 +186,11 @@ export const Presenter = () => {
 
             <main className="flex-1 grid grid-cols-[1.4fr_1fr] gap-6 p-8 min-h-0">
                 <section className="flex flex-col gap-5 min-h-0">
+                    {board && (
+                        <p className="m-0 rounded-2xl border border-amber-300/50 bg-amber-300/10 px-5 py-3 text-lg text-amber-100">
+                            <b className="font-semibold">{board}</b> na tela do projetor · → segue para o próximo ato, ← fecha
+                        </p>
+                    )}
                     <SlideCard index={index} label="Agora" />
                     <PaceBadge index={index} elapsedMs={stopwatch.elapsed} />
                     <NoteCard slideId={DECK[index]?.slide.id ?? -1} />
