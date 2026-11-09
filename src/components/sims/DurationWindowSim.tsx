@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { DURATION_FEET, DURATION_TABS, MCNAUGHTON_MARKS, NULL_MARKS, PERSONAS, type DurationMark } from './ato3/duracao';
 import { Frame, Tag } from './ato3/Frame';
@@ -23,7 +24,7 @@ const TICKS: readonly [number, string][] = [[5, '5 s'], [10, '10 s'], [30, '30 s
 const Mark = ({ m, y, delay }: { m: DurationMark; y: number; delay: number }) => {
     const color = m.works ? C.base : C.co2;
     return (
-        <motion.g initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay }}>
+        <motion.g initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay, ease: EASE_OUT }}>
             <line x1={sx(m.t)} x2={sx(m.t)} y1={y + 20} y2={AXIS_Y} stroke={color} strokeOpacity={0.5} strokeDasharray="3 4" />
             <circle cx={sx(m.t)} cy={y} r={19} fill={m.works ? 'rgba(34,211,238,0.18)' : 'rgba(148,163,184,0.14)'} stroke={color} strokeWidth={2.5} />
             <SvgText x={sx(m.t)} y={y + 7} text={m.works ? '✓' : '✕'} anchor="middle" size={20} weight={800} color={color} />
@@ -40,7 +41,7 @@ const DurationWindowSim = () => {
 
     return (
         <Frame tabs={DURATION_TABS} step={step} setStep={setStep} layoutId="duration-tab" foot={DURATION_FEET[step]}
-            chips={step === 3 ? <><Tag color={C.acid}>casos fictícios</Tag><Tag color={C.muted}>posições aproximadas</Tag></> : <Tag color={C.base}>0,3 g/kg</Tag>}>
+            chips={step === 3 ? <><Tag color={C.caveat}>casos fictícios</Tag><Tag color={C.caveat}>posições aproximadas</Tag></> : <Tag color={C.base}>0,3 g/kg</Tag>}>
             <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" role="img" aria-label="Janela de duração do esforço">
                 <defs>
                     <linearGradient id="dur-band" x1="0" x2="1">
@@ -51,7 +52,7 @@ const DurationWindowSim = () => {
                     </linearGradient>
                 </defs>
                 {step >= 1 && (
-                    <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
+                    <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, ease: EASE_OUT }}>
                         <rect x={bandX0} y={18} width={bandX1 - bandX0} height={AXIS_Y - 18} rx={10} fill="url(#dur-band)" stroke={`${C.base}55`} />
                         <SvgText x={(bandX0 + bandX1) / 2} y={44} text="alvo: ~30 s a 12 min (ISSN 2021)" anchor="middle" size={19} weight={700} color={C.base} />
                     </motion.g>
@@ -72,7 +73,7 @@ const DurationWindowSim = () => {
                     const y = [306, 306, 336, 364][i];
                     const textLeft = i !== 1;
                     return (
-                        <motion.g key={p.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 * i }}>
+                        <motion.g key={p.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 * i, ease: EASE_OUT }}>
                             <line x1={x} x2={x} y1={AXIS_Y + 34} y2={y - 12} stroke={p.color} strokeOpacity={0.6} />
                             {p.tMax && <rect x={x} y={y - 9} width={xEnd - x} height={18} rx={9} fill={p.color} opacity={0.35} />}
                             <circle cx={x} cy={y} r={11} fill={p.color} />

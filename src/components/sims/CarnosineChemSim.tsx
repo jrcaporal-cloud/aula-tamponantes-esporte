@@ -43,7 +43,7 @@ const PhControl = ({ pH, onChange }: PhControlProps) => {
                 <span className="text-[16px] text-gray-300">anéis com H⁺ (cálculo)</span>
                 <span className="font-display text-[2rem] leading-none font-semibold" style={{ color: C.acid }}>{Math.round(frac * 100)}%</span>
                 <span className="h-[10px] rounded-full bg-white/10 overflow-hidden">
-                    <span className="block h-full rounded-full transition-[width] duration-300" style={{ width: `${frac * 100}%`, background: C.acid }} />
+                    <span className="block h-full w-full rounded-full transition-[clip-path] duration-300 ease-(--ease-out)" style={{ clipPath: `inset(0 ${100 - frac * 100}% 0 0 round 5px)`, background: C.acid }} />
                 </span>
             </div>
         </div>

@@ -33,8 +33,8 @@ const Meter = ({ label, value, color }: { label: string; value: number; color: s
         <p className="text-[14px] text-gray-400 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">{label}</p>
         <div className="flex items-center mt-1">
             <div className="flex-1 h-3 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full rounded-full transition-[width] duration-700"
-                    style={{ width: `${Math.min(value / 1.5, 1) * 100}%`, background: `linear-gradient(90deg, ${color}66, ${color})`, boxShadow: `0 0 12px ${color}88` }} />
+                <div className="h-full w-full rounded-full transition-[clip-path] duration-700 ease-(--ease-out)"
+                    style={{ clipPath: `inset(0 ${100 - Math.min(value / 1.5, 1) * 100}% 0 0 round 6px)`, background: `linear-gradient(90deg, ${color}66, ${color})`, boxShadow: `0 0 12px ${color}88` }} />
             </div>
             <Chip kind="ilus" />
         </div>

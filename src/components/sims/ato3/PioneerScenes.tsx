@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
@@ -12,7 +13,7 @@ const PX_PER_S = 1;
 const GAP = 14;
 const X0 = 120;
 
-const fadeIn = (delay = 0) => ({ initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4, delay } });
+const fadeIn = (delay = 0) => ({ initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4, delay, ease: EASE_OUT } });
 
 /** 1983: foto de chegada, eixo em segundos relativos à chegada sem bicarbonato. */
 export const WilkesScene = ({ reduce }: { reduce: boolean }) => {
@@ -32,7 +33,7 @@ export const WilkesScene = ({ reduce }: { reduce: boolean }) => {
                     <SvgText x={30} y={l.y + 6} text={l.label} size={17} color={l.color} />
                     <motion.circle cx={sx(l.at)} cy={l.y} r={14} fill={l.color}
                         initial={{ x: reduce ? 0 : -300, opacity: 0 }} animate={{ x: 0, opacity: 1 }}
-                        transition={{ duration: reduce ? 0 : 1.0, ease: 'easeOut' }} />
+                        transition={{ duration: reduce ? 0 : 1.0, ease: EASE_OUT }} />
                 </g>
             ))}
             <motion.g {...fadeIn(reduce ? 0 : 0.9)}>
@@ -69,7 +70,7 @@ const BoutRow = ({ y, label, color, bouts, delay = 0, reduce }: BoutRowProps) =>
                     fill={color} opacity={i === last ? 0.95 : 0.4}
                     style={{ transformBox: 'fill-box', transformOrigin: 'left center' }}
                     initial={{ scaleX: reduce ? 1 : 0 }} animate={{ scaleX: 1 }}
-                    transition={{ duration: reduce ? 0 : i === last ? 0.6 : 0.25, delay: reduce ? 0 : delay + i * 0.12 }} />
+                    transition={{ duration: reduce ? 0 : i === last ? 0.6 : 0.25, delay: reduce ? 0 : delay + i * 0.12, ease: EASE_OUT }} />
             ))}
             <motion.g {...fadeIn(reduce ? 0 : delay + last * 0.12 + 0.6)}>
                 <SvgText x={starts[last] + bouts[last] * PX_PER_S + 10} y={y + 7} text={`${br(bouts[last], 1)} s`} size={19} weight={700} color="#fff" />

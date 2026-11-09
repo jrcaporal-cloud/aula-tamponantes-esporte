@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useState } from 'react';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { BloodChart, CurveChart, PeakChart } from './ato3/DoseCharts';
@@ -25,9 +26,9 @@ const BicarbDoseSim = () => {
 
     return (
         <Frame tabs={DOSE_TABS} step={step} setStep={setStep} layoutId="dose-tab" foot={DOSE_FEET[step]}
-            chips={curve ? <Tag color={C.lactate}>forma da curva ilustrativa</Tag> : <Tag color={C.base}>{step === 1 ? 'Jones 2016 · n = 16 · sem cegamento' : 'Gough 2018 · n = 11'}</Tag>}>
+            chips={curve ? <Tag color={C.caveat}>forma da curva ilustrativa</Tag> : <Tag color={C.base}>{step === 1 ? 'Jones 2016 · n = 16 · sem cegamento' : 'Gough 2018 · n = 11'}</Tag>}>
             <div className="h-full grid gap-5" style={{ gridTemplateColumns: '660px 1fr' }}>
-                <motion.div key={step} className="h-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+                <motion.div key={step} className="h-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, ease: EASE_OUT }}>
                     {curve && <CurveChart dose={dose} showGi={step === 2} />}
                     {step === 1 && <BloodChart />}
                     {step === 3 && <PeakChart />}
@@ -41,7 +42,7 @@ const BicarbDoseSim = () => {
                         <input type="range" min={0.1} max={0.5} step={0.05} value={dose} aria-label="Dose em g/kg"
                             onChange={e => setOverride({ step, dose: Number(e.target.value) })}
                             className="w-full accent-cyan-400 cursor-pointer" />
-                        <p className="font-display text-[1.3rem] font-semibold" style={{ color: zone.title === 'Só soma sintomas' ? C.risk : C.base }}>{zone.title}</p>
+                        <p className="font-body text-[1.3rem] font-semibold" style={{ color: zone.title === 'Só soma sintomas' ? C.risk : C.base }}>{zone.title}</p>
                         <p className="text-[16px] leading-snug text-gray-100">{zone.text}</p>
                         <span className="font-mono text-[15px] text-gray-400">{zone.source}</span>
                     </div>

@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel, SvgText } from './kit/ui';
@@ -90,7 +91,7 @@ const DefenseLinesSim = () => {
                         <StepText step={step} headline={plan.headline} text={plan.text} accent={step === DEFENSE_STEPS.length - 1 ? '#fff' : COL_COLOR[step]} />
                     </Panel>
                     <Panel className="w-[470px] shrink-0 px-5 py-4">
-                        <motion.ul key={step} className="flex flex-col gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.15 }}>
+                        <motion.ul key={step} className="flex flex-col gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: DUR.text, ease: EASE_OUT }}>
                             {plan.facts.map(f => (
                                 <li key={f.text} className="text-[16px] leading-snug text-gray-100">
                                     {f.text}{' '}

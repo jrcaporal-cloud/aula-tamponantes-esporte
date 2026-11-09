@@ -27,7 +27,7 @@ const WhoIsStudiedSim = () => {
 
     return (
         <SimFrame tabs={WHO_STEPS.map(s => s.tab)} step={step} setStep={setStep} layoutId="ato6-who-tab"
-            chips={plan.visual === 'cast' ? <Tag color={C.lactate}>casos fictícios</Tag> : null}>
+            chips={plan.visual === 'cast' ? <Tag color={C.caveat}>casos fictícios</Tag> : null}>
             <StoryLayout step={step} headline={plan.headline} text={plan.text} source={plan.source}
                 tone={women ? C.lactate : C.base} headlineColor={women ? C.lactate : C.baseSoft}>
                 <Visual />

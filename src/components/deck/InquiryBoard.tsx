@@ -2,15 +2,21 @@ import { useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Check, Lock } from 'lucide-react';
 import { ACCUSATIONS, CHAPTERS, VERDICT_LOOK, type Accusation } from '../sims/ato1/content';
-import { FitStage } from './FitStage';
+import { FitStage, PAD_X_SELF } from './FitStage';
 import { JUDGED_IN, ROMANS, cardState, type BoardState, type CardState } from './inquiry';
+import { DUR, EASE_IN_OUT, EASE_OUT } from '../../lib/motion';
+import { CURTAIN_WIPE_S } from './ActCurtain';
 
 const NEXT_KEYS = new Set(['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter']);
 const BACK_KEYS = new Set(['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace', 'Escape']);
 const MUTED = 'rgba(255,255,255,0.14)';
 
+/** 'wipe': o quadro sai pela mesma varredura com que a cortina do ato entra (um gesto só); 'fade': só esmaece. */
+export type BoardExit = 'fade' | 'wipe';
+
 interface InquiryBoardProps {
     board: BoardState;
+    exitMode: BoardExit;
     onContinue: () => void;
     onBack: () => void;
 }
@@ -29,19 +35,24 @@ const ActRail = ({ board }: { board: BoardState }) => {
                             <span className="absolute top-[21px] right-1/2 h-[2px] w-full"
                                 style={{ background: i <= board.upcoming ? `${CHAPTERS[i - 1].color}aa` : MUTED }} />
                         )}
-                        <motion.span
+                        <span
                             className="relative z-10 flex h-[44px] w-[44px] items-center justify-center rounded-full border-2 font-display text-[17px] font-semibold"
                             style={{
                                 borderColor: closed || upcoming ? ch.color : MUTED,
                                 background: closed ? `${ch.color}33` : '#070b14',
-                                color: closed || upcoming ? '#fff' : 'rgba(255,255,255,0.4)',
+                                color: closed || upcoming ? '#fff' : '#9CA3AF',
                             }}
-                            animate={upcoming && !reduce ? { boxShadow: [`0 0 0px ${ch.color}00`, `0 0 22px ${ch.color}cc`, `0 0 0px ${ch.color}00`] } : undefined}
-                            transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
                         >
+                            {/* Pulso do próximo ato: o brilho é fixo e só a opacidade dele anima (composição, sem repintar). */}
+                            {upcoming && !reduce && (
+                                <motion.span aria-hidden className="pointer-events-none absolute -inset-[2px] rounded-full"
+                                    style={{ boxShadow: `0 0 22px ${ch.color}cc` }}
+                                    initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0] }}
+                                    transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }} />
+                            )}
                             {closed ? <Check size={20} strokeWidth={2.6} aria-label={`Ato ${ch.roman} fechado`} /> : ch.roman}
-                        </motion.span>
-                        <span className={`max-w-[150px] text-center text-[15px] leading-tight ${closed || upcoming ? 'text-gray-100' : 'text-gray-500'}`}>
+                        </span>
+                        <span className={`max-w-[150px] text-center text-[15px] leading-tight ${closed || upcoming ? 'text-gray-100' : 'text-gray-400'}`}>
                             {ch.title}
                         </span>
                     </li>
@@ -106,7 +117,23 @@ const AccusationCard = ({ a, board, order }: { a: Accusation; board: BoardState;
  * Tela entre um ato e outro (e na tecla Q): as 6 acusações do slide 11, com o carimbo das que já
  * foram julgadas. Não é slide — não conta na numeração nem no tempo. → continua, ← ou Esc volta.
  */
-export const InquiryBoard = ({ board, onContinue, onBack }: InquiryBoardProps) => {
+/**
+ * A saída lê o modo no instante em que começa (via `custom` do AnimatePresence). Na troca de ato, o quadro é recortado
+ * da esquerda para a direita com a mesma curva e duração da cortina, que entra por baixo: a borda da cortina empurra o
+ * quadro para fora, sem deixar o slide novo aparecer no meio.
+ */
+const boardVariants = (reduce: boolean) => ({
+    hidden: { opacity: 0, clipPath: 'inset(0% 0% 0% 0%)' },
+    shown: { opacity: 1, clipPath: 'inset(0% 0% 0% 0%)', transition: { duration: DUR.enter, ease: EASE_OUT } },
+    exit: (mode: BoardExit) => (mode === 'wipe' && !reduce
+        ? { clipPath: 'inset(0% 0% 0% 100%)', transition: { duration: CURTAIN_WIPE_S, ease: EASE_IN_OUT } }
+        : { opacity: 0, transition: { duration: DUR.exit, ease: EASE_OUT } }),
+});
+const VARIANTS_MOTION = boardVariants(false);
+const VARIANTS_REDUCED = boardVariants(true);
+
+export const InquiryBoard = ({ board, exitMode, onContinue, onBack }: InquiryBoardProps) => {
+    const reduce = useReducedMotion() ?? false;
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -127,13 +154,15 @@ export const InquiryBoard = ({ board, onContinue, onBack }: InquiryBoardProps) =
             role="dialog"
             aria-label="Quadro do inquérito"
             className="absolute inset-0 z-40 bg-[#05070d]/95 backdrop-blur-xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            custom={exitMode}
+            variants={reduce ? VARIANTS_REDUCED : VARIANTS_MOTION}
+            initial="hidden"
+            animate="shown"
+            exit="exit"
         >
-            <FitStage>
-                <div className="flex flex-col gap-6 px-2 font-body text-white select-none">
+            {/* Margem lateral do próprio quadro (px-12): o palco aproveita a largura toda e o texto ganha escala. */}
+            <FitStage padX={PAD_X_SELF}>
+                <div className="flex flex-col gap-6 px-12 font-body text-white select-none">
                     <header className="flex items-end justify-between gap-6">
                         <div className="flex flex-col gap-1">
                             <span className="font-mono text-[15px] uppercase tracking-[0.25em] text-amber-300">Quadro do inquérito</span>

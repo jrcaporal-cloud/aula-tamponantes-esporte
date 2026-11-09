@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
+import { DUR, EASE_OUT } from '../../lib/motion';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
-import { C, PANEL_BG } from './kit/palette';
+import { BODY_FONT, C, PANEL_BG } from './kit/palette';
 import { Panel } from './kit/ui';
 import { Tabs, Tag } from './ato1/ui';
 import { LAST_LAP_STEPS, SUSPECTS } from './ato1/content';
@@ -39,7 +40,7 @@ const LastLapSim = () => {
             <div className="flex h-10 items-center justify-between gap-3">
                 <Tabs labels={tabs} step={step} onSelect={setStep} layoutId="lastlap-tabs" />
                 <div className="flex items-center gap-2">
-                    <Tag color={C.carnoSoft}>caso fictício</Tag>
+                    <Tag color={C.caveat}>caso fictício</Tag>
                     <Tag>valores ilustrativos</Tag>
                 </div>
             </div>
@@ -55,11 +56,11 @@ const LastLapSim = () => {
                     </Panel>
 
                     {/* Sem AnimatePresence: trocar de passo rápido nunca deixa texto velho na tela. */}
-                    <motion.div key={step} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
+                    <motion.div key={step} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE_OUT }}
                         className="min-h-0 flex-1 overflow-hidden rounded-2xl border border-white/10 px-4 py-3"
                         style={PANEL_BG}>
-                        <h3 className="font-display text-[1.3rem] font-semibold leading-tight"
-                            style={{ color: step === 2 ? C.acidSoft : C.text }}>
+                        <h3 className="font-body text-[1.3rem] font-semibold leading-tight text-balance"
+                            style={{ ...BODY_FONT, color: step === 2 ? C.acidSoft : C.text }}>
                             {story.headline}
                         </h3>
                         <p className="mt-1.5 text-[16px] leading-snug text-gray-100">{story.text}</p>
@@ -67,7 +68,7 @@ const LastLapSim = () => {
                             <div className="mt-2.5 flex flex-wrap gap-1.5">
                                 {SUSPECTS.map((s, i) => (
                                     <motion.span key={s} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: reduce ? 0 : 0.25 + i * 0.12 }}
+                                        transition={{ delay: reduce ? 0 : 0.25 + i * 0.12, duration: DUR.enter, ease: EASE_OUT }}
                                         className="rounded-md border px-2 py-0.5 font-mono text-[16px]"
                                         style={{ borderColor: `${C.acid}80`, color: C.acidSoft }}>
                                         {s}

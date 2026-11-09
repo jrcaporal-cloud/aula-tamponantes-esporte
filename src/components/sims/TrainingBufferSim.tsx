@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { DUR, EASE_IN_OUT, EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { br, signed } from './kit/format';
 import { C } from './kit/palette';
@@ -45,8 +46,9 @@ const BarChart = ({ step }: { step: number }) => {
                     <g key={r.id} style={{ opacity: shown ? (current ? 1 : 0.55) : 0, transition: 'opacity 0.5s' }}>
                         <SvgText x={20} y={cy - 4} text={r.label} size={18} color="#fff" weight={700} />
                         <SvgText x={20} y={cy + 20} text={r.sub} size={16} color={C.muted} weight={500} />
-                        <rect x={x} y={cy - 14} width={shown ? w : 0} height={28} rx={6} fill={color} fillOpacity={0.85}
-                            style={{ transition: 'width 0.7s ease-out' }} />
+                        <motion.rect x={x} y={cy - 14} width={w} height={28} rx={6} fill={color} fillOpacity={0.85}
+                            style={{ transformBox: 'fill-box', originX: neg ? 1 : 0 }}
+                            initial={false} animate={{ scaleX: shown ? 1 : 0 }} transition={{ duration: 0.7, ease: EASE_OUT }} />
                         <SvgText x={neg ? x - 8 : x + w + 8} y={cy + 7} text={`${signed(r.pct)}%`} anchor={neg ? 'end' : 'start'} size={20} color={color} weight={700} />
                     </g>
                 );
@@ -63,9 +65,12 @@ const MedboGauge = () => {
             {MEDBO.map((m, i) => (
                 <div key={m.id} className="flex items-center gap-3 text-[15px]">
                     <span className="w-[84px] shrink-0 text-gray-100">{m.label}</span>
-                    <div className="relative h-4 flex-1 rounded-full bg-gradient-to-r from-cyan-400/40 to-orange-400/60">
-                        <motion.span className="absolute top-1/2 h-6 w-1.5 -translate-y-1/2 rounded bg-white"
-                            initial={{ left: '0%' }} animate={{ left: `${sxp(m.ph)}%` }} transition={{ duration: 0.8, delay: i * 0.2 }} />
+                    <div className="relative h-4 flex-1 rounded-full bg-gradient-to-r from-cyan-400/40 to-orange-400/60 [container-type:inline-size]">
+                        {/* marcador anda em unidades da trilha (cqw): invólucro de largura zero, nada vaza para os lados */}
+                        <motion.div className="pointer-events-none absolute inset-y-0 left-0 w-0"
+                            initial={{ x: '0cqw' }} animate={{ x: `${sxp(m.ph)}cqw` }} transition={{ duration: 0.8, delay: i * 0.2, ease: EASE_IN_OUT }}>
+                            <span className="absolute left-0 top-1/2 h-6 w-1.5 -translate-y-1/2 rounded bg-white" />
+                        </motion.div>
                     </div>
                     <span className="w-[56px] shrink-0 text-right font-mono text-white">{br(m.ph, 3)}</span>
                 </div>
@@ -85,7 +90,7 @@ const TrainingBufferSim = () => {
             <Panel className="shrink-0" glow={C.base}><BarChart step={step} /></Panel>
             <Panel className="flex min-w-0 flex-1 flex-col gap-3 p-5" state={step === 3 ? 'active' : 'idle'} glow={C.risk}>
                 <StepText step={step} headline={plan.headline} text={plan.text} accent={step === 3 ? C.risk : C.baseSoft} />
-                <motion.div key={step} className="mt-auto flex flex-col gap-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.2 }}>
+                <motion.div key={step} className="mt-auto flex flex-col gap-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: DUR.text, ease: EASE_OUT }}>
                     {step === 4 ? <MedboGauge /> : (
                         <>
                             <div className="flex flex-wrap gap-1.5">{rows.map(r => <Tag key={r.id} kind={r.kind}>{`HUMANO · ${r.kindLabel}`}</Tag>)}</div>

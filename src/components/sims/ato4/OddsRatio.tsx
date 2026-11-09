@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { br } from '../kit/format';
@@ -32,7 +33,7 @@ export const OddsRatio = ({ reduce }: { reduce: boolean }) => (
             <line x1={sx(1)} x2={sx(1)} y1={24} y2={AXIS_Y} stroke={C.text} strokeOpacity={0.6} strokeDasharray="5 5" />
             <SvgText x={sx(1) + 8} y={40} text="1 = sem diferença" color={C.muted} size={16} weight={500} />
             <motion.g initial={reduce ? false : { opacity: 0, scaleX: 0.2 }} animate={{ opacity: 1, scaleX: 1 }}
-                style={{ transformOrigin: `${sx(ODDS.value)}px 75px` }} transition={{ duration: 0.8, delay: 0.3 }}>
+                style={{ transformOrigin: `${sx(ODDS.value)}px 75px` }} transition={{ duration: 0.8, delay: 0.3, ease: EASE_OUT }}>
                 <line x1={sx(ODDS.low)} x2={sx(ODDS.high)} y1={75} y2={75} stroke={C.risk} strokeWidth={4} strokeLinecap="round" />
                 <rect x={sx(ODDS.value) - 11} y={64} width={22} height={22} fill={C.risk} transform={`rotate(45 ${sx(ODDS.value)} 75)`} />
             </motion.g>

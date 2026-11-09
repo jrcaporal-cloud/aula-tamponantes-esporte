@@ -29,7 +29,7 @@ const CompetitionDaySim = () => {
             <div className="flex min-w-0 flex-1 flex-col gap-3">
                 <FadeSwap id={`h-${step}`} className="px-1">
                     <p className="m-0 truncate text-[18px] text-gray-100">
-                        <span className="font-display text-[24px] font-semibold text-white">{day.name}</span>
+                        <span className="font-body text-[24px] font-semibold text-white">{day.name}</span>
                         <span className="text-gray-300"> · {day.who}</span>
                     </p>
                 </FadeSwap>
@@ -52,7 +52,7 @@ const CompetitionDaySim = () => {
                             <div className="flex items-center gap-2">
                                 <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full text-[16px] font-extrabold"
                                     style={{ background: C.lactate, color: '#04080F' }}>{c.n}</span>
-                                <span className="font-display text-[19px] font-semibold leading-tight text-white">{c.title}</span>
+                                <span className="font-body text-[19px] font-semibold leading-tight text-white">{c.title}</span>
                             </div>
                             <p className="m-0 text-[16px] leading-snug text-gray-100">{c.text}</p>
                             <div className="mt-auto"><Source>{c.source}</Source></div>

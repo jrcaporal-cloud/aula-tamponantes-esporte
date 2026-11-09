@@ -25,6 +25,8 @@
  * Valores fixos (sem vw): o palco já escala o slide inteiro para caber na tela.
  */
 :root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --bg-primary: #04080F;
   --bg-secondary: #111827;
   --card-bg: #1F2937;
@@ -82,25 +84,6 @@ h6 {
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   width: 100%;
-}
-
-/* Expandable Card CSS for the Biological Passport / Bento Slides */
-.expand-content {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 500ms ease;
-  overflow: hidden;
-  margin-top: 0;
-}
-
-.expand-content>p,
-.expand-content>ul {
-  overflow: hidden;
-}
-
-.group:hover .expand-content {
-  grid-template-rows: 1fr;
-  margin-top: 1rem;
 }
 
 .chevron {
@@ -221,12 +204,28 @@ h6 {
   text-wrap: pretty;
 }
 
+/*
+ * Movimento reduzido: sem deslocamento, escala ou pulsos em loop — mas as trocas de estado continuam
+ * visíveis como esmaecimento curto (não um corte seco de 0,01 ms). Transições de cor/opacidade ficam;
+ * as de transform viram instantâneas. Animações CSS em loop param no 1º ciclo.
+ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+  .reveal, .reveal-scale {
+    animation-name: fade-only !important;
+    animation-duration: 0.25s !important;
+  }
+  .chevron {
+    transition: none !important;
+  }
+}
+
+@keyframes fade-only {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Rótulos com tamanho fixo minúsculo (9–11px) ficam ilegíveis projetados. */
@@ -234,6 +233,22 @@ h6 {
 .deck-stage .text-\[10px\] { font-size: 11.5px; }
 .deck-stage .text-\[11px\] { font-size: 12.5px; }
 
-/* Elementos de apoio (botão de detalhamento etc.) somem com o mouse parado: projeção limpa. */
-.hide-when-idle { transition: opacity 500ms ease; }
-.deck-root[data-idle='true'] .hide-when-idle { opacity: 0; pointer-events: none; }
+/*
+ * Elementos de apoio (navegação, botões 3D/detalhamento) somem com o mouse parado: projeção limpa.
+ * Exceção: com foco de teclado dentro (Tab), continuam visíveis — o foco nunca fica num botão invisível.
+ */
+.hide-when-idle { transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
+.deck-root[data-idle='true'] .hide-when-idle:not(:has(:focus-visible)) {
+  opacity: 0;
+  transform: translateY(0.5rem);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .deck-root[data-idle='true'] .hide-when-idle:not(:has(:focus-visible)) { transform: none; }
+}
+
+/* Anel de foco da aula: visível no projetor, na cor de destaque, só para teclado. */
+:focus-visible {
+  outline: 2px solid var(--color-brand-accent);
+  outline-offset: 2px;
+}

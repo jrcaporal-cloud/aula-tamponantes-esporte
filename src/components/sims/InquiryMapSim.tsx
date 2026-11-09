@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C, PANEL_BG } from './kit/palette';
 import { CountUp } from './kit/CountUp';
@@ -26,11 +27,11 @@ const PrizeCard = ({ shown }: { shown: boolean }) => {
                 boxShadow: shown ? `0 0 34px -6px ${C.lactate}` : 'none',
             }}>
             {shown ? (
-                <motion.div className="flex h-full flex-col justify-between" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
+                <motion.div className="flex h-full flex-col justify-between" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, ease: EASE_OUT }}>
                     <p className="font-mono text-[16px] uppercase tracking-wide" style={{ color: C.lactate }}>{PRIZE.title}</p>
                     {PRIZE.lines.map(line => (
                         <div key={line.value} className="flex items-center gap-2.5">
-                            <CountUp text={line.value} delay={0.25} className="w-[88px] shrink-0 whitespace-nowrap font-display text-[1.4rem] font-bold leading-none text-white" />
+                            <CountUp text={line.value} delay={0.25} className="w-[88px] shrink-0 whitespace-nowrap font-body text-[1.4rem] font-bold leading-none text-white" />
                             <span className="text-[16px] leading-tight text-gray-200">{line.text}</span>
                         </div>
                     ))}
@@ -57,7 +58,7 @@ const InquiryMapSim = () => {
     return (
         <div className="not-prose flex w-full select-none flex-col gap-3 font-body text-white" style={{ height: 516 }}>
             <div className="flex h-10 items-center justify-between gap-3">
-                <motion.p key={step} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}
+                <motion.p key={step} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, ease: EASE_OUT }}
                     className="text-[1.12rem] text-gray-100">
                     {prize
                         ? <>Sete capítulos para um prêmio <strong style={{ color: C.lactate }}>pequeno</strong></>
@@ -95,9 +96,9 @@ const InquiryMapSim = () => {
                     <motion.div className="absolute flex items-center justify-center rounded-xl border px-4 text-center"
                         style={{ left: BANNER.x, top: BANNER.y, width: BANNER.w, height: BANNER.h,
                             ...PANEL_BG, borderColor: `${C.lactate}66` }}
-                        initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.5, delay: reduce ? 0 : 0.3 }}>
+                        initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.5, delay: reduce ? 0 : 0.3, ease: EASE_OUT }}>
                         <div>
-                            <p className="font-display text-[1.3rem] font-semibold leading-tight text-white">{PRIZE.question}</p>
+                            <p className="font-body text-[1.3rem] font-semibold leading-tight text-white">{PRIZE.question}</p>
                             <p className="mt-0.5 text-[16px] leading-tight" style={{ color: C.baseSoft }}>{PRIZE.source}</p>
                         </div>
                     </motion.div>

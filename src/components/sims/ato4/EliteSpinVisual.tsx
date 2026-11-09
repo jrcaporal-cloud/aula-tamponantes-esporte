@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { KERN_PAIRS, KERN_QUOTE, MLG_META } from './eliteContent';
@@ -30,18 +31,18 @@ const AbstractCard = ({ reduce }: { reduce: boolean }) => (
         </div>
         <div className="flex flex-col gap-1">
             <span className="text-[15px] font-semibold text-gray-300">Conclusão</span>
-            <p className="m-0 font-display text-[1.32rem] font-semibold leading-snug text-white">
+            <p className="m-0 font-body text-[1.32rem] font-semibold leading-snug text-white">
                 <motion.span className="px-1"
                     style={{ backgroundImage: `linear-gradient(${PINK}55, ${PINK}55)`, backgroundRepeat: 'no-repeat', backgroundPosition: 'left center' }}
                     initial={reduce ? false : { backgroundSize: '0% 100%' }} animate={{ backgroundSize: '100% 100%' }}
-                    transition={{ duration: 0.8, delay: 0.25, ease: 'easeInOut' }}>
+                    transition={{ duration: 0.8, delay: 0.25, ease: EASE_OUT }}>
                     “{KERN_QUOTE}”
                 </motion.span>
             </p>
         </div>
         <motion.span className="absolute right-4 bottom-4 rounded-lg border-2 px-3 py-0.5 font-display text-[1.5rem] font-semibold uppercase"
             style={{ color: PINK, borderColor: PINK, rotate: -8 }}
-            initial={reduce ? false : { opacity: 0, scale: 1.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: 0.95 }}>
+            initial={reduce ? false : { opacity: 0, scale: 1.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: 0.95, ease: EASE_OUT }}>
             spin
         </motion.span>
     </div>
@@ -59,7 +60,7 @@ const Bar = ({ y, value, color, delay, reduce }: { y: number; value: number; col
     return (
         <motion.rect x={x} y={y} width={w} height={20} rx={5} fill={color} fillOpacity={0.85}
             style={{ transformBox: 'fill-box', transformOrigin: value < 0 ? 'right center' : 'left center' }}
-            initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5, delay }} />
+            initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5, delay, ease: EASE_OUT }} />
     );
 };
 
@@ -89,7 +90,7 @@ const NumbersPanel = ({ reduce }: { reduce: boolean }) => {
             <line x1={ZERO} x2={ZERO} y1={318} y2={360} stroke={C.text} strokeOpacity={0.6} strokeDasharray="4 4" />
             <motion.rect x={ciX(MLG_META.lo)} y={338} width={ciX(MLG_META.hi) - ciX(MLG_META.lo)} height={5} rx={2.5} fill={C.carno}
                 style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
-                initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5, delay: 0.6 }} />
+                initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5, delay: 0.6, ease: EASE_OUT }} />
             <rect x={ciX(MLG_META.est) - 7} y={333} width={14} height={14} fill={C.carnoSoft} transform={`rotate(45 ${ciX(MLG_META.est)} 340)`} />
             <SvgText x={ciX(MLG_META.lo)} y={378} anchor="middle" text="−0,71" color={C.muted} size={16} weight={500} />
             <SvgText x={ZERO} y={378} anchor="middle" text="0" color={C.text} size={16} weight={700} />

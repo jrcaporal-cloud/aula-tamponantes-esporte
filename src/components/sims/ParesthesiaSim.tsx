@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
@@ -30,7 +31,7 @@ const ParesthesiaSim = () => {
             </div>
             <div className="flex-1 min-h-0 grid gap-3" style={{ gridTemplateColumns: '700px minmax(0,1fr)' }}>
                 <Panel state="active" glow={step === 3 ? C.carno : C.risk} className="p-3 flex items-center justify-center">
-                    <motion.div key={curveStep ? 'curve' : step} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}
+                    <motion.div key={curveStep ? 'curve' : step} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, ease: EASE_OUT }}
                         className="h-full w-full flex items-center justify-center">
                         {curveStep && <PlasmaCurve showArea={step === 3} reduce={reduce} />}
                         {step === 1 && <ItchNeuron reduce={reduce} />}

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import type { ReactNode } from 'react';
-import { C, PANEL_BG } from '../kit/palette';
+import { BODY_FONT, C, PANEL_BG } from '../kit/palette';
 
 /** Peças comuns aos simuladores do Ato II (A Perícia). Texto HTML sempre ≥15 px de projeto. */
 
@@ -23,7 +24,7 @@ const ActTabs = ({ labels, step, onSelect, layoutId }: ActTabsProps) => (
             const active = i === step;
             return (
                 <button key={label} type="button" role="tab" aria-selected={active} onClick={() => onSelect(i)}
-                    className="relative cursor-pointer rounded-xl px-3 py-1.5 text-[15px] font-semibold transition-colors"
+                    className="relative cursor-pointer rounded-xl px-3 py-1.5 text-[16px] font-semibold transition-colors"
                     style={{ color: active ? '#fff' : '#D1D5DB' }}>
                     {active && (
                         <motion.span layoutId={layoutId} className="absolute inset-0 rounded-xl border border-brand-accent/70 bg-brand-deep/45"
@@ -68,7 +69,7 @@ const KIND_COLOR: Record<EvidenceKind, string> = {
     'in vitro': '#E5E7EB',
     revisão: C.co2,
     cálculo: C.baseSoft,
-    ilustrativo: C.lactate,
+    ilustrativo: C.caveat,
     teoria: C.co2,
 };
 
@@ -94,10 +95,10 @@ interface StepTextProps {
 
 /** Narração do passo: entra com fade a cada troca (sem AnimatePresence, nada de texto velho preso). */
 export const StepText = ({ step, headline, text, accent = C.base, footer, className = '' }: StepTextProps) => (
-    <motion.div key={step} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
+    <motion.div key={step} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE_OUT }}
         className={`flex flex-col gap-2 ${className}`}>
-        <h3 className="font-display text-[1.3rem] font-semibold leading-tight" style={{ color: accent }}>{headline}</h3>
-        <p className="text-[16px] leading-snug text-gray-100">{text}</p>
+        <h3 className="font-body text-[1.3rem] font-semibold leading-tight text-balance" style={{ ...BODY_FONT, color: accent }}>{headline}</h3>
+        <p className="text-[16px] leading-snug text-gray-100 text-pretty">{text}</p>
         {footer}
     </motion.div>
 );

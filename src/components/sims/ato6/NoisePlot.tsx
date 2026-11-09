@@ -61,7 +61,8 @@ export const NoisePlot = ({ gain, showNoise }: NoisePlotProps) => {
                 </g>
             ))}
             {T_TICKS.map(t => (
-                <SvgText key={t} x={x(t)} y={BOT + 24} anchor="middle" text={`${t} s`} color={C.muted} size={16} weight={500} />
+                // O último tick fica preso à borda direita: centrado, "600 s" saía do viewBox.
+                <SvgText key={t} x={t === T_MAX ? R : x(t)} y={BOT + 24} anchor={t === T_MAX ? 'end' : 'middle'} text={`${t} s`} color={C.muted} size={16} weight={500} />
             ))}
             <line x1={L} x2={R} y1={BOT} y2={BOT} stroke="rgba(255,255,255,0.35)" />
             <SvgText x={(L + R) / 2} y={NOISE_H - 8} anchor="middle" text="duração do esforço (escala log)" color={C.muted} size={16} weight={500} />
@@ -98,7 +99,8 @@ export const NoisePlot = ({ gain, showNoise }: NoisePlotProps) => {
             <circle cx={x(tte)} cy={y(100)} r={7} fill={TTE_COLOR} stroke="#04080F" strokeWidth={2} />
             <SvgText x={x(tte)} y={y(100) - 16} anchor="middle" text={`TTE ${signed(tteChange(gain), 0)}%`} color={TTE_COLOR} size={18} weight={700} />
             <circle cx={x(tt)} cy={ttY} r={7} fill={TT_COLOR} stroke="#04080F" strokeWidth={2} />
-            <SvgText x={x(tt) - 20} y={ttY - 4} anchor="end" text={`${signed(ttChange(gain), 1)}%`} color={TT_COLOR} size={18} weight={700} />
+            {/* Acima e à direita do ponto: à esquerda, a linha ciano atravessava o número. */}
+            <SvgText x={x(tt) + 12} y={ttY - 26} text={`${signed(ttChange(gain), 1)}%`} color={TT_COLOR} size={18} weight={700} />
         </svg>
     );
 };

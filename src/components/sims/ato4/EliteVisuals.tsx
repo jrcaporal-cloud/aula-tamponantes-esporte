@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { DUR, EASE_IN_OUT, EASE_OUT, stagger } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { br } from '../kit/format';
@@ -23,9 +24,9 @@ export const SprintersVisual = ({ reduce }: { reduce: boolean }) => (
                 </div>
                 <div className="h-[22px] rounded-full bg-white/[0.06] overflow-hidden flex items-center">
                     {b.value > 0
-                        ? <motion.div className="h-full rounded-full" style={{ background: b.color }}
-                            initial={reduce ? false : { width: 0 }} animate={{ width: `${(b.value / 60) * 100}%` }}
-                            transition={{ duration: 0.9, delay: 0.2 + i * 0.3 }} />
+                        ? <motion.div className="h-full rounded-full" style={{ background: b.color, width: `${(b.value / 60) * 100}%` }}
+                            initial={reduce ? false : { clipPath: 'inset(0 100% 0 0 round 11px)' }} animate={{ clipPath: 'inset(0 0% 0 0 round 11px)' }}
+                            transition={{ duration: DUR.bar, delay: stagger(i, 0.15), ease: EASE_OUT }} />
                         : <span className="ml-2 h-[3px] w-[40%] rounded-full" style={{ background: b.color }} />}
                 </div>
             </div>
@@ -46,7 +47,8 @@ const sx = (v: number) => 30 + ((v - MIN) / (MAX - MIN)) * (W - 60);
 
 const CiRow = ({ y, lo, hi, label, color, faded = false }: { y: number; lo: number; hi: number; label: string; color: string; faded?: boolean }) => (
     <g opacity={faded ? 0.4 : 1}>
-        <line x1={sx(lo)} x2={sx(hi)} y1={y} y2={y} stroke={color} strokeWidth={4} strokeLinecap="round" style={{ transition: 'all 300ms' }} />
+        <motion.line initial={false} animate={{ x1: sx(lo), x2: sx(hi) }} transition={{ duration: DUR.morph, ease: EASE_IN_OUT }}
+            y1={y} y2={y} stroke={color} strokeWidth={4} strokeLinecap="round" />
         <rect x={sx(ROW.diff) - 9} y={y - 9} width={18} height={18} fill={color} transform={`rotate(45 ${sx(ROW.diff)} ${y})`} />
         <SvgText x={sx(MIN) + 4} y={y + 6} text={label} color={color} size={16} weight={700} />
     </g>

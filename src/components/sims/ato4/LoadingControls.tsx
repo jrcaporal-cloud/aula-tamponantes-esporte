@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { br } from '../kit/format';
 import { BRAZIL_CAP_G } from './loadingModel';
@@ -67,7 +68,7 @@ export const LoadingControls = ({ dose, weeks, onDose, onWeeks }: LoadingControl
 export const YieldCard = ({ reduce }: { reduce: boolean }) => (
     <motion.div className="absolute left-[78px] top-[44px] rounded-xl border border-white/15 p-3 flex gap-3 items-center"
         style={{ background: 'rgba(4,10,20,0.92)' }}
-        initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }}>
+        initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2, ease: EASE_OUT }}>
         <div className="grid grid-cols-10 gap-[3px]" aria-hidden>
             {Array.from({ length: 100 }, (_, i) => (
                 <span key={i} className="w-[9px] h-[9px] rounded-full"
@@ -75,7 +76,7 @@ export const YieldCard = ({ reduce }: { reduce: boolean }) => (
             ))}
         </div>
         <div className="flex flex-col gap-1 max-w-[190px]">
-            <span className="font-display text-[1.5rem] leading-none font-semibold" style={{ color: C.carno }}>~3 de 100</span>
+            <span className="font-body text-[1.5rem] leading-none font-semibold" style={{ color: C.carno }}>~3 de 100</span>
             <span className="text-[16px] leading-snug text-gray-200">179 g engolidos → ~5 g viram carnosina (cálculo)</span>
         </div>
     </motion.div>

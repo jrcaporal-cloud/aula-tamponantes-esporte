@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
@@ -18,8 +19,8 @@ const Timeline = ({ step, onSelect }: { step: number; onSelect: (i: number) => v
     return (
         <div className="relative grid gap-2" style={{ gridTemplateColumns: `repeat(${n}, minmax(0,1fr))` }} role="tablist" aria-label="Linha do tempo">
             <div className="absolute top-[17px] h-[2px] bg-white/15" style={{ left: `${edge}%`, right: `${edge}%` }} />
-            <motion.div className="absolute top-[17px] h-[2px]" style={{ left: `${edge}%`, background: C.carno }}
-                animate={{ width: `${(step / (n - 1)) * (100 - 2 * edge)}%` }} transition={{ duration: 0.5, ease: 'easeOut' }} />
+            <motion.div className="absolute top-[17px] h-[2px]" style={{ left: `${edge}%`, right: `${edge}%`, background: C.carno, originX: 0 }}
+                initial={false} animate={{ scaleX: step / (n - 1) }} transition={{ duration: DUR.morph, ease: EASE_OUT }} />
             {HARRIS_STEPS.map((s, i) => {
                 const active = i === step;
                 const done = i < step;
@@ -52,7 +53,7 @@ const HarrisStorySim = () => {
             <Timeline step={step} onSelect={setStep} />
             <div className="flex-1 min-h-0 grid gap-3" style={{ gridTemplateColumns: '600px minmax(0,1fr)' }}>
                 <Panel state="active" glow={step === 0 ? C.base : step === 3 ? C.lactate : C.carno} className="p-4">
-                    <motion.div key={step} className="h-full" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+                    <motion.div key={step} className="h-full" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: DUR.enter, ease: EASE_OUT }}>
                         {step === 0 && <TanksVisual reduce={reduce} />}
                         {step === 1 && <PatentVisual reduce={reduce} />}
                         {step === 2 && <ChichesterVisual reduce={reduce} />}

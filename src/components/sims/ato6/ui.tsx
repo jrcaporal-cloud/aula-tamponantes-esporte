@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import type { ReactNode } from 'react';
 import { C, PANEL_BG } from '../kit/palette';
 
@@ -41,7 +42,7 @@ const Tabs = ({ labels, step, onSelect, layoutId }: TabsProps) => (
 );
 
 /** Selo (ex.: "simulação · semente fixa"). */
-export const Tag = ({ children, color = C.lactate }: { children: ReactNode; color?: string }) => (
+export const Tag = ({ children, color = C.caveat }: { children: ReactNode; color?: string }) => (
     <span className="inline-flex shrink-0 items-center whitespace-nowrap rounded-md border px-2.5 py-1 font-mono text-[15px]"
         style={{ ...PANEL_BG, borderColor: `${color}80`, color }}>
         {children}
@@ -82,10 +83,10 @@ interface NarrationProps {
 
 /** Texto do passo: manchete + duas ou três frases, com fade a cada troca. */
 export const Narration = ({ stepKey, headline, text, color = C.baseSoft }: NarrationProps) => (
-    <motion.div key={stepKey} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
+    <motion.div key={stepKey} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE_OUT }}
         className="flex flex-col gap-1.5">
-        <p className="font-display text-[1.35rem] font-semibold leading-tight" style={{ color }}>{headline}</p>
-        <p className="text-[17px] leading-snug text-gray-100">{text}</p>
+        <p className="font-body text-[1.35rem] font-semibold leading-tight text-balance" style={{ color }}>{headline}</p>
+        <p className="text-[17px] leading-snug text-gray-100 text-pretty">{text}</p>
     </motion.div>
 );
 
@@ -132,5 +133,5 @@ export const BigStat = ({ value, label, color = C.text, size = 40 }: BigStatProp
 );
 
 /** Selos padrão do ato. */
-export const SimChip = () => <Tag color={C.lactate}>simulação · semente fixa</Tag>;
-export const IllustrativeChip = ({ text = 'valores ilustrativos' }: { text?: string }) => <Tag color={C.lactate}>{text}</Tag>;
+export const SimChip = () => <Tag color={C.caveat}>simulação · semente fixa</Tag>;
+export const IllustrativeChip = ({ text = 'valores ilustrativos' }: { text?: string }) => <Tag color={C.caveat}>{text}</Tag>;

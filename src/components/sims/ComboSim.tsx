@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel, StepTabs } from './kit/ui';
@@ -35,7 +36,7 @@ const NullArms = () => {
                 {DASILVA_ARMS.map((arm, i) => (
                     <motion.div key={arm} className="rounded-xl border px-3 py-4 flex flex-col items-center gap-2"
                         style={{ borderColor: `${ARM_COLOR[i]}88`, background: `${ARM_COLOR[i]}12` }}
-                        initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: i * 0.12 }}>
+                        initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: i * 0.12, ease: EASE_OUT }}>
                         <span className="text-[1.05rem] font-semibold text-white text-center leading-tight">{arm}</span>
                         <span className="font-mono text-[16px]" style={{ color: C.muted }}>sem melhora</span>
                     </motion.div>
@@ -62,7 +63,7 @@ const ComboSim = () => {
                             <ComboBars key={p.heading} panel={p} rowH={info.panels.length > 1 ? 38 : 62} />
                         ))}
                     </StepFade>
-                    {hasSum && <Tag color={C.lactate}>“se somasse” = soma dos isolados (cálculo)</Tag>}
+                    {hasSum && <Tag color={C.caveat}>“se somasse” = soma dos isolados (cálculo)</Tag>}
                 </Panel>
                 <Panel state="active" glow={color} className="p-5 flex flex-col gap-3">
                     <StepFade stepKey={step} className="flex flex-col gap-3">

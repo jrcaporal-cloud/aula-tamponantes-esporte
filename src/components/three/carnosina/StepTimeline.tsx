@@ -28,7 +28,7 @@ export const StepTimeline = ({ steps, step, playing, accent, onGo, onTogglePlay 
                         </div>
                     )}
                     <button type="button" onClick={() => onGo(i)} title={s.short} aria-label={`${i + 1}. ${s.title}`} aria-current={i === step ? 'step' : undefined}
-                        className={`w-9 h-9 rounded-full text-[14px] font-semibold transition-all duration-300 ${i === step ? 'text-white border-2 scale-110' : i < step ? 'bg-white/5 border hover:bg-white/10' : 'bg-white/5 border border-white/15 text-gray-400 hover:border-white/30 hover:text-gray-100'}`}
+                        className={`w-9 h-9 rounded-full text-[14px] font-semibold transition-[scale,transform,background-color,border-color,color,box-shadow] duration-300 ${i === step ? 'text-white border-2 scale-110' : i < step ? 'bg-white/5 border hover:bg-white/10' : 'bg-white/5 border border-white/15 text-gray-400 hover:border-white/30 hover:text-gray-100'}`}
                         style={i === step ? { background: `${accent}33`, borderColor: accent, boxShadow: `0 0 16px ${accent}80` } : i < step ? { borderColor: `${accent}66`, color: accent } : undefined}>
                         {i + 1}
                     </button>

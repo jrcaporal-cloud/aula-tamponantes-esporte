@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
@@ -34,7 +35,7 @@ interface MembraneSceneProps {
     reduce: boolean;
 }
 
-const fade = { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4, delay: 0.15 } };
+const fade = { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4, delay: 0.15, ease: EASE_OUT } };
 
 /** Passo 0: o bicarbonato sobe no sangue, mas dentro da fibra nada muda. */
 const OutsideOnly = ({ alkalosis }: { alkalosis: boolean }) => {
@@ -52,7 +53,8 @@ const OutsideOnly = ({ alkalosis }: { alkalosis: boolean }) => {
             </g>
             <SvgText x={gx} y={372} text="HCO₃⁻ no sangue" size={16} color="#CBD5E1" weight={500} />
             <rect x={gx} y={384} width={gw} height={18} rx={9} fill="rgba(255,255,255,0.08)" />
-            <rect x={gx} y={384} width={scale(v) - gx} height={18} rx={9} fill={C.base} style={{ transition: 'width 0.6s' }} />
+            <rect x={gx} y={384} width={gw} height={18} fill={C.base}
+                style={{ clipPath: `inset(0 ${100 - ((scale(v) - gx) / gw) * 100}% 0 0 round 9px)`, transition: 'clip-path 0.6s var(--ease-out)' }} />
             <line x1={scale(BLOOD_HCO3.repouso)} x2={scale(BLOOD_HCO3.repouso)} y1={378} y2={408} stroke="#fff" strokeWidth={2} strokeDasharray="3 3" />
             <SvgText x={gx} y={428} text={`antes ${br(BLOOD_HCO3.repouso, 1)}`} size={16} color="#CBD5E1" weight={500} />
             <SvgText x={gx} y={428} text={`antes ${br(BLOOD_HCO3.repouso, 1)}`} size={16} color="#CBD5E1" weight={500} />

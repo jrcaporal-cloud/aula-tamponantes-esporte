@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { DUR, EASE_OUT, stagger } from '../../../lib/motion';
 import { Scissors } from 'lucide-react';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
@@ -42,7 +43,7 @@ export const HalfLifeChart = ({ reduce }: { reduce: boolean }) => (
                     <g key={h.name}>
                         <motion.path d={decayPath(h.minutes)} fill="none" stroke={COLORS[i]} strokeWidth={4} strokeLinecap="round"
                             initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }}
-                            transition={{ duration: 1.4, delay: 0.2 + i * 0.25, ease: 'easeOut' }} />
+                            transition={{ duration: DUR.bar, delay: stagger(i, 0.15), ease: EASE_OUT }} />
                         <circle cx={sx(CHECK_MIN)} cy={sy(left)} r={6} fill={COLORS[i]} stroke="#04080F" strokeWidth={2} />
                         <SvgText x={W - M.r + 10} y={sy(remaining(T_MAX, h.minutes)) + (i === 2 ? 6 : i === 0 ? 4 : -18)}
                             text={`${h.name} ${h.label}`} color={COLORS[i]} size={16} weight={700} />
@@ -75,9 +76,12 @@ export const HarrisBars = ({ reduce }: { reduce: boolean }) => (
                     </div>
                     <div className="h-[22px] rounded-full bg-white/[0.06] overflow-hidden">
                         <motion.div className="h-full rounded-full"
-                            style={{ background: isCarnosine ? `repeating-linear-gradient(135deg, ${C.carnoSoft}, ${C.carnoSoft} 8px, ${C.carno} 8px, ${C.carno} 16px)` : C.carno }}
-                            initial={reduce ? false : { width: 0 }} animate={{ width: `${(b.value / 80) * 100}%` }}
-                            transition={{ duration: 0.9, delay: 0.2 + i * 0.25, ease: 'easeOut' }} />
+                            style={{
+                                background: isCarnosine ? `repeating-linear-gradient(135deg, ${C.carnoSoft}, ${C.carnoSoft} 8px, ${C.carno} 8px, ${C.carno} 16px)` : C.carno,
+                                width: `${(b.value / 80) * 100}%`,
+                            }}
+                            initial={reduce ? false : { clipPath: 'inset(0 100% 0 0 round 11px)' }} animate={{ clipPath: 'inset(0 0% 0 0 round 11px)' }}
+                            transition={{ duration: DUR.bar, delay: stagger(i, 0.15), ease: EASE_OUT }} />
                     </div>
                 </div>
             );

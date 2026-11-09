@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
@@ -24,7 +25,7 @@ const DomsSim = () => {
                 <Panel className="shrink-0" glow={C.risk} state={step === 1 ? 'active' : 'idle'}>
                     <motion.svg key={chrono ? 'c' : 'l'} viewBox={`0 0 ${W} ${H}`} width="100%" height={H} role="img"
                         aria-label={chrono ? 'Lactato some em minutos, dor aparece em dias' : 'Corrida no plano e em descida'}
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, ease: EASE_OUT }}>
                         {chrono ? <Chronology reduce={reduce} /> : (
                             <>
                                 <Lane x={0} title="no plano" pct={78} slope={0} color={C.acid} reveal={step >= 1} descent={false} reduce={reduce} />

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import type { ReactNode } from 'react';
 import { C, PANEL_BG } from '../kit/palette';
 
@@ -41,7 +42,7 @@ const Tabs = ({ labels, step, onSelect, layoutId }: { labels: readonly string[];
 );
 
 /** Selo (ex.: "valores ilustrativos", "caso fictício") em 15 px. */
-export const Tag = ({ children, color = C.lactate }: { children: ReactNode; color?: string }) => (
+export const Tag = ({ children, color = C.caveat }: { children: ReactNode; color?: string }) => (
     <span className="inline-flex shrink-0 items-center whitespace-nowrap rounded-md border px-2.5 py-1 font-mono text-[15px]"
         style={{ ...PANEL_BG, borderColor: `${color}80`, color }}>
         {children}
@@ -57,7 +58,7 @@ export const Frame = ({ tabs, step, setStep, layoutId, chips, foot, children }: 
         </div>
         <div className="flex-1 min-h-0 rounded-2xl border border-white/10 px-5 pt-4 pb-3 flex flex-col gap-2" style={PANEL_BG}>
             <div className="flex-1 min-h-0">{children}</div>
-            <motion.p key={step} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
+            <motion.p key={step} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE_OUT }}
                 className="pt-2.5 border-t border-white/10 text-[1.12rem] leading-snug text-white font-medium">
                 {foot}
             </motion.p>
@@ -69,9 +70,9 @@ export const Frame = ({ tabs, step, setStep, layoutId, chips, foot, children }: 
 export const StudyCard = ({ tag, title, lines, color, children }: {
     tag: string; title: string; lines: readonly string[]; color: string; children?: ReactNode;
 }) => (
-    <div className="rounded-xl border bg-white/[0.03] p-4 flex flex-col gap-2" style={{ borderColor: `${color}55` }}>
+    <div className="border-t pt-3 px-1 flex flex-col gap-2" style={{ borderColor: `${color}66` }}>
         <span className="font-mono text-[15px] tracking-wide" style={{ color }}>{tag}</span>
-        <p className="font-display text-[1.3rem] font-semibold leading-tight text-white">{title}</p>
+        <p className="font-body text-[1.3rem] font-semibold leading-tight text-white text-balance">{title}</p>
         <ul className="flex flex-col gap-1">
             {lines.map(l => <li key={l} className="text-[16px] leading-snug text-gray-200">{l}</li>)}
         </ul>

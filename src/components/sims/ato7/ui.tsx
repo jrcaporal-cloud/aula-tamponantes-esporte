@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import type { ReactNode } from 'react';
-import { C, PANEL_BG } from '../kit/palette';
+import { BODY_FONT, C, PANEL_BG } from '../kit/palette';
 import { SIGNAL, SIM_H, type Signal } from './shared';
 
 /**
@@ -40,7 +41,7 @@ export const Tabs = ({ labels, step, onSelect, layoutId }: TabsProps) => (
 );
 
 /** Selo pequeno (ex.: "caso fictício", "valores ilustrativos"). */
-export const Chip = ({ children, color = C.lactate }: { children: ReactNode; color?: string }) => (
+export const Chip = ({ children, color = C.caveat }: { children: ReactNode; color?: string }) => (
     <span className="inline-flex shrink-0 items-center whitespace-nowrap rounded-md border px-2.5 py-1 font-mono text-[15px] leading-tight"
         style={{ ...PANEL_BG, borderColor: `${color}80`, color }}>
         {children}
@@ -73,13 +74,13 @@ export const Shell = ({ tabs, step, setStep, layoutId, chips, children }: ShellP
 );
 
 /** Selo dos personagens da aula. */
-export const Fictional = () => <Chip color="#F9A8D4">caso fictício</Chip>;
+export const Fictional = () => <Chip color={C.caveat}>caso fictício</Chip>;
 
 /** Luz do semáforo (círculo com brilho). */
 export const Light = ({ signal, size = 26, on = true }: { signal: Signal; size?: number; on?: boolean }) => {
     const color = SIGNAL[signal].color;
     return (
-        <span aria-label={SIGNAL[signal].label} className="inline-block shrink-0 rounded-full border transition-all duration-500"
+        <span aria-label={SIGNAL[signal].label} className="inline-block shrink-0 rounded-full border transition-[background-color,border-color,box-shadow] duration-500"
             style={{
                 width: size, height: size,
                 background: on ? color : 'rgba(255,255,255,0.06)',
@@ -94,7 +95,7 @@ export const FadeSwap = ({ id, children, className = '' }: { id: string | number
     const reduce = useReducedMotion();
     return (
         <motion.div key={id} className={className}
-            initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
+            initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE_OUT }}>
             {children}
         </motion.div>
     );
@@ -124,8 +125,8 @@ export const StoryPanel = ({ id, kicker, color, title, text, points = [], source
     <div className="shrink-0 rounded-2xl border border-white/10 p-6" style={{ ...PANEL_BG, width }}>
         <FadeSwap id={id} className="flex h-full flex-col gap-3">
             <p className="m-0 font-mono text-[15px] uppercase tracking-wider" style={{ color }}>{kicker}</p>
-            <h3 className="m-0 font-display text-[27px] font-semibold leading-tight text-white">{title}</h3>
-            <p className="m-0 text-[18px] leading-snug text-gray-100">{text}</p>
+            <h3 className="m-0 font-body text-[27px] font-semibold leading-tight text-white text-balance" style={BODY_FONT}>{title}</h3>
+            <p className="m-0 text-[18px] leading-snug text-gray-100 text-pretty">{text}</p>
             {points.length > 0 && (
                 <ul className="m-0 flex list-none flex-col gap-2 p-0">
                     {points.map(p => (

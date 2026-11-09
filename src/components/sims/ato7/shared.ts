@@ -8,6 +8,7 @@ export type Signal = 'verde' | 'amarelo' | 'vermelho';
 
 export const SIGNAL: Record<Signal, { color: string; label: string }> = {
     verde: { color: C.ok, label: 'sem alerta relevante' },
+    // Semáforo é convenção do mundo real: o amarelo fica amarelo, mesmo sendo a cor do lactato no resto da aula.
     amarelo: { color: C.lactate, label: 'cautela' },
     vermelho: { color: C.risk, label: 'não usar sem acompanhamento' },
 };

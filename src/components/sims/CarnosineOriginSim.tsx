@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
@@ -23,11 +24,11 @@ const CarnosineOriginSim = () => {
         <Shell>
             <div className="flex items-center justify-between gap-4">
                 <Tabs labels={ORIGIN_STEPS.map(s => s.tab)} step={step} onSelect={setStep} layoutId="ato4-origin-tab" />
-                <Tag color={step === 3 ? C.lactate : C.carnoSoft}>{step === 3 ? 'Bianca: caso fictício' : TAGS[step]}</Tag>
+                <Tag color={step === 3 ? C.caveat : C.carnoSoft}>{step === 3 ? 'Bianca: caso fictício' : TAGS[step]}</Tag>
             </div>
             <div className="flex-1 min-h-0 grid gap-3" style={{ gridTemplateColumns: '640px minmax(0,1fr)' }}>
                 <Panel state="active" glow={C.carno} className="p-4">
-                    <motion.div key={step} className="h-full" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+                    <motion.div key={step} className="h-full" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, ease: EASE_OUT }}>
                         {step === 0 && <CenturyVisual reduce={reduce} />}
                         {step === 1 && <AnimalsVisual reduce={reduce} />}
                         {step === 2 && <HumanVisual reduce={reduce} />}

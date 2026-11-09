@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { Baby, Bean, Check, HeartPulse, Hourglass, Pill, Utensils, X, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { C } from '../kit/palette';
@@ -15,7 +16,7 @@ const chipsOf = (id: string): readonly string[] => FLOW.find(n => n.id === id)?.
 const enter = (reduce: boolean, delay: number, from: { opacity?: number; y?: number; x?: number; scale?: number } = { opacity: 0, y: 8 }) => ({
     initial: reduce ? false : from,
     animate: { opacity: 1, y: 0, x: 0, scale: 1 },
-    transition: { duration: 0.4, delay },
+    transition: { duration: 0.4, delay, ease: EASE_OUT },
 });
 
 /* ---------- 2 · o semáforo ---------- */
@@ -144,7 +145,7 @@ export const RecordVisual = ({ reduce }: { reduce: boolean }) => {
                             <span className="w-[140px] shrink-0 text-[17px] font-semibold text-gray-100">{f}</span>
                             <span className="relative h-[2px] flex-1 bg-white/10">
                                 <motion.span className="absolute inset-0" style={{ background: `${C.base}aa`, transformOrigin: 'left center' }}
-                                    initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.4, delay }} />
+                                    initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.4, delay, ease: EASE_OUT }} />
                             </span>
                             {adverse && (
                                 <motion.span {...enter(reduce, delay + 0.3)} className="shrink-0 rounded-md border px-2 py-0.5 text-[15px] font-semibold"

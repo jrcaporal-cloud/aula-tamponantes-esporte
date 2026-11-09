@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import type { ReactNode } from 'react';
 import { C } from '../kit/palette';
 import { Panel } from '../kit/ui';
@@ -23,7 +24,7 @@ interface StoryLayoutProps {
 export const StoryLayout = ({ step, visualKey, headline, text, source, tone = C.base, headlineColor = C.baseSoft, aside, children }: StoryLayoutProps) => (
     <div className="h-full flex gap-3">
         <Panel className="shrink-0" state="active" glow={tone}>
-            <motion.div key={visualKey ?? step} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
+            <motion.div key={visualKey ?? step} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, ease: EASE_OUT }}>
                 {children}
             </motion.div>
         </Panel>

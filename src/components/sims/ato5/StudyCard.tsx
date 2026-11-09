@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { C } from '../kit/palette';
+import { DUR, EASE_OUT } from '../../../lib/motion';
+import { BODY_FONT, C } from '../kit/palette';
 import { Panel } from '../kit/ui';
 import { br } from '../kit/format';
 import type { PairMetric, TrainingStudy } from './alkalineContent';
@@ -22,9 +23,9 @@ const PairBars = ({ m, max, show, index }: { m: PairMetric; max: number; show: b
             <div className="flex flex-col gap-1">
                 {bars.map((b, i) => (
                     <div key={b.key} className="relative h-[11px] rounded bg-white/[0.05]">
-                        <motion.div className="absolute inset-y-0 left-0 rounded" style={{ background: b.color }}
-                            initial={reduce ? false : { width: 0 }} animate={{ width: show ? `${(b.value / max) * 100}%` : '0%' }}
-                            transition={{ duration: reduce ? 0 : 0.7, delay: reduce ? 0 : 0.15 + index * 0.2 + i * 0.1 }} />
+                        <motion.div className="absolute inset-y-0 left-0 rounded" style={{ background: b.color, width: `${(b.value / max) * 100}%`, originX: 0 }}
+                            initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: show ? 1 : 0 }}
+                            transition={{ duration: reduce ? 0 : DUR.bar, delay: reduce ? 0 : 0.15 + index * 0.2 + i * 0.1, ease: EASE_OUT }} />
                     </div>
                 ))}
             </div>
@@ -44,7 +45,7 @@ const PairBars = ({ m, max, show, index }: { m: PairMetric; max: number; show: b
 export const StudyCard = ({ study, active, revealed }: { study: TrainingStudy; active: boolean; revealed: boolean }) => (
     <Panel state={active ? 'active' : revealed ? 'idle' : 'dim'} glow={C.base} className="p-4 flex flex-col gap-2.5">
         <div className="flex items-center justify-between gap-2">
-            <h3 className="font-display text-[1.45rem] font-semibold leading-tight text-white">{study.who}</h3>
+            <h3 className="font-body text-[1.45rem] font-semibold leading-tight text-white text-balance" style={BODY_FONT}>{study.who}</h3>
             <Tag color={C.muted}>{study.tier}</Tag>
         </div>
         <p className="text-[16px] leading-snug text-gray-300">{study.design}</p>

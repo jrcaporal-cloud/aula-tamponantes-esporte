@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { HYPOTHESES } from './whyItWorks.content';
@@ -72,7 +73,7 @@ export const MechanismMap = ({ reduce }: { reduce: boolean }) => (
             const delay = reduce ? 0 : 0.2 + i * 0.35;
             const other = h.other === '—' ? 'animal/in vitro: —' : `animal/in vitro: ${h.other}`;
             return (
-                <motion.g key={h.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35, delay }}>
+                <motion.g key={h.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35, delay, ease: EASE_OUT }}>
                     <path d={`M${BOX_X} ${y + BOX_H / 2} C${BOX_X - 30} ${y + BOX_H / 2} ${s.x + 30} ${s.y} ${s.x} ${s.y}`} fill="none" stroke={C.base} strokeOpacity={0.55} strokeWidth={1.5} />
                     <circle cx={s.x} cy={s.y} r={15} fill="none" stroke={C.base} strokeWidth={2.5}>
                         {!reduce && <animate attributeName="r" values="13;19;13" dur="2.4s" begin={`${delay}s`} repeatCount="indefinite" />}

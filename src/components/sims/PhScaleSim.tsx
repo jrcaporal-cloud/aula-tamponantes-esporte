@@ -73,10 +73,14 @@ const Ruler = ({ ph, step }: { ph: number; step: number }) => {
                 const color = m.where === 'sangue' ? C.base : C.acid;
                 const y = RULER_Y + 62 + row * 36;
                 return (
-                    <g key={m.id} style={{ opacity: i === step ? 1 : 0.6, transition: 'opacity 0.4s' }}>
-                        <line x1={mx} x2={mx} y1={RULER_Y + 8} y2={y - 16} stroke={color} strokeDasharray="3 4" />
-                        <circle cx={mx} cy={RULER_Y} r={6} fill={color} />
-                        <SvgText x={mx} y={y} text={`${m.label} ${br(m.ph, 2)}`} anchor="middle" size={16} color={color} />
+                    // Marcas anteriores: o traço e o ponto recuam; o rótulo fica em opacidade cheia (tom suave, peso menor).
+                    <g key={m.id}>
+                        <g style={{ opacity: i === step ? 1 : 0.5, transition: 'opacity 0.4s' }}>
+                            <line x1={mx} x2={mx} y1={RULER_Y + 8} y2={y - 16} stroke={color} strokeDasharray="3 4" />
+                            <circle cx={mx} cy={RULER_Y} r={6} fill={color} />
+                        </g>
+                        <SvgText x={m.alignStart ? mx - 10 : mx} y={y} text={`${m.label} ${br(m.ph, 2)}`} anchor={m.alignStart ? 'start' : 'middle'} size={16}
+                            color={i === step ? color : m.where === 'sangue' ? C.baseSoft : C.acidSoft} weight={i === step ? 600 : 500} />
                     </g>
                 );
             })}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { EASE_OUT } from '../../lib/motion';
 import { motion } from 'framer-motion';
 import { Gavel, Hand } from 'lucide-react';
 import { useSlideSteps } from '../../store/useSlideSteps';
@@ -67,7 +68,7 @@ const VerdictVoteSim = () => {
         <div className="not-prose flex w-full select-none flex-col gap-3 font-body text-white" style={{ height: 516 }}>
             <div className="flex h-10 items-center justify-between gap-3">
                 <motion.div key={step === 0 ? 'vote' : step === ACCUSATIONS.length ? 'end' : 'reveal'}
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, ease: EASE_OUT }}>
                     <Headline step={step} votes={votes} />
                 </motion.div>
                 {step === 0

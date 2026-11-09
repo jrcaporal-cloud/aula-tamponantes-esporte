@@ -27,8 +27,8 @@ const EvidenceTable = ({ rows }: { rows: readonly Evidence[] }) => (
                     <span className="block text-[16px] text-gray-100">{r.label}</span>
                     <span className="block text-[15px] text-gray-400">{r.note}</span>
                 </span>
-                <span className="text-right font-display text-[1.25rem] font-semibold tabular-nums" style={{ color: C.lactate }}>{r.tte}</span>
-                <span className="text-right font-display text-[1.25rem] font-semibold tabular-nums" style={{ color: C.ok }}>{r.tt}</span>
+                <span className="text-right font-body text-[1.25rem] font-semibold tabular-nums" style={{ color: C.lactate }}>{r.tte}</span>
+                <span className="text-right font-body text-[1.25rem] font-semibold tabular-nums" style={{ color: C.ok }}>{r.tt}</span>
             </div>
         ))}
     </div>

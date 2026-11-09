@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
@@ -24,7 +25,7 @@ const Line = ({ line, delay, reduce }: { line: NoteLine; delay: number; reduce: 
         textDecorationColor: RED_INK,
     }}
         initial={reduce ? false : { clipPath: 'inset(0 100% 0 0)' }} animate={{ clipPath: 'inset(0 0% 0 0)' }}
-        transition={{ duration: 0.9, delay, ease: 'linear' }}>
+        transition={{ duration: 0.45, delay, ease: 'linear' }}>
         {line.text}
     </motion.div>
 );
@@ -46,7 +47,7 @@ const Notebook = ({ step, reduce }: { step: number; reduce: boolean }) => (
                         {s.date}
                     </span>
                     {s.lines.map((l, li) => (
-                        <Line key={l.text} line={l} reduce={reduce} delay={si === step ? 0.2 + li * 0.85 : 0} />
+                        <Line key={l.text} line={l} reduce={reduce} delay={si === step ? 0.1 + li * 0.32 : 0} />
                     ))}
                 </div>
             ))}
@@ -58,8 +59,8 @@ const Bar = ({ label, value, max, color, text }: { label: string; value: number;
     <div className="flex items-center gap-3 text-[16px]">
         <span className="w-[104px] shrink-0 text-gray-200">{label}</span>
         <div className="h-5 flex-1 overflow-hidden rounded bg-white/10">
-            <motion.div className="h-full rounded" style={{ background: color }}
-                initial={{ width: 0 }} animate={{ width: `${(value / max) * 100}%` }} transition={{ duration: 0.7 }} />
+            <motion.div className="h-full rounded" style={{ background: color, width: `${(value / max) * 100}%`, originX: 0 }}
+                initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: DUR.bar, ease: EASE_OUT }} />
         </div>
         <span className="w-[72px] shrink-0 text-right font-mono text-white">{text}</span>
     </div>
@@ -93,7 +94,7 @@ const StepVisual = ({ step }: { step: number }) => {
                 <div key={y} className="flex items-center gap-2">
                     {i > 0 && <span className="text-gray-400">→</span>}
                     <div className="rounded-xl border border-white/15 px-3 py-2 text-center">
-                        <div className="font-display text-[1.3rem] font-semibold text-yellow-300">{y}</div>
+                        <div className="font-body text-[1.3rem] font-semibold text-yellow-300">{y}</div>
                         <div className="text-gray-200">{n}</div>
                     </div>
                 </div>
@@ -112,7 +113,7 @@ const DennigSim = () => {
             <Notebook step={step} reduce={reduce} />
             <Panel className="flex min-w-0 flex-1 flex-col justify-between gap-4 p-5" glow={step === 2 ? C.risk : C.base} state={step === 2 ? 'active' : 'idle'}>
                 <StepText step={step} headline={plan.headline} text={plan.text} accent={step === 2 ? C.risk : C.baseSoft} />
-                <motion.div key={step} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.2 }}>
+                <motion.div key={step} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: DUR.text, ease: EASE_OUT }}>
                     <StepVisual step={step} />
                 </motion.div>
                 <p className="text-[15px] leading-snug text-gray-300">

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { DUR, EASE_IN_OUT, EASE_OUT, STAGGER, stagger } from '../../../lib/motion';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
@@ -51,8 +52,8 @@ export const ChichesterVisual = ({ reduce }: { reduce: boolean }) => (
                     <motion.rect x={x} y={BASE_Y - h} width={BAR_W} height={h} rx={6} fill={C.carno} fillOpacity={0.85}
                         style={{ transformBox: 'fill-box', originY: 1 }}
                         initial={{ scaleY: reduce ? 1 : 0 }} animate={{ scaleY: 1 }}
-                        transition={{ duration: reduce ? 0 : 0.7, delay: reduce ? 0 : 0.2 + i * 0.25, ease: 'easeOut' }} />
-                    <motion.g {...delayed(reduce, 0.7 + i * 0.25)}>
+                        transition={{ duration: reduce ? 0 : DUR.bar, delay: reduce ? 0 : stagger(i, 0.15), ease: EASE_OUT }} />
+                    <motion.g {...delayed(reduce, 0.15 + DUR.bar * 0.8 + i * STAGGER, DUR.text)}>
                         <SvgText x={x + BAR_W / 2} y={BASE_Y - h - 10} text={`+${br(b.pct, 1)}%`} anchor="middle" size={18} color="#fff" weight={800} />
                     </motion.g>
                     <SvgText x={x + BAR_W / 2} y={BASE_Y + 22} text={b.label} anchor="middle" size={16} color="#E5E7EB" weight={600} />
@@ -62,17 +63,17 @@ export const ChichesterVisual = ({ reduce }: { reduce: boolean }) => (
         <line x1={14} x2={356} y1={BASE_Y} y2={BASE_Y} stroke="rgba(255,255,255,0.35)" />
         {/* Hill: 4 → 10 semanas */}
         <motion.path d={`M${barX(2) + BAR_W / 2} ${BASE_Y - 58.8 * PX_PER_PCT - 32} Q${barX(3) - 6} ${BASE_Y - 80.1 * PX_PER_PCT - 50} ${barX(3) + 6} ${BASE_Y - 80.1 * PX_PER_PCT - 32}`}
-            fill="none" stroke={C.carnoSoft} strokeWidth={2} strokeDasharray="4 4" {...delayed(reduce, 1.6)} />
+            fill="none" stroke={C.carnoSoft} strokeWidth={2} strokeDasharray="4 4" {...delayed(reduce, 0.85, DUR.text)} />
         <SvgText x={(barX(0) + barX(1) + BAR_W) / 2} y={BASE_Y + 44} text="Harris 2006 · 4 sem" anchor="middle" size={16} color={C.carnoSoft} weight={700} />
         <SvgText x={(barX(2) + barX(3) + BAR_W) / 2} y={BASE_Y + 44} text="Hill 2007" anchor="middle" size={16} color={C.carnoSoft} weight={700} />
         {/* selo do conflito sobre o estudo de 2006 */}
-        <motion.g {...delayed(reduce, 1.9, 0.3)}>
+        <motion.g {...delayed(reduce, 0.95, DUR.text)}>
             <g transform="rotate(-8 95 60)">
                 <rect x={22} y={44} width={148} height={32} rx={8} fill="rgba(4,8,15,0.85)" stroke={C.lactate} strokeWidth={2.5} strokeDasharray="6 3" />
                 <SvgText x={96} y={66} text="coautor da NAI" anchor="middle" size={17} color={C.lactate} weight={800} />
             </g>
         </motion.g>
-        <motion.g {...delayed(reduce, 2.3)}>
+        <motion.g {...delayed(reduce, 1.0, DUR.text)}>
             <rect x={14} y={334} width={342} height={32} rx={16} fill="rgba(250,204,21,0.10)" stroke={`${C.lactate}99`} />
             <rect x={30} y={343} width={30} height={14} rx={7} fill={C.lactate} />
             <line x1={45} x2={45} y1={343} y2={357} stroke="#04080F" strokeWidth={2} />
@@ -80,7 +81,7 @@ export const ChichesterVisual = ({ reduce }: { reduce: boolean }) => (
         </motion.g>
         {/* trabalho a 110% */}
         <line x1={378} x2={378} y1={10} y2={366} stroke="rgba(255,255,255,0.12)" />
-        <motion.g {...delayed(reduce, 1.2)}>
+        <motion.g {...delayed(reduce, 0.5)}>
             <SvgText x={474} y={40} text="TESTE A 110%" anchor="middle" size={16} color={C.baseSoft} weight={700} />
             <SvgText x={474} y={60} text="da potência máxima" anchor="middle" size={16} color="#CBD5E1" weight={600} />
             <Bike x={474} y={130} reduce={reduce} />
@@ -127,7 +128,7 @@ const EdgeLine = ({ e, delay, reduce }: { e: Edge; delay: number; reduce: boolea
     <g>
         <motion.path d={e.d} fill="none" stroke={e.color ?? C.lactate} strokeWidth={3} strokeLinecap="round"
             initial={{ pathLength: reduce ? 1 : 0 }} animate={{ pathLength: 1 }}
-            transition={{ duration: reduce ? 0 : 0.5, delay: reduce ? 0 : delay }} />
+            transition={{ duration: reduce ? 0 : 0.5, delay: reduce ? 0 : delay, ease: EASE_IN_OUT }} />
         <motion.g {...delayed(reduce, delay + 0.35)}>
             {e.label.map((t, k) => (
                 <SvgText key={t} x={e.lx} y={e.ly + k * 19} text={t} anchor={e.anchor} size={16} color={C.lactate} weight={700} />

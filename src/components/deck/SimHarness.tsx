@@ -1,5 +1,5 @@
 import { useEffect, type ComponentType } from 'react';
-import { FitStage } from './FitStage';
+import { FitStage, PAD_X_SELF, SLIDE_WIDTH } from './FitStage';
 import { ProseSlide } from '../presentation/ProseSlide';
 import { useSlideStepStore } from '../../store/useSlideSteps';
 
@@ -46,7 +46,7 @@ export const SimHarness = ({ name }: { name: string }) => {
 
     return (
         <div className="absolute inset-0 z-10">
-            <FitStage>
+            <FitStage width={SLIDE_WIDTH} padX={PAD_X_SELF}>
                 <ProseSlide slide={HARNESS_SLIDE} />
             </FitStage>
             <div data-testid="sim-step" className="absolute bottom-4 right-4 font-mono text-xs text-gray-400">

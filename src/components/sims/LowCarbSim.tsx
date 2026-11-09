@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT, stagger } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel, StepTabs } from './kit/ui';
@@ -23,9 +24,10 @@ const Bars = () => {
                     <span className="text-[16px] text-gray-100">{b.label}</span>
                     <div className="relative h-[30px] rounded-md bg-white/[0.05]">
                         <motion.div className="absolute inset-y-0 left-0 rounded-md flex items-center justify-end pr-2"
-                            style={{ background: b.hot ? C.acid : `${C.co2}aa` }}
-                            initial={reduce ? false : { width: 0 }} animate={{ width: `${(b.seconds / MAX_S) * 100}%` }}
-                            transition={{ duration: 0.8, delay: 0.15 * i, ease: 'easeOut' }}>
+                            // Ardósia cheia (sem transparência): o número escuro por cima passa de 4,3:1 para ~7,7:1.
+                            style={{ background: b.hot ? C.acid : C.co2, width: `${(b.seconds / MAX_S) * 100}%` }}
+                            initial={reduce ? false : { clipPath: 'inset(0 100% 0 0 round 6px)' }} animate={{ clipPath: 'inset(0 0% 0 0 round 6px)' }}
+                            transition={{ duration: DUR.bar, delay: stagger(i, 0, 0.15), ease: EASE_OUT }}>
                             <span className="font-mono text-[16px] font-semibold text-[#04080F]">{b.seconds}</span>
                         </motion.div>
                     </div>

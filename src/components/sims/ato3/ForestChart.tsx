@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
@@ -49,7 +50,7 @@ const Row = ({ r, i, visible, dim, showCertainty, reduce }: {
             )}
             {visible && has && (
                 <motion.g key={`m-${r.id}`} initial={{ opacity: 0, scaleX: reduce ? 1 : 0.2 }} animate={{ opacity: 1, scaleX: 1 }}
-                    transition={{ duration: reduce ? 0 : 0.6, delay: reduce ? 0 : 0.1 }}
+                    transition={{ duration: reduce ? 0 : 0.6, delay: reduce ? 0 : 0.1, ease: EASE_OUT }}
                     style={{ transformBox: 'fill-box', transformOrigin: 'center' }}>
                     <line x1={sx(r.lo!)} x2={sx(r.hi!)} y1={cy} y2={cy} stroke={color} strokeWidth={3} strokeLinecap="round" />
                     <polygon points={`${sx(r.lo!)},${cy} ${sx(r.est!)},${cy - (big ? 13 : 10)} ${sx(r.hi!)},${cy} ${sx(r.est!)},${cy + (big ? 13 : 10)}`}

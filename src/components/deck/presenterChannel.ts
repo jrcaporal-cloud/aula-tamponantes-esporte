@@ -17,5 +17,9 @@ export type PresenterMessage = DeckState | PresenterCommand;
 export const openPresenterWindow = (index: number) => {
     const tempo = new URLSearchParams(window.location.search).get('tempo');
     const url = `${window.location.pathname}?apresentador${tempo ? `&tempo=${tempo}` : ''}#/${index + 1}`;
-    window.open(url, 'aula-apresentador', 'width=1280,height=800');
+    // A conversa entre as janelas é toda pelo BroadcastChannel: a do apresentador não precisa de `window.opener`.
+    // Corta a referência depois de abrir (em vez de 'noopener' nas features), para manter a janela nomeada
+    // reaproveitada a cada P e o tamanho de popup — 'noopener' abre janela nova e pode ignorar width/height.
+    const presenter = window.open(url, 'aula-apresentador', 'width=1280,height=800');
+    if (presenter) presenter.opener = null;
 };

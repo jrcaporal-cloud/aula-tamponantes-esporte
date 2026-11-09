@@ -314,29 +314,29 @@ const ProductScene = ({ reduce }: SceneProps) => {
                     <rect x={j.x + 18} y={JAR.top - 16} width={JAR.w - 36} height={16} rx={4} fill="rgba(255,255,255,0.18)" />
                     <rect x={j.x} y={JAR.top} width={JAR.w} height={JAR.bottom - JAR.top} rx={16} fill="rgba(255,255,255,0.04)" stroke={AXIS} strokeWidth={2.5} />
                     <GrowY reduce={reduce} begin={0.3 + i * 0.3} x={j.x + 6} y={JAR.bottom - 6}>
-                        <rect x={0} y={-j.pct * inner} width={JAR.w - 12} height={j.pct * inner} rx={10} fill={C.acid} />
+                        <rect x={0} y={-j.pct * inner} width={JAR.w - 12} height={j.pct * inner} rx={10} fill={C.risk} />
                     </GrowY>
                     <Appear reduce={reduce} begin={0.8 + i * 0.3}>
-                        <CountSvgText x={j.x + JAR.w / 2} y={JAR.top - 26} text={j.label} size={26} anchor="middle" color={C.acid} weight={700} delay={0.8 + i * 0.3} duration={0.7} />
+                        <CountSvgText x={j.x + JAR.w / 2} y={JAR.top - 26} text={j.label} size={26} anchor="middle" color={C.risk} weight={700} delay={0.8 + i * 0.3} duration={0.7} />
                     </Appear>
                     <SvgText x={j.x + JAR.w / 2} y={276} text={j.study} size={17} anchor="middle" color={INK} weight={700} />
                     <SvgText x={j.x + JAR.w / 2} y={298} text={j.n} size={16} anchor="middle" color={C.muted} weight={500} />
                 </g>
             ))}
 
-            <Arrow x1={348} y1={170} x2={388} y2={170} color={`${C.acid}cc`} width={3} />
+            <Arrow x1={348} y1={170} x2={388} y2={170} color={`${C.risk}cc`} width={3} />
 
             <SvgText x={535} y={26} text="entram na decisão" size={17} anchor="middle" color={C.muted} />
             {RULES.map((r, i) => {
                 const y = 56 + i * 72;
                 return (
                     <g key={r.title}>
-                        <rect x={400} y={y} width={270} height={58} rx={12} fill={`${C.acid}12`} stroke={`${C.acid}66`} strokeWidth={2} />
+                        <rect x={400} y={y} width={270} height={58} rx={12} fill={`${C.risk}12`} stroke={`${C.risk}66`} strokeWidth={2} />
                         <SvgText x={454} y={y + 25} text={r.title} size={18} color={INK} weight={700} />
                         <SvgText x={454} y={y + 47} text={r.sub} size={16} color={C.muted} weight={500} />
-                        <circle cx={427} cy={y + 29} r={15} fill="none" stroke={`${C.acid}88`} strokeWidth={2} />
+                        <circle cx={427} cy={y + 29} r={15} fill="none" stroke={`${C.risk}88`} strokeWidth={2} />
                         <Pop reduce={reduce} begin={1.1 + i * 0.3} x={427} y={y + 29}>
-                            <circle r={15} fill={C.acid} />
+                            <circle r={15} fill={C.risk} />
                             <polyline points="-7,0 -2,6 8,-6" fill="none" stroke="#04080F" strokeWidth={3.5} strokeLinecap="round" strokeLinejoin="round" />
                         </Pop>
                     </g>

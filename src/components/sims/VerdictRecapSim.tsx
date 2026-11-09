@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../lib/motion';
 import { Hand } from 'lucide-react';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { ACCUSATIONS, VERDICT_LOOK, type Accusation } from './ato1/content';
@@ -22,7 +23,7 @@ const RecapCard = ({ a, open, current }: { a: Accusation; open: boolean; current
                 background: open ? `linear-gradient(165deg, ${look.color}1c, rgba(4,10,20,0.85) 55%)` : 'rgba(4,10,20,0.7)',
                 boxShadow: current ? `0 0 26px -8px ${look.color}` : 'none',
             }}
-            initial={false} animate={{ scale: current && !reduce ? 1.02 : 1 }} transition={{ duration: 0.3 }}>
+            initial={false} animate={{ scale: current && !reduce ? 1.02 : 1 }} transition={{ duration: 0.3, ease: EASE_OUT }}>
             <div className="flex items-center justify-between gap-2 pr-1">
                 <span className="font-mono text-[15px] text-gray-300">{String(a.id).padStart(2, '0')} · {a.suspect}</span>
                 {open && (
@@ -34,10 +35,10 @@ const RecapCard = ({ a, open, current }: { a: Accusation; open: boolean; current
                     </motion.span>
                 )}
             </div>
-            <p className="m-0 font-display text-[20px] font-semibold leading-tight text-white">“{a.claim}”</p>
+            <p className="m-0 font-body text-[20px] font-semibold leading-tight text-white">“{a.claim}”</p>
             {open ? (
                 <motion.div className="mt-auto flex flex-col gap-1" initial={reduce ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}>
+                    transition={{ delay: 0.2, duration: DUR.enter, ease: EASE_OUT }}>
                     <p className="m-0 text-[17px] leading-snug text-gray-100">{recap.line}</p>
                     <Source>{recap.where}</Source>
                 </motion.div>

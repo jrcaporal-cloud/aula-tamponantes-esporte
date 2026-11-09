@@ -26,7 +26,7 @@ export const StepTimeline = ({ step, playing, onGo, onTogglePlay }: StepTimeline
                     <button
                         type="button" onClick={() => onGo(i)} title={s.short}
                         aria-label={`Etapa ${i + 1}: ${s.badge}`} aria-current={i === step ? 'step' : undefined}
-                        className={`w-9 h-9 rounded-full text-[14px] font-semibold transition-all duration-300 ${i === step ? 'text-white border-2 scale-110' : i < step ? 'bg-white/5 border' : 'bg-white/5 border border-white/15 text-gray-400 hover:text-gray-100'}`}
+                        className={`w-9 h-9 rounded-full text-[14px] font-semibold transition-[scale,transform,background-color,border-color,color,box-shadow] duration-300 ${i === step ? 'text-white border-2 scale-110' : i < step ? 'bg-white/5 border' : 'bg-white/5 border border-white/15 text-gray-400 hover:text-gray-100'}`}
                         style={i === step ? { background: `${C.base}33`, borderColor: C.base, boxShadow: `0 0 16px ${C.base}80` } : i < step ? { borderColor: `${C.base}66`, color: C.base } : undefined}
                     >
                         {i + 1}

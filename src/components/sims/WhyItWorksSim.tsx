@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
@@ -45,7 +46,7 @@ const WhyItWorksSim = () => {
                     </div>
                 )}
                 <StepText step={step} headline={plan.headline} text={plan.text} accent={C.baseSoft} />
-                <motion.ul key={step} className="mt-auto flex flex-col gap-2.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.15 }}>
+                <motion.ul key={step} className="mt-auto flex flex-col gap-2.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: DUR.text, ease: EASE_OUT }}>
                     {plan.facts.map(f => (
                         <li key={f.text} className="text-[15px] leading-snug text-gray-100">
                             {f.text}{' '}<Tag kind={f.kind}>{`${f.kind.toUpperCase()} · ${f.label}`}</Tag>

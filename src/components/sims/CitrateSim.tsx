@@ -96,7 +96,7 @@ const CitrateSim = () => {
                     <StepWidget step={step} raceMin={raceMin} onRace={setRaceMin} />
                     <div className="mt-auto flex flex-col gap-2">
                         <SourceNote>{info.source}</SourceNote>
-                        <Tag color={C.lactate}>forma das curvas ilustrativa</Tag>
+                        <Tag color={C.caveat}>forma das curvas ilustrativa</Tag>
                     </div>
                 </Panel>
             </div>

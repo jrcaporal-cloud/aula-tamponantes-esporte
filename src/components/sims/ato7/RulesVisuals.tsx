@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT, stagger } from '../../../lib/motion';
 import { Check } from 'lucide-react';
 import { ForestPlot } from '../kit/ForestPlot';
 import { br } from '../kit/format';
@@ -26,7 +27,7 @@ export const ListScan = () => {
                 {LIST_CLASSES.map((cls, i) => (
                     <motion.div key={cls} className="flex h-[58px] flex-col items-center justify-center rounded-xl border border-white/15 bg-white/[0.03]"
                         initial={reduce ? false : { opacity: 0.2 }} animate={{ opacity: [0.2, 1, 0.55] }}
-                        transition={{ duration: 0.5, delay: reduce ? 0 : i * 0.04 }}>
+                        transition={{ duration: 0.5, delay: reduce ? 0 : i * 0.04, ease: EASE_OUT }}>
                         <span className="font-mono text-[18px] font-semibold text-gray-100">{cls}</span>
                         <span className="text-[16px] text-gray-400">—</span>
                     </motion.div>
@@ -37,8 +38,8 @@ export const ListScan = () => {
                     <motion.div key={s.name} className="flex items-center justify-between rounded-xl border px-4 py-2.5"
                         style={{ borderColor: `${s.color}77`, background: `${s.color}12` }}
                         initial={reduce ? false : { opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.4, delay: reduce ? 0 : 0.6 + i * 0.12 }}>
-                        <span className="font-display text-[20px] font-semibold" style={{ color: s.color }}>{s.name}</span>
+                        transition={{ duration: DUR.enter, ease: EASE_OUT, delay: reduce ? 0 : stagger(i, 0.3) }}>
+                        <span className="font-body text-[20px] font-semibold" style={{ color: s.color }}>{s.name}</span>
                         <span className="flex items-center gap-2 text-[16px] font-semibold" style={{ color: C.ok }}>
                             <Check size={18} aria-hidden /> oral: fora da lista
                         </span>
@@ -70,7 +71,7 @@ export const VolumeBars = () => {
                         <SvgText x={0} y={y + 26} text={b.sub} size={16} color={C.muted} weight={500} />
                         <motion.rect x={x0} y={y - 18} width={w} height={40} rx={8} fill={color} fillOpacity={b.id === 'lim' ? 0.35 : 0.75}
                             style={{ transformBox: 'fill-box', transformOrigin: 'left center' }}
-                            initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.8, delay: reduce ? 0 : 0.2 + i * 0.25 }} />
+                            initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: DUR.bar, ease: EASE_OUT, delay: reduce ? 0 : stagger(i, 0.15) }} />
                         {big ? (
                             <text x={x0 + w - 14} y={y + 9} textAnchor="end" fontSize={21} fontWeight={700} fill="#04080F"
                                 style={{ fontFamily: 'var(--font-body)' }}>{`${b.ml.toLocaleString('pt-BR')} mL`}</text>
@@ -108,7 +109,7 @@ export const Tco2Curve = () => {
             <div className="absolute right-0 top-0"><Chip>forma ilustrativa</Chip></div>
             <svg viewBox={`0 0 ${VIS_W} ${VIS_H}`} width="100%" height="100%" role="img" aria-label="Distribuição de TCO₂ em cavalos">
                 <motion.g style={{ transformBox: 'fill-box', transformOrigin: 'center bottom' }}
-                    initial={reduce ? false : { scaleY: 0, opacity: 0 }} animate={{ scaleY: 1, opacity: 1 }} transition={{ duration: 0.9 }}>
+                    initial={reduce ? false : { scaleY: 0, opacity: 0 }} animate={{ scaleY: 1, opacity: 1 }} transition={{ duration: 0.9, ease: EASE_OUT }}>
                     <path d={path(total)} fill={C.co2} fillOpacity={0.28} stroke={C.co2} strokeWidth={2} />
                     <path d={path(hump)} fill={C.acid} fillOpacity={0.45} stroke={C.acid} strokeWidth={2} />
                 </motion.g>
@@ -158,15 +159,15 @@ export const PotGrid = () => {
         <div className="grid h-full grid-cols-2 gap-5">
             {POTS.map(p => (
                 <div key={p.id} className="flex flex-col gap-2">
-                    <span className="font-display text-[40px] font-semibold leading-none" style={{ color: C.acid }}>{p.title}</span>
+                    <span className="font-display text-[40px] font-semibold leading-none" style={{ color: C.risk }}>{p.title}</span>
                     <svg viewBox="0 0 300 300" width="100%" style={{ aspectRatio: '1 / 1', maxHeight: 250 }} role="img" aria-label={`${br(p.pct, 1)} contaminados`}>
                         {Array.from({ length: 100 }, (_, i) => {
                             const hit = i < p.dots;
                             return (
                                 <motion.circle key={i} cx={15 + (i % 10) * 30} cy={15 + Math.floor(i / 10) * 30} r={11}
-                                    fill={hit ? C.acid : 'rgba(255,255,255,0.12)'}
+                                    fill={hit ? C.risk : 'rgba(255,255,255,0.12)'}
                                     initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.25, delay: reduce ? 0 : (hit ? 0.6 : 0) + i * 0.006 }} />
+                                    transition={{ duration: 0.25, delay: reduce ? 0 : (hit ? 0.6 : 0) + i * 0.006, ease: EASE_OUT }} />
                             );
                         })}
                     </svg>

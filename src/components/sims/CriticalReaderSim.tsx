@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useState } from 'react';
 import { Flag as FlagIcon } from 'lucide-react';
 import { useSlideSteps } from '../../store/useSlideSteps';
@@ -33,7 +34,7 @@ const CriticalReaderSim = () => {
             <div className="h-full flex gap-3">
                 <Panel className="shrink-0 w-[640px] px-7 py-6 flex flex-col gap-3">
                     <p className="font-mono text-[15px] text-gray-400">{PAPER.journal}</p>
-                    <p className="font-display text-[1.45rem] font-semibold leading-tight text-white">{PAPER.title}</p>
+                    <p className="font-body text-[1.45rem] font-semibold leading-tight text-white">{PAPER.title}</p>
                     <p className="text-[17.5px] leading-[1.6] text-gray-100">
                         {PAPER.body.map((seg, i) => {
                             if (typeof seg === 'string') return <span key={i}>{seg}</span>;
@@ -65,9 +66,9 @@ const CriticalReaderSim = () => {
                             text="Randomizado, duplo-cego, +18%, conclusão firme. Parece um bom estudo. Antes de virar o passador: quantos problemas você acha?" />
                     )}
                     {selected && (
-                        <motion.div key={selected.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
+                        <motion.div key={selected.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE_OUT }}
                             className="flex flex-col gap-2">
-                            <p className="font-display text-[1.35rem] font-semibold leading-tight" style={{ color: C.risk }}>
+                            <p className="font-body text-[1.35rem] font-semibold leading-tight" style={{ color: C.risk }}>
                                 {FLAGS.findIndex(f => f.id === selected.id) + 1}. {selected.title}
                             </p>
                             <p className="text-[17px] leading-snug text-gray-100">{selected.why}</p>
@@ -75,9 +76,9 @@ const CriticalReaderSim = () => {
                         </motion.div>
                     )}
                     {verdict && (
-                        <motion.div key="verdict" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
+                        <motion.div key="verdict" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE_OUT }}
                             className="flex flex-col gap-2">
-                            <p className="font-display text-[1.35rem] font-semibold leading-tight" style={{ color: C.baseSoft }}>{VERDICT.title}</p>
+                            <p className="font-body text-[1.35rem] font-semibold leading-tight" style={{ color: C.baseSoft }}>{VERDICT.title}</p>
                             <p className="text-[17px] leading-snug text-gray-100 border-l-2 pl-3" style={{ borderColor: C.base }}>{VERDICT.text}</p>
                         </motion.div>
                     )}

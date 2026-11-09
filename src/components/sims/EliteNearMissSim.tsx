@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { EASE_OUT } from '../../lib/motion';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
@@ -29,12 +30,12 @@ const EliteNearMissSim = () => {
         <Shell>
             <div className="flex items-center justify-between gap-4">
                 <Tabs labels={ELITE_STEPS.map(s => s.tab)} step={step} onSelect={setStep} layoutId="ato4-elite-tab" />
-                <Tag color={step === 2 ? C.lactate : C.carnoSoft}>{TAGS[step]}</Tag>
+                <Tag color={step === 2 ? C.caveat : C.carnoSoft}>{TAGS[step]}</Tag>
             </div>
             <div className="flex-1 min-h-0 grid gap-3" style={{ gridTemplateColumns: '700px minmax(0,1fr)' }}>
                 <Panel state="active" glow={step === 3 ? C.risk : C.carno} className="p-4">
                     <motion.div key={step <= 2 && step >= 1 ? 'row' : step} className="h-full flex flex-col justify-center gap-3"
-                        initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+                        initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, ease: EASE_OUT }}>
                         {step === 0 && <SprintersVisual reduce={reduce} />}
                         {(step === 1 || step === 2) && <RowingCi n={step === 2 ? n : null} />}
                         {step === 2 && (

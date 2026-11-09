@@ -4,7 +4,7 @@ import { useStore } from '../../store/useStore';
 import { TitleSlide } from '../presentation/TitleSlide';
 import { ProseSlide } from '../presentation/ProseSlide';
 import { QuoteSlide } from '../presentation/QuoteSlide';
-import { FitStage } from './FitStage';
+import { FitStage, PAD_X_SELF, SLIDE_WIDTH } from './FitStage';
 import { SlideErrorBoundary } from './SlideErrorBoundary';
 import { preloadAllSims } from '../presentation/slideContent';
 import { DeckChrome } from './DeckChrome';
@@ -15,21 +15,47 @@ import { useSlideStepStore } from '../../store/useSlideSteps';
 import { PRESENTER_CHANNEL, openPresenterWindow, type PresenterMessage } from './presenterChannel';
 import { toggleDetails } from '../../lib/detailsEvent';
 import { MODALS_3D, preloadAll3D } from '../three/registry';
-import { InquiryBoard } from './InquiryBoard';
+import { InquiryBoard, type BoardExit } from './InquiryBoard';
 import { boardForCrossing, boardForCurrent, ROMANS, type BoardState } from './inquiry';
 import { ActCurtain, CURTAIN_HOLD_MS } from './ActCurtain';
 import { CHAPTERS, type Chapter } from '../sims/ato1/content';
+import { DUR, EASE_OUT } from '../../lib/motion';
 
 const boardTitle = (b: BoardState | null) =>
     b === null ? null : b.ended !== null ? `Quadro do inquérito · fim do Ato ${ROMANS[b.ended]}` : 'Quadro do inquérito (Q)';
 
-const renderSlide = ({ slide }: DeckSlide) => {
+const renderSlide = ({ slide, section }: DeckSlide) => {
     if (slide.id === 0) return <TitleSlide slide={slide} />;
     if (!slide.title.trim()) return <QuoteSlide slide={slide} />;
-    return <ProseSlide slide={slide} />;
+    return <ProseSlide slide={slide} section={section} />;
 };
 
 const IDLE_MS = 2600;
+
+/** Cliques mais rápidos que isto (passador) tiram o slide anterior na hora: nunca empilham 2–3 simuladores saindo. */
+const RAPID_NAV_MS = 260;
+
+/** Teclas de avançar/voltar (as mesmas do useDeckNavigation): qualquer uma fecha a cortina do ato. */
+const NAV_KEYS = new Set(['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Enter', 'Backspace']);
+
+interface SlideMotion {
+    direction: number;
+    /** Lido quando a saída começa (efeito do framer-motion, depois do render): instante em que o slide que sai entrou. */
+    nav: { current: number };
+}
+
+/**
+ * Troca de slide: entra subindo 16 px e esmaecendo; sai só esmaecendo, rápido. Sem transição compartilhada:
+ * cada lado tem a sua duração. Se o slide que sai mal acabou de entrar (clique em rajada), sai sem animação.
+ */
+const SLIDE_VARIANTS = {
+    enter: ({ direction }: SlideMotion) => ({ opacity: 0, y: direction * 16 }),
+    center: { opacity: 1, y: 0, transition: { duration: DUR.enter, ease: EASE_OUT } },
+    exit: ({ nav }: SlideMotion) => ({
+        opacity: 0,
+        transition: { duration: performance.now() - nav.current < RAPID_NAV_MS ? 0 : DUR.exit, ease: EASE_OUT },
+    }),
+};
 
 // Os modelos 3D (cena + pós-processamento) só são baixados quando alguém os abre (ou na pré-carga).
 // Cada arquivo de `three/models/` é um modelo: export default de um modal que recebe `onClose`.
@@ -50,7 +76,9 @@ export const Deck = () => {
     const [board, setBoard] = useState<BoardState | null>(null);
     const boardRef = useRef<BoardState | null>(null);
     useEffect(() => { boardRef.current = board; }, [board]);
-    const closeBoardNow = useCallback(() => setBoard(null), []);
+    // Como o quadro sai: 'wipe' quando segue para o ato novo (a cortina o empurra para fora), 'fade' nos demais casos.
+    const [boardExit, setBoardExit] = useState<BoardExit>('fade');
+    const closeBoardNow = useCallback(() => { setBoardExit('fade'); setBoard(null); }, []);
     const onBeforeAdvance = useCallback((from: number, to: number) => {
         const crossing = boardForCrossing(DECK[from].section, DECK[to].section, to);
         if (!crossing) return false;
@@ -69,24 +97,48 @@ export const Deck = () => {
     });
 
     // Cortina do ato: sobe junto com o 1º slide do ato novo e abre depois de um instante.
-    const [curtain, setCurtain] = useState<Chapter | null>(null);
+    // Guarda o slide de destino: se o apresentador avança de novo antes do tempo, a cortina sai na hora.
+    const [curtain, setCurtain] = useState<{ chapter: Chapter; index: number } | null>(null);
+    if (curtain && curtain.index !== index) setCurtain(null);
     useEffect(() => {
         if (!curtain) return undefined;
         const t = window.setTimeout(() => setCurtain(null), CURTAIN_HOLD_MS);
         return () => window.clearTimeout(t);
     }, [curtain]);
 
+    // Qualquer comando de avançar/voltar (passo ou slide) fecha a cortina na hora: ela nunca esconde o que o clique mudou.
+    useEffect(() => {
+        if (!curtain) return undefined;
+        const onKey = (e: KeyboardEvent) => { if (NAV_KEYS.has(e.key)) setCurtain(null); };
+        window.addEventListener('keydown', onKey, true);
+        return () => window.removeEventListener('keydown', onKey, true);
+    }, [curtain]);
+
+    // Instante da última troca de slide (ver SLIDE_VARIANTS.exit). Atualizado depois que a saída já começou.
+    const navAtRef = useRef(0);
+    useEffect(() => { navAtRef.current = performance.now(); }, [index]);
+
     const closeBoard = closeBoardNow;
     const continueBoard = useCallback(() => {
         const current = boardRef.current;
+        const chapter = current ? CHAPTERS[current.upcoming] : undefined;
+        setBoardExit(current?.target != null && chapter ? 'wipe' : 'fade');
         setBoard(null);
         if (current?.target == null) return;
-        setCurtain(CHAPTERS[current.upcoming] ?? null);
+        setCurtain(chapter ? { chapter, index: current.target } : null);
         goTo(current.target);
     }, [goTo]);
     // Passador, botões e janela do apresentador: com o quadro aberto, avançar segue para o ato novo.
-    const advance = useCallback(() => (boardRef.current ? continueBoard() : next()), [continueBoard, next]);
-    const back = useCallback(() => (boardRef.current ? closeBoard() : prev()), [closeBoard, prev]);
+    const advance = useCallback(() => {
+        if (boardRef.current) return continueBoard();
+        setCurtain(null);
+        return next();
+    }, [continueBoard, next]);
+    const back = useCallback(() => {
+        if (boardRef.current) return closeBoard();
+        setCurtain(null);
+        return prev();
+    }, [closeBoard, prev]);
 
     const current = DECK[index];
     const model3D = MODEL_3D_BY_SLIDE.get(current.slide.id) ?? null;
@@ -136,7 +188,10 @@ export const Deck = () => {
             if (modalOpen || e.metaKey || e.ctrlKey || e.altKey) return;
             if (e.key === 'p' || e.key === 'P') openPresenterWindow(stateRef.current.index);
             if (e.key === 'd' || e.key === 'D') toggleDetails();
-            if (e.key === 'q' || e.key === 'Q') setBoard(b => (b ? null : boardForCurrent(DECK[stateRef.current.index].section)));
+            if (e.key === 'q' || e.key === 'Q') {
+                setBoardExit('fade');
+                setBoard(b => (b ? null : boardForCurrent(DECK[stateRef.current.index].section)));
+            }
         };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
@@ -174,32 +229,31 @@ export const Deck = () => {
             data-idle={idle || undefined}
             className={`deck-root absolute inset-0 z-10 overflow-hidden font-body selection:bg-brand-deep selection:text-white ${idle && !overview ? 'cursor-none' : ''}`}
         >
-            <AnimatePresence initial={false} custom={direction}>
+            <AnimatePresence initial={false} custom={{ direction, nav: navAtRef } satisfies SlideMotion}>
                 <motion.section
                     key={index}
-                    custom={direction}
+                    custom={{ direction, nav: navAtRef } satisfies SlideMotion}
                     className="absolute inset-0"
                     aria-roledescription="slide"
                     aria-label={`${index + 1} de ${DECK.length}: ${current.label}`}
-                    variants={{
-                        enter: (d: number) => ({ opacity: 0, y: d * 40 }),
-                        center: { opacity: 1, y: 0 },
-                        exit: (d: number) => ({ opacity: 0, y: d * -40 }),
-                    }}
+                    variants={SLIDE_VARIANTS}
                     initial="enter"
                     animate="center"
                     exit="exit"
-                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                 >
-                    <FitStage><SlideErrorBoundary resetKey={index}>{renderSlide(current)}</SlideErrorBoundary></FitStage>
+                    <FitStage width={SLIDE_WIDTH} padX={PAD_X_SELF}><SlideErrorBoundary resetKey={index}>{renderSlide(current)}</SlideErrorBoundary></FitStage>
                 </motion.section>
             </AnimatePresence>
+
+            {/* Leitor de tela: anuncia o slide novo a cada troca (o <section> que sai e entra não é anunciado sozinho). */}
+            <p className="sr-only" aria-live="polite" aria-atomic="true">
+                {`Slide ${index + 1} de ${DECK.length}: ${current.label}`}
+            </p>
 
             <DeckChrome
                 index={index}
                 total={DECK.length}
                 section={current.section}
-                idle={idle}
                 has3D={has3D}
                 onPrev={back}
                 onNext={advance}
@@ -209,11 +263,11 @@ export const Deck = () => {
             />
 
             <AnimatePresence>
-                {curtain && <ActCurtain key={curtain.roman} chapter={curtain} />}
+                {curtain && <ActCurtain key={curtain.chapter.roman} chapter={curtain.chapter} />}
             </AnimatePresence>
 
-            <AnimatePresence>
-                {board && <InquiryBoard key={`${board.ended}-${board.upcoming}`} board={board} onContinue={continueBoard} onBack={closeBoard} />}
+            <AnimatePresence custom={boardExit}>
+                {board && <InquiryBoard key={`${board.ended}-${board.upcoming}`} board={board} exitMode={boardExit} onContinue={continueBoard} onBack={closeBoard} />}
             </AnimatePresence>
 
             <AnimatePresence>

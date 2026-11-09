@@ -16,12 +16,13 @@ interface Curve {
     dashed?: boolean;
     /** Onde o rótulo encosta na curva (pH), e de que lado fica. */
     labelAt: number;
-    side: 'left' | 'right';
+    /** `edge`: rótulo em duas linhas alinhado à borda direita, logo acima da curva (não sai do gráfico). */
+    side: 'left' | 'right' | 'edge';
 }
 
 const CURVES: readonly Curve[] = [
     { id: 'bic', label: 'bicarbonato · pKa 6,1', pka: 6.1, color: C.base, labelAt: 6.1, side: 'left' },
-    { id: 'pi', label: 'fosfato · pKa ~6,8', pka: 6.8, color: C.co2, dashed: true, labelAt: 7.55, side: 'right' },
+    { id: 'pi', label: 'fosfato · pKa ~6,8', pka: 6.8, color: C.co2, dashed: true, labelAt: 7.7, side: 'edge' },
     { id: 'carn', label: 'carnosina · pKa 6,83', pka: 6.83, color: C.carno, labelAt: 6.95, side: 'right' },
 ];
 
@@ -73,8 +74,16 @@ export const TitrationChart = ({ width, height, reduce }: { width: number; heigh
                         )}
                     </path>
                     <line x1={sx(c.pka)} x2={sx(c.pka)} y1={sy(1)} y2={bottom} stroke={c.color} strokeOpacity={0.4} strokeDasharray="3 4" />
-                    <SvgText x={sx(c.labelAt) + (c.side === 'left' ? -12 : 12)} y={sy(beta(c.labelAt, c.pka)) - 12} text={c.label}
-                        anchor={c.side === 'left' ? 'end' : 'start'} size={16} color={c.color} weight={700} />
+                    {c.side === 'edge' ? (
+                        // Duas linhas presas à borda direita, acima da curva: inteiro dentro do gráfico e sem a linha por cima.
+                        c.label.split(' · ').map((part, k, all) => (
+                            <SvgText key={part} x={right} y={sy(beta(c.labelAt, c.pka)) - 14 - (all.length - 1 - k) * 20} text={part}
+                                anchor="end" size={16} color={c.color} weight={700} />
+                        ))
+                    ) : (
+                        <SvgText x={sx(c.labelAt) + (c.side === 'left' ? -12 : 12)} y={sy(beta(c.labelAt, c.pka)) - 12} text={c.label}
+                            anchor={c.side === 'left' ? 'end' : 'start'} size={16} color={c.color} weight={700} />
+                    )}
                 </g>
             ))}
         </svg>

@@ -1,3 +1,4 @@
+import { MotionConfig } from 'framer-motion';
 import { AmbientBackground } from './components/three/AmbientBackground';
 import { Deck } from './components/deck/Deck';
 import { SimHarness } from './components/deck/SimHarness';
@@ -10,15 +11,18 @@ const modelName = params.get('model');
 const isPresenter = params.has('apresentador');
 
 function App() {
+  // Movimento reduzido do sistema vale para toda animação do framer-motion (transform some, opacidade fica).
   return (
-    <main className="w-screen h-[100dvh] relative bg-[#04080F] overflow-hidden">
-      {isPresenter ? <Presenter /> : (
-        <>
-          <AmbientBackground />
-          {modelName ? <ModelHarness name={modelName} /> : simName ? <SimHarness name={simName} /> : <Deck />}
-        </>
-      )}
-    </main>
+    <MotionConfig reducedMotion="user">
+      <main className="w-screen h-[100dvh] relative bg-[#04080F] overflow-hidden">
+        {isPresenter ? <Presenter /> : (
+          <>
+            <AmbientBackground />
+            {modelName ? <ModelHarness name={modelName} /> : simName ? <SimHarness name={simName} /> : <Deck />}
+          </>
+        )}
+      </main>
+    </MotionConfig>
   );
 }
 

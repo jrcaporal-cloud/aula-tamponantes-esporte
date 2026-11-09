@@ -1,4 +1,4 @@
-import { C } from '../kit/palette';
+import { CAST_COLOR } from '../ato1/content';
 
 /** Slide 48: calculadora de sódio (contas próprias; tetos da OMS e do rótulo FDA do antiácido — dossiês 01 e 06). */
 
@@ -23,10 +23,10 @@ export interface Preset {
 }
 
 export const PRESETS: readonly Preset[] = [
-    { id: 'julia', name: 'Júlia', mass: 54, color: C.base },
-    { id: 'rafael', name: 'Rafael', mass: 76, color: C.acid },
-    { id: 'carlos', name: 'Carlos', mass: 82, color: C.sodium },
-    { id: 'bianca', name: 'Bianca', mass: 60, color: C.carno },
+    { id: 'julia', name: 'Júlia', mass: 54, color: CAST_COLOR.julia },
+    { id: 'rafael', name: 'Rafael', mass: 76, color: CAST_COLOR.rafael },
+    { id: 'carlos', name: 'Carlos', mass: 82, color: CAST_COLOR.carlos },
+    { id: 'bianca', name: 'Bianca', mass: 60, color: CAST_COLOR.bianca },
 ];
 
 export const SODIUM_TABS = ['A conta', '× teto da OMS', '× rótulo do antiácido', 'Os quatro atletas'] as const;

@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import type { ComponentType } from 'react';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
@@ -123,7 +124,7 @@ export const EffortRuler = ({ c, width, compact = false, reduce }: RulerProps) =
                 </g>
             ))}
             {/* o esforço do personagem entra (ou não) na janela */}
-            <motion.g initial={reduce ? false : { opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }}>
+            <motion.g initial={reduce ? false : { opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35, ease: EASE_OUT }}>
                 <rect x={ex0} y={bandY + 6} width={ex1 - ex0} height={bandH - 12} rx={5} fill={C.acid} />
                 <SvgText x={labelX} y={bandY - 8} text={c.effort} size={16} anchor={anchor} color={C.acidSoft} weight={700} />
             </motion.g>

@@ -1,5 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C, PANEL_BG } from '../kit/palette';
+import { CAST_COLOR } from '../ato1/content';
 import { SvgText } from '../kit/ui';
 import { BICARB_STUDIES, CAST, TYPICAL, WOMEN_EFFECT } from './whoContent';
 import { WV_H, WV_W } from './WhoVisuals';
@@ -30,7 +32,7 @@ export const BicarbDots = () => {
                         fill={lit ? WOMEN : MEN} fillOpacity={sep ? 1 : lit ? 0.5 : 0.25}
                         stroke={sep ? '#fff' : 'none'} strokeWidth={1.5}
                         initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }}
-                        transition={{ duration: 0.2, delay: lit ? 0.35 + i * 0.015 : 0.05 + (i / total) * 0.25 }} />
+                        transition={{ duration: 0.2, delay: lit ? 0.35 + i * 0.015 : 0.05 + (i / total) * 0.25, ease: EASE_OUT }} />
                 );
             })}
             <SvgText x={420} y={98} text="20%" color={WOMEN} size={44} weight={700} />
@@ -46,7 +48,7 @@ export const BicarbDots = () => {
             <line x1={ex(0)} x2={ex(0)} y1={358} y2={392} stroke={C.text} strokeOpacity={0.6} strokeDasharray="4 4" />
             <motion.rect x={ex(WOMEN_EFFECT.lo)} y={372} width={ex(WOMEN_EFFECT.hi) - ex(WOMEN_EFFECT.lo)} height={5} rx={2.5} fill={WOMEN}
                 style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
-                initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5, delay: 0.7 }} />
+                initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5, delay: 0.7, ease: EASE_OUT }} />
             <rect x={ex(WOMEN_EFFECT.est) - 7} y={367.5} width={14} height={14} fill={WOMEN} stroke="#04080F" strokeWidth={2}
                 transform={`rotate(45 ${ex(WOMEN_EFFECT.est)} 374.5)`} />
             <SvgText x={ex(WOMEN_EFFECT.lo) - 14} y={380} anchor="end" text="0 = sem efeito" color={C.muted} size={16} weight={500} />
@@ -80,13 +82,13 @@ export const CastVsTypical = () => {
                     const ty = s.y + CARD.h / 2;
                     return (
                         <motion.line key={i} x1={CENTER.x} y1={CENTER.y} x2={tx} y2={ty} stroke={C.risk} strokeOpacity={0.55} strokeWidth={2} strokeDasharray="5 6"
-                            initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.5 + i * 0.12 }} />
+                            initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.5 + i * 0.12, ease: EASE_OUT }} />
                     );
                 })}
             </svg>
             <motion.div className="absolute flex flex-col items-center text-center" style={{ left: 264, top: 0, width: 168, height: WV_H }}
-                initial={reduce ? false : { opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.35 }}>
-                <span className="mt-10 font-display text-[18px] font-semibold leading-tight text-white">participante<br />típico</span>
+                initial={reduce ? false : { opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.35, ease: EASE_OUT }}>
+                <span className="mt-10 font-body text-[18px] font-semibold leading-tight text-white">participante<br />típico</span>
                 <div className="absolute rounded-full border-2 p-3" style={{ top: CENTER.y - 66, borderColor: `${C.base}aa`, background: '#04080F' }}>
                     <Person size={104} color={MEN} />
                 </div>
@@ -98,16 +100,16 @@ export const CastVsTypical = () => {
             </motion.div>
             {CAST.map((p, i) => {
                 const s = SLOTS[i];
-                const color = p.woman ? WOMEN : MEN;
+                const color = CAST_COLOR[p.id];
                 return (
                     <motion.div key={p.name} className="absolute flex flex-col gap-2 rounded-xl border p-3"
                         style={{ left: s.x, top: s.y, width: CARD.w, height: CARD.h, borderColor: `${color}66`, background: 'rgba(4,10,20,0.92)' }}
                         initial={reduce ? false : { opacity: 0, x: s.x < CENTER.x ? 24 : -24 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.35, delay: 0.25 + i * 0.12 }}>
+                        transition={{ duration: 0.35, delay: 0.25 + i * 0.12, ease: EASE_OUT }}>
                         <div className="flex items-center gap-2.5">
                             <Person size={40} color={color} />
                             <div className="flex min-w-0 flex-col">
-                                <span className="font-display text-[1.2rem] font-semibold leading-tight text-white">{p.name}</span>
+                                <span className="font-body text-[1.2rem] font-semibold leading-tight text-white">{p.name}</span>
                                 <span className="text-[15px] leading-tight text-gray-300">{p.who}</span>
                             </div>
                         </div>

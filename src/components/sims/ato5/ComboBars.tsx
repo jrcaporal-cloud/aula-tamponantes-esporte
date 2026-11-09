@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT, stagger } from '../../../lib/motion';
 import { br, signed } from '../kit/format';
 import type { BarPanel, BarRow } from './comboContent';
 
@@ -19,26 +20,27 @@ const Row = ({ panel, row, index, rowH }: { panel: BarPanel; row: BarRow; index:
     const from = Math.min(zero, end);
     const width = Math.abs(end - zero);
     const isSum = Boolean(row.parts);
-    const t = { duration: reduce ? 0 : 0.7, delay: reduce ? 0 : 0.15 + index * 0.18, ease: 'easeOut' as const };
+    const t = { duration: reduce ? 0 : DUR.bar, delay: reduce ? 0 : stagger(index, 0.15, 0.18), ease: EASE_OUT };
+    const reveal = { from: { clipPath: 'inset(0 100% 0 0 round 6px)' }, to: { clipPath: 'inset(0 0% 0 0 round 6px)' } };
     return (
         <div className="grid items-center" style={{ gridTemplateColumns: `${LABEL_W}px minmax(0,1fr) ${VALUE_W}px`, height: rowH }}>
             <span className={`text-[16px] leading-tight ${isSum ? 'italic text-gray-300' : 'font-semibold text-white'}`}>{row.label}</span>
             <div className="relative h-full">
                 {row.parts ? (
                     <motion.div className="absolute top-1/2 -translate-y-1/2 h-[26px] flex rounded-md border-2 border-dashed overflow-hidden"
-                        style={{ left: `${from}%`, borderColor: 'rgba(255,255,255,0.55)' }}
-                        initial={reduce ? false : { width: 0 }} animate={{ width: `${width}%` }} transition={t}>
+                        style={{ left: `${from}%`, width: `${width}%`, borderColor: 'rgba(255,255,255,0.55)' }}
+                        initial={reduce ? false : reveal.from} animate={reveal.to} transition={t}>
                         {row.parts.map((p, i) => (
                             <span key={i} className="h-full" style={{ width: `${(p.value / row.value) * 100}%`, background: `${p.color}55` }} />
                         ))}
                     </motion.div>
                 ) : (
-                    <motion.div className="absolute top-1/2 -translate-y-1/2 h-[26px] rounded-md" style={{ left: `${from}%`, background: row.color }}
-                        initial={reduce ? false : { width: 0 }} animate={{ width: `${width}%` }} transition={t} />
+                    <motion.div className="absolute top-1/2 -translate-y-1/2 h-[26px] rounded-md" style={{ left: `${from}%`, width: `${width}%`, background: row.color }}
+                        initial={reduce ? false : reveal.from} animate={reveal.to} transition={t} />
                 )}
                 {row.lo != null && row.hi != null && (
                     <motion.div className="absolute top-1/2 h-[2px] -translate-y-1/2" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }}
-                        transition={{ ...t, delay: t.delay + 0.5 }}
+                        transition={{ ...t, duration: reduce ? 0 : DUR.text, delay: t.delay + (reduce ? 0 : DUR.bar * 0.8) }}
                         style={{ left: `${pctOf(panel, row.lo)}%`, width: `${pctOf(panel, row.hi) - pctOf(panel, row.lo)}%`, background: '#fff' }}>
                         <span className="absolute left-0 top-1/2 h-[16px] w-[2px] -translate-y-1/2 bg-white" />
                         <span className="absolute right-0 top-1/2 h-[16px] w-[2px] -translate-y-1/2 bg-white" />

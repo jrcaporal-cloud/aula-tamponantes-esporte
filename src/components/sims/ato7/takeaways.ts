@@ -41,7 +41,7 @@ export const TAKEAWAYS: readonly Takeaway[] = [
     {
         title: 'Regra e produto também são evidência',
         text: 'IN 28, Código Mundial e o pote contaminado entram na decisão; a justificativa vai ao prontuário.',
-        figure: '14,8–38%', figureLabel: 'suplementos contaminados', color: C.acid, countUp: true,
+        figure: '14,8–38%', figureLabel: 'suplementos contaminados', color: C.risk, countUp: true,
         source: 'IN 28; WADA 2026; Geyer 2004; Duiven 2021; CFN 656',
     },
 ];

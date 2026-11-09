@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type KeyboardEvent } from 'react';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { DECK } from './slides';
@@ -19,9 +19,26 @@ const SHORTCUTS: [string, string][] = [
     ['Home / End', 'início / fim'],
 ];
 
+/** Tab e Shift+Tab giram dentro da grade (diálogo modal): o foco nunca cai no slide escondido atrás. */
+const trapTab = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Tab') return;
+    const focusables = e.currentTarget.querySelectorAll<HTMLElement>('button:not([disabled])');
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+};
+
 /** Grade com todos os slides — útil para saltar durante perguntas da turma. */
 export const Overview = ({ current, onSelect, onClose }: OverviewProps) => {
     const activeRef = useRef<HTMLButtonElement>(null);
+
+    // Ao fechar, o foco volta para onde estava (o botão da barra ou o corpo da aula).
+    useEffect(() => {
+        const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        return () => previous?.focus({ preventScroll: true });
+    }, []);
 
     useEffect(() => {
         activeRef.current?.scrollIntoView({ block: 'center' });
@@ -31,6 +48,7 @@ export const Overview = ({ current, onSelect, onClose }: OverviewProps) => {
     return (
         <motion.div
             role="dialog"
+            aria-modal="true"
             aria-label="Visão geral dos slides"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -38,6 +56,7 @@ export const Overview = ({ current, onSelect, onClose }: OverviewProps) => {
             transition={{ duration: 0.25 }}
             className="absolute inset-0 z-40 bg-[#05050d]/92 backdrop-blur-xl overflow-y-auto"
             onClick={onClose}
+            onKeyDown={trapTab}
         >
             <div className="max-w-7xl mx-auto px-10 py-12" onClick={e => e.stopPropagation()}>
                 <div className="flex items-center justify-between mb-8">
@@ -61,11 +80,11 @@ export const Overview = ({ current, onSelect, onClose }: OverviewProps) => {
                                 ref={isCurrent ? activeRef : undefined}
                                 type="button"
                                 onClick={() => onSelect(i)}
-                                className={`text-left rounded-xl p-4 border transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-brand-accent ${isCurrent
+                                className={`text-left rounded-xl p-4 border transition-[transform,border-color,background-color] duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-brand-accent ${isCurrent
                                     ? 'bg-brand-deep/25 border-brand-accent/70 shadow-[0_0_24px_-6px_rgba(34,211,238,0.7)]'
                                     : 'bg-white/[0.03] border-white/10 hover:border-white/30 hover:bg-white/[0.06]'}`}
                             >
-                                <div className="flex items-center gap-2 mb-2 text-[10px] uppercase tracking-[0.2em] text-gray-500">
+                                <div className="flex items-center gap-2 mb-2 text-[11px] uppercase tracking-[0.2em] text-gray-400">
                                     <span className="font-mono text-gray-400">{String(i + 1).padStart(2, '0')}</span>
                                     <span className="truncate">{item.section}</span>
                                 </div>
@@ -77,7 +96,7 @@ export const Overview = ({ current, onSelect, onClose }: OverviewProps) => {
                     })}
                 </div>
 
-                <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-500">
+                <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-400">
                     {SHORTCUTS.map(([keys, what]) => (
                         <span key={keys}><kbd className="deck-kbd">{keys}</kbd> {what}</span>
                     ))}

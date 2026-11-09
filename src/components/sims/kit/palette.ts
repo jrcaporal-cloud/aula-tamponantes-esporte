@@ -2,6 +2,8 @@
  * Linguagem de cor da aula (a mesma no 2D, no 3D e no CSS):
  * ciano = base/tampão/bicarbonato, laranja = ácido/H⁺, âmbar = lactato, violeta = carnosina/β-alanina,
  * lima = sódio, ardósia = CO₂/neutro, rosa = desconforto/risco.
+ * Neutros sem significado químico: `caveat` (selos "ilustrativo", "cálculo", "caso fictício"),
+ * `stone` (veredito "depende" / sinal de cautela) e `caseFile` (o Ato I, o dossiê).
  */
 export const C = {
     base: '#22D3EE',
@@ -19,6 +21,16 @@ export const C = {
     ok: '#34D399',
     text: '#F3F4F6',
     muted: '#9CA3AF',
+    caveat: '#CBD5E1',
+    stone: '#E7E5E4',
+    caseFile: '#E5E7EB',
 } as const;
 
 export const PANEL_BG = { background: 'rgba(4,10,20,0.74)' } as const;
+
+/**
+ * Família do texto corrido para títulos pequenos (< 30 px). Vai inline porque a regra global
+ * `h1…h6 { font-family: display }` do index.css fica fora de camada e vence a classe `font-body`.
+ * A Clash Display com tracking negativo cola as palavras nesses tamanhos.
+ */
+export const BODY_FONT = { fontFamily: 'var(--font-body)' } as const;

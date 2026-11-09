@@ -1,4 +1,4 @@
-import { C } from '../kit/palette';
+import { CAST_COLOR } from '../ato1/content';
 
 /** Slide 44: a janela de duração do esforço (dossiê 01; personagens do dossiê 06, fictícios). */
 
@@ -37,10 +37,10 @@ export interface Persona {
 }
 
 export const PERSONAS: readonly Persona[] = [
-    { id: 'julia', name: 'Júlia', sport: '800 m', t: 120, color: C.base, note: 'no centro' },
-    { id: 'carlos', name: 'Carlos', sport: 'remo 2.000 m', t: 420, color: C.sodium, note: 'dentro (~7 min)' },
-    { id: 'bianca', name: 'Bianca', sport: '200 m nado', t: 150, color: C.carno, note: 'dentro; na piscina, há nulos' },
-    { id: 'rafael', name: 'Rafael', sport: 'jiu-jítsu', t: 360, tMax: 600, color: C.acid, note: 'lutas de 6–10 min, intermitentes' },
+    { id: 'julia', name: 'Júlia', sport: '800 m', t: 120, color: CAST_COLOR.julia, note: 'no centro' },
+    { id: 'carlos', name: 'Carlos', sport: 'remo 2.000 m', t: 420, color: CAST_COLOR.carlos, note: 'dentro (~7 min)' },
+    { id: 'bianca', name: 'Bianca', sport: '200 m nado', t: 150, color: CAST_COLOR.bianca, note: 'dentro; na piscina, há nulos' },
+    { id: 'rafael', name: 'Rafael', sport: 'jiu-jítsu', t: 360, tMax: 600, color: CAST_COLOR.rafael, note: 'lutas de 6–10 min, intermitentes' },
 ];
 
 export const DURATION_TABS = ['1992: quatro durações', 'A janela', 'Onde não funciona', 'Os quatro atletas'] as const;

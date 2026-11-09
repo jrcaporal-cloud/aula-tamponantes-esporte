@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { CFN_ALSO, CFN_FLOW, GRAY_ZONES, SHELVES } from './brazil';
@@ -19,7 +20,7 @@ const Bottle = ({ x, y, s = 1, fill = 0.65, delay = 0, reduce }: { x: number; y:
         <rect x={-5} y={2} width={10} height={8} fill="none" stroke={C.sodium} strokeWidth={2} />
         <motion.rect x={-12} y={10 + 46 * (1 - fill)} width={24} height={46 * fill} rx={4} fill={C.sodium} fillOpacity={0.55}
             style={{ transformBox: 'fill-box', transformOrigin: 'bottom' }}
-            initial={reduce ? false : { scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ duration: 0.5, delay }} />
+            initial={reduce ? false : { scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ duration: 0.5, delay, ease: EASE_OUT }} />
         <rect x={-14} y={10} width={28} height={48} rx={7} fill="none" stroke={C.sodium} strokeWidth={2.5} />
     </g>
 );
@@ -61,7 +62,7 @@ const COL_X = [108, 325, 542] as const;
 /** Passo 3: o que existe na prateleira e o tamanho da dose de 70 kg em antiácido e em sódio. */
 export const BicarbShelves = () => {
     const reduce = useReducedMotion() ?? false;
-    const fade = (delay: number) => (reduce ? {} : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, delay } });
+    const fade = (delay: number) => (reduce ? {} : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, delay, ease: EASE_OUT } });
     return (
         <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" role="img" aria-label="Bicarbonato no Brasil: suplemento líquido, cápsula e medicamento">
             {SHELVES.map((s, i) => {
@@ -102,7 +103,7 @@ export const BicarbShelves = () => {
 
 const FlowBox = ({ title, sub, color }: { title: string; sub: string; color: string }) => (
     <div className="flex min-w-0 flex-1 flex-col justify-center rounded-xl border-2 px-3 py-1.5 text-center" style={{ borderColor: `${color}aa`, background: `${color}14` }}>
-        <span className="font-display text-[18px] font-semibold leading-tight text-white">{title}</span>
+        <span className="font-body text-[18px] font-semibold leading-tight text-white">{title}</span>
         <span className="text-[15px] leading-snug text-gray-300">{sub}</span>
     </div>
 );
@@ -129,7 +130,7 @@ const Semaphore = () => (
 /** Passo 4: o caminho da norma e as duas zonas cinzentas sem parecer localizado. */
 export const CfnFlow = () => {
     const reduce = useReducedMotion() ?? false;
-    const enter = (delay: number) => (reduce ? {} : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, delay } });
+    const enter = (delay: number) => (reduce ? {} : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, delay, ease: EASE_OUT } });
     return (
         <div className="flex h-full flex-col gap-2.5">
             <motion.div className="flex items-stretch" {...enter(0.05)}>
@@ -157,7 +158,7 @@ export const CfnFlow = () => {
                         <Semaphore />
                         <div className="flex min-w-0 flex-col gap-1">
                             <span className="font-mono text-[15px] uppercase tracking-wider text-slate-300">zona cinzenta</span>
-                            <p className="m-0 font-display text-[17px] font-semibold leading-tight text-white">{z.title}</p>
+                            <p className="m-0 font-body text-[17px] font-semibold leading-tight text-white">{z.title}</p>
                             <p className="m-0 text-[15px] leading-snug text-gray-200">{z.why}</p>
                             <p className="m-0 mt-auto text-[15px] font-semibold" style={{ color: C.lactate }}>Parecer do CFN: não localizado.</p>
                         </div>

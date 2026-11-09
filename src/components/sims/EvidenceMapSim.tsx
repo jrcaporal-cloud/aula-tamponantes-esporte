@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSlideSteps } from '../../store/useSlideSteps';
-import { C } from './kit/palette';
+import { BODY_FONT, C } from './kit/palette';
 import { Panel, StepTabs } from './kit/ui';
 import { CACO3_REVEALED, EVIDENCE_STEPS, WITNESSES, type Witness } from './ato5/evidenceContent';
 import { EvidenceMap, MAP_H, MAP_W } from './ato5/EvidenceMap';
@@ -29,12 +29,12 @@ const detailOf = (w: Witness, revealed: boolean): Detail =>
 const DetailCard = ({ d }: { d: Detail }) => (
     <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1.5">
-            <h3 className="font-display text-[1.55rem] font-semibold leading-tight" style={{ color: d.color }}>{d.label}</h3>
+            <h3 className="font-body text-[1.55rem] font-semibold leading-tight text-balance" style={{ ...BODY_FONT, color: d.color }}>{d.label}</h3>
             <Tag color={d.color}>{d.verdict}</Tag>
         </div>
         {d.alert && (
             <div className="rounded-lg border-2 px-3 py-2" style={{ borderColor: C.risk, background: `${C.risk}14` }}>
-                <p className="font-display text-[1.45rem] font-semibold" style={{ color: C.risk }}>⚠ {d.alert.value}</p>
+                <p className="font-body text-[1.45rem] font-semibold" style={{ color: C.risk }}>⚠ {d.alert.value}</p>
                 <p className="text-[16px] leading-snug text-gray-100">{d.alert.text}</p>
             </div>
         )}
@@ -61,7 +61,7 @@ const EvidenceMapSim = () => {
                 <Panel className="p-4 flex flex-col">
                     <div className="flex items-baseline justify-between pb-1">
                         <span className="text-[16px] text-gray-200">↑ efeito no desempenho · força da evidência →</span>
-                        <Tag color={C.lactate}>posições qualitativas</Tag>
+                        <Tag color={C.caveat}>posições qualitativas</Tag>
                     </div>
                     <div style={{ height: MAP_H }}>
                         <EvidenceMap groups={info.groups} selected={selectedId} revealed={revealed}

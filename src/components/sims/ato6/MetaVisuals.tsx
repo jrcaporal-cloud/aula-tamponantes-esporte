@@ -104,7 +104,7 @@ export const FunnelPlot = ({ studies, published, all, showGhosts }: FunnelProps)
 export const CertaintyBoard = () => (
     <div className="p-5 flex flex-col gap-4" style={{ width: MV_W, height: MV_H }}>
         <div className="flex flex-col gap-1.5">
-            <p className="font-display text-[1.15rem] font-semibold text-white">Bicarbonato no GRADE (revisão guarda-chuva)</p>
+            <p className="font-body text-[1.15rem] font-semibold text-white">Bicarbonato no GRADE (revisão guarda-chuva)</p>
             {GRADE.map(g => (
                 <div key={g.level} className="flex items-center gap-3 rounded-lg px-3 py-1.5" style={{ ...PANEL_BG, opacity: g.items.length ? 1 : 0.5 }}>
                     <span className="w-[110px] shrink-0 font-semibold text-[16px]" style={{ color: g.items.length ? C.lactate : C.muted }}>{g.level}</span>
@@ -113,11 +113,11 @@ export const CertaintyBoard = () => (
             ))}
         </div>
         <div className="flex flex-col gap-2">
-            <p className="font-display text-[1.15rem] font-semibold text-white">A MBI na ciência do esporte (232 artigos)</p>
+            <p className="font-body text-[1.15rem] font-semibold text-white">A MBI na ciência do esporte (232 artigos)</p>
             <div className="grid grid-cols-4 gap-2">
                 {MBI_FACTS.map(f => (
                     <div key={f.label} className="rounded-xl border border-white/10 px-3 py-2" style={PANEL_BG}>
-                        <p className="font-display text-[1.6rem] font-semibold leading-none" style={{ color: f.value.includes('%') && f.value.includes('–') ? C.risk : C.text }}>{f.value}</p>
+                        <p className="font-body text-[1.6rem] font-semibold leading-none" style={{ color: f.value.includes('%') && f.value.includes('–') ? C.risk : C.text }}>{f.value}</p>
                         <p className="mt-1 text-[15px] leading-snug text-gray-300">{f.label}</p>
                     </div>
                 ))}

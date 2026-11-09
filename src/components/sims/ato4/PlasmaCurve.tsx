@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { ITCH_THRESHOLD, PK_CURVES, concentrationAt, type PkCurve } from './paresthesiaContent';
@@ -48,12 +49,18 @@ export const PlasmaCurve = ({ showArea, reduce }: PlasmaCurveProps) => (
             <g key={c.name}>
                 <motion.path d={curvePath(c)} fill="none" stroke={COLORS[i]} strokeWidth={4} strokeLinecap="round"
                     strokeDasharray={i === 1 ? '10 6' : undefined}
-                    initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.2 + i * 0.5 }} />
+                    initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.2 + i * 0.5, ease: EASE_OUT }} />
                 <circle cx={sx(c.hours)} cy={sy(c.peak)} r={6} fill={COLORS[i]} stroke="#04080F" strokeWidth={2} />
                 <SvgText x={sx(c.hours) + 12} y={sy(c.peak) + (i === 0 ? -6 : -14)} text={`${c.name}: ${c.peakLabel}`} color={COLORS[i]} size={17} weight={700} />
             </g>
         ))}
-        {showArea && <SvgText x={sx(1.65)} y={sy(108)} text="área sob a curva igual nas duas formas" color={C.text} size={17} weight={700} />}
+        {/* Em duas linhas, presas à direita: assim não encostam no rótulo "liberação lenta" (x ≈ 200–435). */}
+        {showArea && (
+            <g>
+                <SvgText x={W - M.r} y={sy(ITCH_THRESHOLD) + 32} text="área sob a curva" anchor="end" color={C.text} size={17} weight={700} />
+                <SvgText x={W - M.r} y={sy(ITCH_THRESHOLD) + 54} text="igual nas duas formas" anchor="end" color={C.text} size={17} weight={700} />
+            </g>
+        )}
         {!showArea && <SvgText x={sx(0.82)} y={sy(178)} text="formiga" color={C.risk} size={17} weight={700} />}
         <line x1={M.l} x2={W - M.r} y1={sy(0)} y2={sy(0)} stroke="white" strokeOpacity={0.3} />
         {[0, 1, 2, 3, 4].map(t => <SvgText key={t} x={sx(t)} y={H - M.b + 22} text={`${t} h`} anchor="middle" color={C.muted} size={16} weight={500} />)}

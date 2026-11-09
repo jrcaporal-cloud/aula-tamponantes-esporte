@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import type { ReactNode } from 'react';
 import { br, signed } from '../kit/format';
 import { C } from '../kit/palette';
@@ -6,25 +7,29 @@ import { CARR_MIRROR, COMBAT_TRIALS, GRADE_LIST } from './forest';
 
 /** Coluna de leitura ao lado do forest plot: um quadro por passo. */
 
+/** Seção sem moldura, só com um fio no topo: o painel do slide já é o cartão (nada de cartão dentro de cartão). */
 const Box = ({ title, children }: { title: string; children: ReactNode }) => (
-    <div className="h-full rounded-xl border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-3">
+    <div className="h-full border-t border-white/15 pt-4 px-1 flex flex-col gap-3">
         <span className="font-mono text-[15px] tracking-wide text-cyan-300">{title}</span>
         {children}
     </div>
 );
 
+const MIRROR_W = 260;
+
 /** Espelho de Carr 2011: alcalose × acidose, em % de potência num sprint de 1 min (LC90). */
 const Mirror = () => {
     const sx = (v: number) => 130 + v * 28;
     return (
-        <svg viewBox="0 0 260 176" width="100%" role="img" aria-label="Alcalose e acidose: efeito espelho">
+        <svg viewBox={`0 0 ${MIRROR_W} 176`} width="100%" role="img" aria-label="Alcalose e acidose: efeito espelho">
             <line x1={sx(0)} x2={sx(0)} y1={30} y2={170} stroke="rgba(255,255,255,0.5)" strokeDasharray="4 4" />
             {CARR_MIRROR.map((m, i) => {
                 const y = 58 + i * 80;
                 const color = m.tone === 'base' ? C.base : C.acid;
                 return (
                     <g key={m.label}>
-                        <text x={m.est > 0 ? sx(0) + 4 : sx(0) - 4} y={y - 22} textAnchor={m.est > 0 ? 'start' : 'end'} fontSize={17} fill="#D1D5DB">{m.label}</text>
+                        {/* Rótulo preso à borda de fora (direita para alcalose, esquerda para acidose): "alcalose (NaHCO₃)" não cabia a partir do zero. */}
+                        <text x={m.est > 0 ? MIRROR_W - 4 : 4} y={y - 22} textAnchor={m.est > 0 ? 'end' : 'start'} fontSize={17} fill="#D1D5DB">{m.label}</text>
                         <line x1={sx(m.est - m.ci)} x2={sx(m.est + m.ci)} y1={y} y2={y} stroke={color} strokeWidth={2.5} opacity={0.6} />
                         <rect x={Math.min(sx(0), sx(m.est))} y={y - 11} width={Math.abs(sx(m.est) - sx(0))} height={22} rx={4} fill={color} />
                         <text x={m.est > 0 ? sx(0) + 4 : sx(0) - 4} y={y + 34} textAnchor={m.est > 0 ? 'start' : 'end'}
@@ -37,7 +42,7 @@ const Mirror = () => {
 };
 
 export const ForestSide = ({ step }: { step: number }) => (
-    <motion.div key={step} className="h-full" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.35 }}>
+    <motion.div key={step} className="h-full" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.35, ease: EASE_OUT }}>
         {step === 0 && (
             <Box title="DE OLIVEIRA 2022 · BAYESIANA">
                 <span className="font-display text-[3.4rem] leading-none font-semibold" style={{ color: C.base }}>{br(0.17, 2)}</span>

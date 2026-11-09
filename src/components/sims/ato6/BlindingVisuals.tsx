@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { useCountUp } from '../kit/useCountUp';
@@ -19,7 +20,7 @@ const PeopleGrid = ({ cx, cy, lit, delay }: { cx: number; cy: number; lit: numbe
                 return (
                     <motion.circle key={i} cx={cx - 45 + (i % 4) * 30} cy={cy - 30 + Math.floor(i / 4) * 30} r={10}
                         fill={on ? C.base : C.risk} fillOpacity={on ? 0.9 : 0.55} stroke="#04080F" strokeWidth={1.5}
-                        initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: delay + i * 0.03, duration: 0.25 }} />
+                        initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: delay + i * 0.03, duration: 0.25, ease: EASE_OUT }} />
                 );
             })}
         </g>
@@ -115,16 +116,16 @@ export const MimicVisual = () => {
 export const ShareVisual = () => {
     const reduce = useReducedMotion() ?? false;
     const active = useCountUp('substância ~75%', reduce, { delay: 0.1, duration: 0.8 });
-    const placebo = useCountUp('placebo ~25%', reduce, { delay: 0.8, duration: 0.6 });
+    const placebo = useCountUp('placebo ~25%', reduce, { delay: 0.6, duration: DUR.bar });
     const zero = 540;
     const hx = (v: number) => zero + v * 140;
     return (
         <svg width={BV_W} height={BV_H} viewBox={`0 0 ${BV_W} ${BV_H}`} role="img" aria-label="Parte do efeito que é expectativa">
             <SvgText x={28} y={40} text="Tamponantes: efeito total vs. não tomar nada (ES 0,37)" color={C.text} size={18} weight={700} />
-            <motion.rect x={28} y={62} height={56} rx={10} fill={C.base} fillOpacity={0.75}
-                initial={reduce ? false : { width: 0 }} animate={{ width: 640 * 0.75 }} transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} />
-            <motion.rect x={28 + 640 * 0.75} y={62} height={56} rx={10} fill={C.lactate} fillOpacity={0.9}
-                initial={reduce ? false : { width: 0 }} animate={{ width: 640 * 0.25 }} transition={{ delay: 0.8, duration: 0.6, ease: [0.16, 1, 0.3, 1] }} />
+            <motion.rect x={28} y={62} width={640 * 0.75} height={56} rx={10} fill={C.base} fillOpacity={0.75} style={{ transformBox: 'fill-box', originX: 0 }}
+                initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.1, duration: 0.8, ease: EASE_OUT }} />
+            <motion.rect x={28 + 640 * 0.75} y={62} width={640 * 0.25} height={56} rx={10} fill={C.lactate} fillOpacity={0.9} style={{ transformBox: 'fill-box', originX: 0 }}
+                initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.6, duration: DUR.bar, ease: EASE_OUT }} />
             <text x={44} y={97} fontSize={18} fontWeight={700} fill="#04080F" style={{ fontFamily: 'var(--font-body)', fontVariantNumeric: 'tabular-nums' }}>{active}</text>
             <text x={28 + 640 * 0.75 + 14} y={97} fontSize={18} fontWeight={700} fill="#04080F" style={{ fontFamily: 'var(--font-body)', fontVariantNumeric: 'tabular-nums' }}>{placebo}</text>
             <SvgText x={28} y={146} text="Ensaios só ativo × placebo medem a parte azul; o atleta vive as duas." color={C.muted} size={16} weight={500} />

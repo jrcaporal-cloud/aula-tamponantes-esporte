@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useState } from 'react';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { Frame, StudyCard, Tag } from './ato3/Frame';
@@ -30,10 +31,10 @@ const TimeToPeakSim = () => {
 
     return (
         <Frame tabs={PEAK_TABS} step={step} setStep={setStep} layoutId="peak-tab" foot={PEAK_FEET[step]}
-            chips={<Tag color={C.lactate}>curvas ilustrativas · faixas de Jones 2016</Tag>}>
+            chips={<Tag color={C.caveat}>curvas ilustrativas · faixas de Jones 2016</Tag>}>
             <div className="h-full grid gap-5" style={{ gridTemplateColumns: '700px 1fr' }}>
                 <PeakChart fixedT={step === 1 ? fixedT : null} individual={step === 2} sessions={step === 3 ? SESSIONS : null} />
-                <motion.div key={step} className="flex flex-col justify-center gap-3" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.35 }}>
+                <motion.div key={step} className="flex flex-col justify-center gap-3" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.35, ease: EASE_OUT }}>
                     {step === 0 && (
                         <StudyCard tag="JONES 2016 · n = 16" title="Uma dose, dezesseis relógios" color={C.base}
                             lines={['0,3 g/kg, sem cegamento, sangue capilar por 3 h', 'Pico entre 75 e 180 min', 'Aumento de +6,0 a +12,3 mmol/L']} />

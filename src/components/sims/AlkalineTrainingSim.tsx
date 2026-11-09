@@ -60,7 +60,7 @@ const Painelli = () => (
             <span className="font-display text-[2rem] font-semibold text-gray-300">{PAINELLI.from}</span>
             <span className="text-[1.4rem] text-gray-400">→</span>
             <span className="font-display text-[2.4rem] font-semibold" style={{ color: C.carno }}>{PAINELLI.to}</span>
-            <span className="font-display text-[1.6rem] font-semibold" style={{ color: C.carno }}>{PAINELLI.delta}</span>
+            <span className="font-body text-[1.6rem] font-semibold" style={{ color: C.carno }}>{PAINELLI.delta}</span>
         </div>
         <StepText>{PAINELLI.text} O primeiro tampão é o treino; treinar alcalino segue como hipótese.</StepText>
     </div>
@@ -78,7 +78,7 @@ const Strip = ({ step }: { step: number }) => {
     if (step === 0) return <Hypothesis />;
     if (step === 1 || step === 2) {
         const s = STUDIES[step - 1];
-        return <p className="font-display text-[1.6rem] font-semibold leading-tight text-white">{s.takeaway}</p>;
+        return <p className="font-body text-[1.6rem] font-semibold leading-tight text-white">{s.takeaway}</p>;
     }
     if (step === 3) return <Contrasts />;
     return <Painelli />;

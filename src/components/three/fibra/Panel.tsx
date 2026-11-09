@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../../lib/motion';
 import { Info, Pin, X } from 'lucide-react';
 import { C } from '../../sims/kit/palette';
 import { useSelection } from './selection';
@@ -8,7 +9,7 @@ import { STRUCTURES } from './structures';
 /* Peças do painel lateral: texto da etapa, controles, legenda de cores e cartão da estrutura. */
 
 export const StepText = ({ data, step, last }: { data: FiberStep; step: number; last: number }) => (
-    <motion.div key={step} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+    <motion.div key={step} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: DUR.text, ease: EASE_OUT }}>
         <div className="flex items-center gap-3 mb-2.5 pr-12">
             <span className="inline-block px-3 py-1 text-[14px] font-mono tracking-widest text-cyan-200 bg-cyan-500/10 border border-cyan-400/25 rounded-full">{data.badge}</span>
             <span className="text-[14px] font-mono text-gray-400" aria-label={`Etapa ${step + 1} de ${last + 1}`}>{step + 1}/{last + 1}</span>
@@ -31,7 +32,7 @@ const Toggle = ({ on, label, color, onChange }: { on: boolean; label: string; co
         style={on ? { borderColor: `${color}99`, background: `${color}22`, color: '#fff' } : { borderColor: 'rgba(255,255,255,0.12)', color: '#D1D5DB' }}
     >
         <span className="relative w-8 h-4 rounded-full shrink-0" style={{ background: on ? color : 'rgba(255,255,255,0.18)' }}>
-            <span className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all" style={{ left: on ? 18 : 2 }} />
+            <span className={`absolute left-[2px] top-0.5 w-3 h-3 rounded-full bg-white transition-transform duration-200 ease-(--ease-out) ${on ? 'translate-x-[16px]' : ''}`} />
         </span>
         {label}
     </button>

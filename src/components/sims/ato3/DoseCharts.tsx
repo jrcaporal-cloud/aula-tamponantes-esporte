@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
@@ -35,7 +36,7 @@ export const CurveChart = ({ dose, showGi }: { dose: number; showGi: boolean }) 
         <path d={path(perfShape)} fill="none" stroke={C.base} strokeWidth={4} strokeLinecap="round" />
         <SvgText x={sx(0.44)} y={Y0 - perfShape(0.44) * (Y0 - Y1 - 20) - 16} text="ganho de desempenho" anchor="end" size={17} weight={700} color={C.base} />
         {showGi && (
-            <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
+            <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, ease: EASE_OUT }}>
                 <path d={path(giShape)} fill="none" stroke={C.risk} strokeWidth={4} strokeDasharray="10 7" strokeLinecap="round" />
                 <SvgText x={sx(0.37)} y={Y0 - giShape(0.37) * (Y0 - Y1 - 20) + 34} text="sintomas GI" size={17} weight={700} color={C.risk} />
             </motion.g>
@@ -60,7 +61,7 @@ export const BloodChart = () => {
             <SvgText x={X0 - 12} y={Y1 - 14} text="HCO₃⁻ (mmol/L)" size={16} weight={600} color="#CBD5E1" />
             {JONES_RANGES.map((r, i) => (
                 <motion.g key={r.dose} initial={{ opacity: 0, scaleY: 0.2 }} animate={{ opacity: 1, scaleY: 1 }}
-                    transition={{ duration: 0.5, delay: 0.15 * i }} style={{ transformBox: 'fill-box', transformOrigin: 'bottom' }}>
+                    transition={{ duration: 0.5, delay: 0.15 * i, ease: EASE_OUT }} style={{ transformBox: 'fill-box', transformOrigin: 'bottom' }}>
                     <rect x={sx(r.dose) - 26} y={sy(r.hi)} width={52} height={sy(r.lo) - sy(r.hi)} rx={10} fill={C.base} opacity={0.3 + i * 0.25} />
                 </motion.g>
             ))}
@@ -93,7 +94,7 @@ export const PeakChart = () => {
                 return (
                     <g key={g.dose}>
                         <motion.rect x={cx - 50} y={sy(g.mean)} width={100} height={Y0 - sy(g.mean)} rx={8} fill={C.base} opacity={i ? 0.85 : 0.55}
-                            initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ duration: 0.6, delay: 0.2 * i }}
+                            initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ duration: 0.6, delay: 0.2 * i, ease: EASE_OUT }}
                             style={{ transformBox: 'fill-box', transformOrigin: 'bottom' }} />
                         <line x1={cx} x2={cx} y1={sy(g.mean + g.sd)} y2={sy(g.mean - g.sd)} stroke="#fff" strokeWidth={2} />
                         <SvgText x={cx + 14} y={sy(g.mean + g.sd) - 4} text={`−${br(g.mean, 1)} ± ${br(g.sd, 1)} s`} size={18} weight={700} color="#fff" />

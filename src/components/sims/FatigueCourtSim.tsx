@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { DUR, EASE_IN_OUT, EASE_OUT } from '../../lib/motion';
 import { Gavel } from 'lucide-react';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
@@ -13,9 +14,11 @@ import { SimShell, SourceLine, StepText, Tag } from './ato2/ui';
  */
 
 const SW = 376;
-const SH = 150;
+/** Altura com folga: o rótulo do prato que desce (y ≈ 40 + 92 + 29) não pode encostar na borda. */
+const SH = 178;
 const PIVOT = { x: SW / 2, y: 40 };
 const ARM = 140;
+const TILT_TRANSITION = `transform ${DUR.bar}s cubic-bezier(${EASE_IN_OUT.join(', ')})`;
 
 const Scale = ({ tilt }: { tilt: number }) => {
     const deg = tilt * 12;
@@ -24,12 +27,12 @@ const Scale = ({ tilt }: { tilt: number }) => {
         <svg viewBox={`0 0 ${SW} ${SH}`} width={SW} height={SH} role="img" aria-label="Balança entre acusação e defesa">
             <line x1={PIVOT.x} x2={PIVOT.x} y1={PIVOT.y} y2={SH - 14} stroke="#CBD5E1" strokeWidth={4} />
             <rect x={PIVOT.x - 50} y={SH - 16} width={100} height={8} rx={4} fill="#CBD5E1" />
-            <g style={{ transform: `rotate(${deg}deg)`, transformOrigin: `${PIVOT.x}px ${PIVOT.y}px`, transition: 'transform 0.8s cubic-bezier(.3,1.4,.5,1)' }}>
+            <g style={{ transform: `rotate(${deg}deg)`, transformOrigin: `${PIVOT.x}px ${PIVOT.y}px`, transition: TILT_TRANSITION }}>
                 <line x1={PIVOT.x - ARM} x2={PIVOT.x + ARM} y1={PIVOT.y} y2={PIVOT.y} stroke="#E5E7EB" strokeWidth={5} strokeLinecap="round" />
             </g>
             <circle cx={PIVOT.x} cy={PIVOT.y} r={8} fill="#E5E7EB" />
             {[{ side: -1, color: C.acid, label: 'acusação' }, { side: 1, color: C.base, label: 'defesa' }].map(p => (
-                <g key={p.label} style={{ transform: `translateY(${p.side * drop}px)`, transition: 'transform 0.8s cubic-bezier(.3,1.4,.5,1)' }}>
+                <g key={p.label} style={{ transform: `translateY(${p.side * drop}px)`, transition: TILT_TRANSITION }}>
                     <line x1={PIVOT.x + p.side * ARM} x2={PIVOT.x + p.side * ARM} y1={PIVOT.y} y2={PIVOT.y + 34} stroke={p.color} strokeWidth={2} />
                     <path d={`M${PIVOT.x + p.side * ARM - 44} ${PIVOT.y + 34} Q${PIVOT.x + p.side * ARM} ${PIVOT.y + 70} ${PIVOT.x + p.side * ARM + 44} ${PIVOT.y + 34} Z`}
                         fill={`${p.color}33`} stroke={p.color} strokeWidth={2} />
@@ -44,7 +47,7 @@ const ExhibitCard = ({ ex, step, color }: { ex: Exhibit; step: number; color: st
     const entered = step >= ex.step;
     const voided = ex.void === true && entered;
     return (
-        <motion.div className="relative min-h-0 flex-1" animate={{ opacity: entered ? 1 : 0, x: entered ? 0 : 12 }} transition={{ duration: 0.4 }}>
+        <motion.div className="relative min-h-0 flex-1" animate={{ opacity: entered ? 1 : 0, x: entered ? 0 : 12 }} transition={{ duration: 0.4, ease: EASE_OUT }}>
             <Panel state={ex.step === step ? 'active' : 'idle'} glow={voided ? C.risk : color} className="h-full">
                 <div className="flex h-full flex-col justify-center gap-1 px-3.5 py-2" style={{ opacity: voided ? 0.6 : 1 }}>
                     <div className="flex items-center justify-between gap-2">
@@ -102,15 +105,15 @@ const FatigueCourtSim = () => {
         <SimShell tabs={COURT_STEPS.map(s => s.tab)} step={step} setStep={setStep} layoutId="court-tabs"
             chips={<Tag kind="ilustrativo">balança: leitura didática</Tag>}>
             <Column title="Acusação" items={PROSECUTION} step={step} color={C.acid} />
-            <Panel className="flex min-w-0 flex-1 flex-col items-center gap-2 px-4 py-3" state={verdict ? 'active' : 'idle'} glow={C.lactate}>
+            <Panel className="flex min-w-0 flex-1 flex-col items-center gap-2 px-4 py-3" state={verdict ? 'active' : 'idle'} glow={C.stone}>
                 <Scale tilt={plan.tilt} />
                 {verdict && (
-                    <motion.div className="flex items-center gap-2 rounded-lg border-2 px-3 py-1 font-display text-[1.35rem] font-semibold text-yellow-300"
-                        style={{ borderColor: C.lactate }} initial={{ scale: 1.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.35 }}>
+                    <motion.div className="flex items-center gap-2 rounded-lg border-2 px-3 py-1 font-body text-[1.35rem] font-semibold"
+                        style={{ borderColor: C.stone, color: C.stone }} initial={{ scale: 1.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.35, ease: EASE_OUT }}>
                         <Gavel size={22} aria-hidden /> cúmplice, não chefe
                     </motion.div>
                 )}
-                <StepText step={step} headline={verdict ? 'O veredito' : plan.headline} text={plan.text} accent={verdict ? C.lactate : '#fff'} className="w-full" />
+                <StepText step={step} headline={verdict ? 'O veredito' : plan.headline} text={plan.text} accent={verdict ? C.stone : '#fff'} className="w-full" />
                 <div className="mt-auto w-full"><CenterExtra step={step} /></div>
             </Panel>
             <Column title="Defesa" items={DEFENSE} step={step} color={C.base} />

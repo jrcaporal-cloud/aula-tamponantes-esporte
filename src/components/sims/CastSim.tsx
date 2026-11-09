@@ -24,7 +24,7 @@ const CastSim = () => {
         <div className="not-prose flex w-full select-none flex-col gap-3 font-body text-white" style={{ height: 516 }}>
             <div className="flex h-10 items-center justify-between gap-3">
                 <Tabs labels={tabs} step={step} onSelect={setStep} layoutId="cast-tabs" />
-                <Tag color={C.carnoSoft}>casos fictícios</Tag>
+                <Tag color={C.caveat}>casos fictícios</Tag>
             </div>
 
             <div className="grid min-h-0 flex-1 grid-cols-4 gap-3">

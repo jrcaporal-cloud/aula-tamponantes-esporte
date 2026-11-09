@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { HelpCircle } from 'lucide-react';
 import { Panel } from '../kit/ui';
 import type { CastMember } from './content';
@@ -28,7 +29,7 @@ export const CastCard = ({ member, revealed, state }: CastCardProps) => {
 
             <div className="flex min-h-0 flex-1 flex-col gap-2 px-4 pb-3.5 pt-2.5">
                 <div>
-                    <p className="font-display text-[1.65rem] font-semibold leading-none text-white">{member.name}</p>
+                    <p className="font-body text-[1.65rem] font-semibold leading-none text-white">{member.name}</p>
                     <p className="mt-1 text-[16px] text-gray-300">{member.meta}</p>
                     <p className="text-[16px] font-semibold" style={{ color: member.color }}>{member.event}</p>
                 </div>
@@ -47,7 +48,7 @@ export const CastCard = ({ member, revealed, state }: CastCardProps) => {
                 <div className="min-h-0 flex-1 rounded-xl border px-3 py-2"
                     style={{ borderColor: revealed ? `${member.color}66` : 'rgba(255,255,255,0.12)', borderStyle: revealed ? 'solid' : 'dashed' }}>
                     {revealed ? (
-                        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.35 }}>
+                        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.35, ease: EASE_OUT }}>
                             <p className="font-mono text-[16px] uppercase tracking-wide" style={{ color: member.color }}>o dilema</p>
                             <p className="mt-0.5 text-[16px] leading-snug text-gray-100">{member.dilemma}</p>
                         </motion.div>

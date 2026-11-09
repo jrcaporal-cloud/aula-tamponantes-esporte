@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { FLOW, type FlowNode } from './protocol';
@@ -72,15 +73,18 @@ const Connector = ({ x1, x2, lit, pass, reduce }: { x1: number; x2: number; lit:
 /** Saída rosa embaixo do losango (ou a legenda curta, nas ações). */
 const Below = ({ n, cx, lit, last }: { n: FlowNode; cx: number; lit: boolean; last: boolean }) => {
     if (!n.exit) {
-        return <SvgText x={last ? W - 2 : cx} y={EXIT_Y + 18} text={n.short} size={15} anchor={last ? 'end' : 'middle'} color={lit ? '#CBD5E1' : '#6B7280'} weight={500} />;
+        return <SvgText x={last ? W - 2 : cx} y={EXIT_Y + 18} text={n.short} size={15} anchor={last ? 'end' : 'middle'} color={lit ? '#CBD5E1' : C.muted} weight={500} />;
     }
     const pillW = n.exit.length * 8 + 28;
     return (
-        <motion.g initial={false} animate={{ opacity: lit ? 1 : 0.3 }} transition={{ duration: 0.4 }}>
-            <line x1={cx} x2={cx} y1={CY + SIZE.pergunta.h / 2} y2={EXIT_Y} stroke={C.risk} strokeWidth={2.5} strokeDasharray="4 4" />
-            <rect x={cx - pillW / 2} y={EXIT_Y} width={pillW} height={27} rx={8} fill={`${C.risk}1f`} stroke={`${C.risk}aa`} strokeWidth={1.5} />
-            <SvgText x={cx} y={EXIT_Y + 19} text={n.exit} size={15} anchor="middle" color={C.risk} weight={700} />
-        </motion.g>
+        <g>
+            {/* Saída de passo futuro: traço e pílula recuam; o texto troca o rosa por cinza claro, em opacidade cheia. */}
+            <motion.g initial={false} animate={{ opacity: lit ? 1 : 0.3 }} transition={{ duration: 0.4, ease: EASE_OUT }}>
+                <line x1={cx} x2={cx} y1={CY + SIZE.pergunta.h / 2} y2={EXIT_Y} stroke={C.risk} strokeWidth={2.5} strokeDasharray="4 4" />
+                <rect x={cx - pillW / 2} y={EXIT_Y} width={pillW} height={27} rx={8} fill={`${C.risk}1f`} stroke={`${C.risk}aa`} strokeWidth={1.5} />
+            </motion.g>
+            <SvgText x={cx} y={EXIT_Y + 19} text={n.exit} size={15} anchor="middle" color={lit ? C.risk : C.muted} weight={700} />
+        </g>
     );
 };
 
@@ -98,7 +102,7 @@ export const ProtocolChart = ({ step, onSelect, reduce }: ChartProps) => (
                 lit={i < step} pass={n.pass} reduce={reduce} />
         ))}
         {FLOW.map((n, i) => (
-            <g key={n.id} onClick={() => onSelect(i)} style={{ cursor: 'pointer', opacity: i <= step ? 1 : 0.6, ...FADE }} aria-label={`Passo ${i + 1}: ${n.q}`}>
+            <g key={n.id} onClick={() => onSelect(i)} style={{ cursor: 'pointer' }} aria-label={`Passo ${i + 1}: ${n.q}`}>
                 <Shape n={n} cx={CENTERS[i]} lit={i <= step} active={i === step} />
                 <Label n={n} cx={CENTERS[i]} lit={i <= step} />
                 <Below n={n} cx={CENTERS[i]} lit={i <= step} last={i === FLOW.length - 1} />

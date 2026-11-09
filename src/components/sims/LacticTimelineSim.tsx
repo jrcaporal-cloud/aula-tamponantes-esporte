@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel, SvgText } from './kit/ui';
@@ -40,9 +41,10 @@ const Timeline = ({ step }: { step: number }) => {
                 const active = current.includes(i);
                 const done = i <= lastVisible;
                 return (
-                    <g key={e.year} style={{ opacity: done ? 1 : 0.35, transition: 'opacity 0.4s' }}>
+                    // Anos ainda não contados: cinza claro em opacidade cheia (legível) e peso menor; só o marcador apaga.
+                    <g key={e.year}>
                         <SvgText x={nodeX(i)} y={NODE_Y - 22} text={e.year} anchor="middle" size={active ? 22 : 18}
-                            color={active ? '#fff' : '#CBD5E1'} weight={700} />
+                            color={active ? '#fff' : done ? '#CBD5E1' : C.muted} weight={done ? 700 : 500} />
                         <circle cx={nodeX(i)} cy={NODE_Y} r={active ? 10 : 7} fill={done ? C.lactate : '#1F2937'}
                             stroke={active ? '#fff' : 'rgba(255,255,255,0.4)'} strokeWidth={2} />
                     </g>
@@ -63,7 +65,7 @@ const Timeline = ({ step }: { step: number }) => {
 
 const EventCard = ({ event, order }: { event: TrialEvent; order: number }) => (
     <motion.div className="flex min-w-0 flex-1" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: order * 0.15 }}>
+        transition={{ duration: 0.35, delay: order * 0.15, ease: EASE_OUT }}>
         <Panel className="flex w-full flex-col gap-2 px-5 py-4" state="active" glow={C.lactate}>
             <div className="flex items-baseline justify-between gap-3">
                 <span className="font-display text-[2rem] font-semibold leading-none text-yellow-300">{event.year}</span>

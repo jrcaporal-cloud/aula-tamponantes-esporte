@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_IN_OUT, EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { fractionOfMax } from './loadingModel';
@@ -48,7 +49,7 @@ const Tank = ({ x, name, color, fill, days, caption, sub, duration, reduce }: Ta
             <motion.rect x={x + 6} y={TANK.y + 6} width={TANK.w - 12} height={inner} rx={11} fill={color} fillOpacity={0.75}
                 style={{ transformBox: 'fill-box', originY: 1 }}
                 initial={{ scaleY: reduce ? fill : 0 }} animate={{ scaleY: fill }}
-                transition={{ duration: reduce ? 0 : duration, delay: reduce ? 0 : 0.3, ease: 'easeOut' }} />
+                transition={{ duration: reduce ? 0 : duration, delay: reduce ? 0 : 0.3, ease: EASE_OUT }} />
             {/* calendário: 4 semanas × 7 dias */}
             {Array.from({ length: 28 }, (_, i) => {
                 const on = i < days;
@@ -172,7 +173,7 @@ export const PatentVisual = ({ reduce }: { reduce: boolean }) => (
         ))}
         {/* seta para a NAI */}
         <motion.path d="M246 270 C280 262 300 256 330 254" fill="none" stroke={C.lactate} strokeWidth={3} strokeLinecap="round"
-            initial={{ pathLength: reduce ? 1 : 0 }} animate={{ pathLength: 1 }} transition={{ duration: reduce ? 0 : 0.6, delay: reduce ? 0 : 3.1 }} />
+            initial={{ pathLength: reduce ? 1 : 0 }} animate={{ pathLength: 1 }} transition={{ duration: reduce ? 0 : 0.6, delay: reduce ? 0 : 3.1, ease: EASE_IN_OUT }} />
         <motion.path d="M320 246 L332 254 L320 262" fill="none" stroke={C.lactate} strokeWidth={3} strokeLinecap="round" {...delayed(reduce, 3.6, 0.2)} />
         <motion.g {...delayed(reduce, 3.6)}>
             <rect x={340} y={214} width={218} height={82} rx={14} fill="rgba(250,204,21,0.12)" stroke={C.lactate} strokeWidth={2} />

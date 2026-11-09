@@ -32,9 +32,10 @@ export const ItchNeuron = ({ reduce }: { reduce: boolean }) => (
 
         <circle cx={110} cy={340} r={30} fill={`${C.text}14`} stroke={C.text} strokeOpacity={0.7} strokeWidth={3} />
         <SvgText x={152} y={346} text="gânglio da raiz dorsal" color={C.text} size={16} />
+        {/* begin negativo: os 3 disparos já nascem espalhados pelo axônio (com begin positivo ficavam parados em 0,0). */}
         {!reduce && [0, 0.6, 1.2].map(begin => (
             <circle key={begin} r={7} fill={C.risk}>
-                <animateMotion dur="1.8s" begin={`${begin}s`} repeatCount="indefinite" path={AXON} />
+                <animateMotion dur="1.8s" begin={`-${begin}s`} repeatCount="indefinite" path={AXON} />
             </circle>
         ))}
 

@@ -24,14 +24,15 @@ const sx = (t: number) => TRACK_X0 + (t / T_MAX) * (TRACK_X1 - TRACK_X0);
 const CONTROL = VIALS[1].time;
 
 /** Frasco de laboratório com o líquido da cor do sal. */
-const VialIcon = ({ x, y, color, picked }: { x: number; y: number; color: string; picked: boolean }) => (
+const VialIcon = ({ x, y, color, picked, reduce, phase }: { x: number; y: number; color: string; picked: boolean; reduce: boolean; phase: number }) => (
     <g transform={`translate(${x} ${y})`}>
         {picked && <circle cx={22} cy={34} r={40} fill={color} opacity={0.16} />}
         <rect x={10} y={0} width={24} height={8} rx={2} fill="#CBD5E1" opacity={0.8} />
         <path d="M12 8 V52 a10 10 0 0 0 20 0 V8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.55)" strokeWidth={2} />
         <path d="M13 30 V52 a9 9 0 0 0 18 0 V30 Z" fill={color} opacity={0.85} />
+        {/* Bolha do líquido: laço SMIL só sem movimento reduzido; begin negativo defasa os 3 frascos (não sobem juntos). */}
         <circle cx={19} cy={44} r={2.5} fill="#fff" opacity={0.5}>
-            <animate attributeName="cy" values="50;32;50" dur="2.6s" repeatCount="indefinite" />
+            {!reduce && <animate attributeName="cy" values="50;32;50" dur="2.6s" begin={`-${phase}s`} repeatCount="indefinite" />}
         </circle>
     </g>
 );
@@ -42,10 +43,11 @@ interface LaneProps {
     step: number;
     clock: number;
     picked: boolean;
+    reduce: boolean;
     onPick: () => void;
 }
 
-const Lane = ({ vial, index, step, clock, picked, onPick }: LaneProps) => {
+const Lane = ({ vial, index, step, clock, picked, reduce, onPick }: LaneProps) => {
     const cy = TOP + index * LANE_H + LANE_H / 2;
     const shown = Math.min(clock, vial.time);
     const done = step >= 2 && clock >= vial.time;
@@ -54,7 +56,7 @@ const Lane = ({ vial, index, step, clock, picked, onPick }: LaneProps) => {
         <g onClick={onPick} style={{ cursor: 'pointer' }}>
             <rect x={0} y={cy - LANE_H / 2 + 4} width={W} height={LANE_H - 8} rx={14}
                 fill={picked ? `${vial.color}14` : 'rgba(255,255,255,0.02)'} stroke={picked ? `${vial.color}99` : 'transparent'} />
-            <VialIcon x={22} y={cy - 32} color={vial.color} picked={picked} />
+            <VialIcon x={22} y={cy - 32} color={vial.color} picked={picked} reduce={reduce} phase={index * 0.85} />
             <SvgText x={96} y={cy - 6} text={vial.salt} size={24} weight={700} color="#fff" />
             <SvgText x={96} y={cy + 22} text={vial.role} size={17} weight={500} color={vial.color} />
             {step >= 1 && (
@@ -95,7 +97,7 @@ const ThreeVialsSim = () => {
 
     return (
         <Frame tabs={VIAL_TABS} step={step} setStep={setStep} layoutId="vials-tab" foot={VIAL_FEET[step]}
-            chips={<><Tag color={C.base}>Jones et al. 1977 · n = 5</Tag>{step >= 3 && <Tag color={C.lactate}>% = cálculo</Tag>}</>}>
+            chips={<><Tag color={C.base}>Jones et al. 1977 · n = 5</Tag>{step >= 3 && <Tag color={C.caveat}>% = cálculo</Tag>}</>}>
             <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" role="img" aria-label="Três frascos e o tempo até a exaustão">
                 <SvgText x={96} y={22} text={picked ? 'Aposta da turma marcada' : 'Clique no frasco da aposta'} size={16} weight={500} color={C.muted} />
                 <SvgText x={TRACK_X0} y={22} text="Tempo até a exaustão a 95% da potência máxima" size={17} weight={600} color="#CBD5E1" />
@@ -104,7 +106,7 @@ const ThreeVialsSim = () => {
                         anchor="end" color={running ? C.lactate : C.muted} />
                 )}
                 {VIALS.map((v, i) => (
-                    <Lane key={v.id} vial={v} index={i} step={step} clock={clock} picked={picked === v.id}
+                    <Lane key={v.id} vial={v} index={i} step={step} clock={clock} picked={picked === v.id} reduce={reduce}
                         onPick={() => setPicked(p => (p === v.id ? null : v.id))} />
                 ))}
                 {[0, 100, 200, 300, 400, 500, 600].map(t => (

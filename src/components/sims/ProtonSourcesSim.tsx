@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel } from './kit/ui';
@@ -24,7 +25,7 @@ const WitnessCard = ({ index, step }: { index: number; step: number }) => {
             <div className="flex h-full items-center gap-2 py-2 pl-4 pr-3">
                 <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
                     <span className="whitespace-nowrap font-mono text-[15px] text-gray-400">{index + 1} · {w.name}</span>
-                    <span className="font-display text-[1.15rem] font-semibold leading-tight text-white">{w.school}</span>
+                    <span className="font-body text-[1.15rem] font-semibold leading-tight text-white">{w.school}</span>
                     <span className="text-[15px] leading-snug text-gray-100">
                         {agree ? <><span className="font-semibold text-yellow-300">concorda:</span> H⁺ e lactato sobem juntos.</> : w.claim}
                     </span>
@@ -52,7 +53,7 @@ const ProtonSourcesSim = () => {
             </div>
             <Panel className="flex min-w-0 flex-1 flex-col gap-3 px-5 py-4" glow={agree ? C.lactate : C.acid}>
                 <StepText step={step} headline={plan.headline} text={plan.text} accent={agree ? C.lactate : C.acidSoft} />
-                <motion.div key={step} className="mt-auto" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.1 }}>
+                <motion.div key={step} className="mt-auto" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: DUR.text, ease: EASE_OUT }}>
                     {Scene ? <Scene reduce={reduce} /> : <AgreementPlot reduce={reduce} />}
                 </motion.div>
             </Panel>

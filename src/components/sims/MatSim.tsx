@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useState } from 'react';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { Frame, Tag } from './ato3/Frame';
@@ -42,8 +43,8 @@ const MatSim = () => {
 
     return (
         <Frame tabs={MAT_TABS} step={step} setStep={setStep} layoutId="mat-tab" foot={MAT_FEET[step]}
-            chips={rafael ? <Tag color={C.acid}>caso fictício · 76 kg</Tag> : <Tag color={C.base}>{step === 0 ? 'ECRs agudos' : 'meta-análise'}</Tag>}>
-            <motion.div key={step < 2 ? step : 'rafael'} className="h-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+            chips={rafael ? <Tag color={C.caveat}>caso fictício · 76 kg</Tag> : <Tag color={C.base}>{step === 0 ? 'ECRs agudos' : 'meta-análise'}</Tag>}>
+            <motion.div key={step < 2 ? step : 'rafael'} className="h-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, ease: EASE_OUT }}>
                 {step === 0 && <Trials reduce={reduce} />}
                 {step === 1 && <MetaScene reduce={reduce} />}
                 {(step === 2 || step === 3) && <Dilemma timing={timing} setTiming={t => setOverride({ step, timing: t })} />}

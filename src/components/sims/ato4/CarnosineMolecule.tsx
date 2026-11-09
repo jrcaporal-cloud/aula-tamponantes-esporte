@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 
@@ -77,7 +78,7 @@ export const CarnosineMolecule = ({ assemble, protonated, reduce }: MoleculeProp
                 </g>
             </motion.g>
 
-            <motion.g initial={{ opacity: assemble && !reduce ? 0 : 1 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 1.3 }}>
+            <motion.g initial={{ opacity: assemble && !reduce ? 0 : 1 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 1.3, ease: EASE_OUT }}>
                 <Bond x1={272 + 16} x2={350 - 23} color={C.text} />
                 <SvgText x={392} y={Y - 74} text="ligação peptídica" anchor="middle" color={C.muted} size={16} weight={500} />
                 <SvgText x={392} y={Y - 50} text="CARNS1 · ATP → ADP" anchor="middle" color={C.text} size={16} />

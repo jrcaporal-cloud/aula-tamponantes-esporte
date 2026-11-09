@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { CURVES, NEAR_PEAK, shape, THRESHOLD, valueAt } from './pico';
@@ -45,7 +46,7 @@ export const PeakChart = ({ fixedT, individual, sessions }: PeakChartProps) => (
         <line x1={X0} x2={X1} y1={sy(THRESHOLD)} y2={sy(THRESHOLD)} stroke={C.lactate} strokeDasharray="6 6" strokeOpacity={0.7} />
         <SvgText x={X1} y={sy(THRESHOLD) + 22} text="+5 mmol/L" anchor="end" size={16} weight={700} color={C.lactate} />
         {sessions && (
-            <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+            <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, ease: EASE_OUT }}>
                 <rect x={sx(75)} y={Y1} width={sx(240) - sx(75)} height={Y0 - Y1} fill={C.ok} opacity={0.07} />
                 <SvgText x={X1} y={Y0 + 52} text="> 80% acima de +5: 75–240 min" anchor="end" size={16} weight={700} color={C.ok} />
                 {sessions.map((t, i) => (

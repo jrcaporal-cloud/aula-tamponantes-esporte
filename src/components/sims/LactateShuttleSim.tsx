@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { C } from './kit/palette';
 import { Panel, SvgText } from './kit/ui';
@@ -14,7 +15,8 @@ import { SimShell, SourceLine, StepText, Tag } from './ato2/ui';
 
 const DW = 330;
 const DH = 150;
-const decayX = (t: number) => 40 + (t / 60) * (DW - 56);
+/** Folga de 40 à direita: o rótulo "60 min" é centrado no tick e não pode sair do viewBox. */
+const decayX = (t: number) => 40 + (t / 60) * (DW - 80);
 const decayY = (f: number) => 20 + (1 - f) * (DH - 56);
 
 const DecayChart = () => {
@@ -70,7 +72,7 @@ const LactateShuttleSim = () => {
             </Panel>
             <Panel className="flex min-w-0 flex-1 flex-col gap-3 p-5">
                 <StepText step={step} headline={plan.headline} text={plan.text} accent={C.lactate} />
-                <motion.div key={step} className="mt-auto" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35, delay: 0.2 }}>
+                <motion.div key={step} className="mt-auto" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: DUR.text, ease: EASE_OUT }}>
                     <StepVisual step={step} />
                 </motion.div>
                 <SourceLine>{plan.source}</SourceLine>

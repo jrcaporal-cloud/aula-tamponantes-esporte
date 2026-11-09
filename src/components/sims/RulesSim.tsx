@@ -24,7 +24,7 @@ const KICKER_COLOR: Record<RuleVisual, string> = {
     volume: C.risk,
     tco2: C.acid,
     cavalos: C.lactate,
-    pote: C.acid,
+    pote: C.risk,
 };
 
 const RulesSim = () => {

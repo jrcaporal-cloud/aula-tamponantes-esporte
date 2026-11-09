@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_IN_OUT, EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { CROSSOVER_ROWS, SAMPLE_PILES } from './designContent';
@@ -26,7 +27,7 @@ const rowY = (i: number) => (i < 3 ? 116 + i * 36 : 136 + i * 36);
 /** Passo 1: seis atletas, metade começa com bicarbonato e metade com placebo; depois do intervalo, trocam. */
 export const CrossoverScheme = () => {
     const reduce = useReducedMotion() ?? false;
-    const fade = (delay: number) => (reduce ? {} : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.3, delay } });
+    const fade = (delay: number) => (reduce ? {} : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.3, delay, ease: EASE_OUT } });
     const shift = COL.s2 - COL.s1;
     return (
         <svg width={DV_W} height={DV_H} viewBox={`0 0 ${DV_W} ${DV_H}`} role="img" aria-label="Esquema do desenho cruzado: os mesmos atletas trocam de condição">
@@ -50,7 +51,7 @@ export const CrossoverScheme = () => {
                         <motion.circle cx={COL.s2} cy={y} r={12}
                             initial={reduce ? false : { x: -shift, fill: tone(first), opacity: 0.5 }}
                             animate={{ x: 0, fill: tone(second), opacity: 1 }}
-                            transition={{ duration: 0.6, delay: 0.35 + i * 0.03, ease: 'easeInOut' }} />
+                            transition={{ duration: 0.6, delay: 0.35 + i * 0.03, ease: EASE_IN_OUT }} />
                         <motion.g {...fade(1)}>
                             <SvgText x={COL.delta} y={y + 7} anchor="middle" text="Δ" color={C.baseSoft} size={20} weight={700} />
                         </motion.g>
@@ -101,7 +102,7 @@ export const SamplePiles = () => {
                                 <motion.circle key={i} cx={x0 + (i % COLS) * PITCH + PITCH / 2} cy={BASE_Y - row * PITCH - PITCH / 2} r={4.4}
                                     fill={solid ? pile.color : 'none'} stroke={pile.color} strokeOpacity={solid ? 0 : 0.7} strokeWidth={1.3}
                                     initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.2, delay: start + row * 0.03 }} />
+                                    transition={{ duration: 0.2, delay: start + row * 0.03, ease: EASE_OUT }} />
                             );
                         })}
                         <SvgText x={x0 + PILE_W / 2} y={top - 12} anchor="middle" text={pile.range} color={pile.color} size={24} weight={700} />

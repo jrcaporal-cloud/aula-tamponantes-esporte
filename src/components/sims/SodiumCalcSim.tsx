@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useState } from 'react';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { Frame, Tag } from './ato3/Frame';
@@ -24,7 +25,7 @@ const Slider = ({ label, value, min, max, step, onChange, text }: {
 }) => (
     <label className="flex-1 flex flex-col gap-1">
         <span className="flex items-baseline justify-between text-[16px] text-gray-200">
-            {label}<span className="font-display text-[1.35rem] font-semibold text-white">{text}</span>
+            {label}<span className="font-body text-[1.35rem] font-semibold text-white">{text}</span>
         </span>
         <input type="range" min={min} max={max} step={step} value={value} onChange={e => onChange(Number(e.target.value))}
             className="w-full accent-lime-400 cursor-pointer" aria-label={label} />
@@ -41,7 +42,7 @@ const SodiumCalcSim = () => {
 
     return (
         <Frame tabs={SODIUM_TABS} step={step} setStep={setStep} layoutId="sodium-tab" foot={SODIUM_FEET[step]}
-            chips={<>{step === 3 && <Tag color={C.acid}>casos fictícios</Tag>}<Tag color={C.lactate}>cálculo</Tag></>}>
+            chips={<>{step === 3 && <Tag color={C.caveat}>casos fictícios</Tag>}<Tag color={C.caveat}>cálculo</Tag></>}>
             <div className="h-full flex flex-col gap-3">
                 <div className="flex items-end gap-5">
                     <Slider label="Massa corporal" value={mass} min={40} max={120} step={1} onChange={v => set({ mass: v })} text={`${mass} kg`} />
@@ -63,7 +64,7 @@ const SodiumCalcSim = () => {
                     <Stat big={`${br(r.fluid / 1000, 2)} L`} label="de líquido (10 mL/kg, Boegman 2020)" color="#93C5FD" />
                 </div>
                 <motion.div key={step >= 1 ? 'bars' : 'none'} className="flex-1 min-h-0 flex flex-col justify-center gap-2"
-                    initial={{ opacity: 0 }} animate={{ opacity: step >= 1 ? 1 : 0.25 }} transition={{ duration: 0.4 }}>
+                    initial={{ opacity: 0 }} animate={{ opacity: step >= 1 ? 1 : 0.25 }} transition={{ duration: 0.4, ease: EASE_OUT }}>
                     <CompareBar title="Sódio desta dose × teto diário da OMS" value={r.na} unit="g de Na" max={10} color={C.sodium}
                         note={`${br(r.whoTimes, 1)}× o teto do dia`} refs={[{ value: WHO_NA_G, label: 'OMS < 2 g/dia', color: '#fff' }]} />
                     {step >= 2 && (

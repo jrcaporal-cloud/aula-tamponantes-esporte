@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { DUR, EASE_OUT, stagger } from '../../../lib/motion';
 import { Beef, Bird, Dog, Trophy, Waves } from 'lucide-react';
 import { C } from '../kit/palette';
 import { ANIMALS, HUMAN_BARS, HUMAN_RANGE, LOWER_BARS } from './originContent';
@@ -9,8 +10,8 @@ export const CenturyVisual = ({ reduce }: { reduce: boolean }) => (
     <div className="h-full flex flex-col justify-center gap-6 px-6">
         <div className="relative h-[150px]">
             <div className="absolute left-[60px] right-[60px] top-[58px] h-[3px] bg-white/15" />
-            <motion.div className="absolute left-[60px] top-[58px] h-[3px]" style={{ background: C.carno }}
-                initial={reduce ? false : { width: 0 }} animate={{ width: 'calc(100% - 120px)' }} transition={{ duration: 1.6, delay: 0.3, ease: 'easeInOut' }} />
+            <motion.div className="absolute left-[60px] top-[58px] h-[3px]" style={{ background: C.carno, width: 'calc(100% - 120px)', originX: 0 }}
+                initial={reduce ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.9, delay: 0.15, ease: EASE_OUT }} />
             {[{ year: '1900', text: 'achada na carne', left: true }, { year: '2010', text: 'CARNS1 identificada', left: false }].map(n => (
                 <div key={n.year} className={`absolute top-0 flex flex-col items-center gap-2 ${n.left ? 'left-0' : 'right-0'}`} style={{ width: 120 }}>
                     <span className="font-display text-[2.2rem] leading-none font-semibold text-white">{n.year}</span>
@@ -18,8 +19,8 @@ export const CenturyVisual = ({ reduce }: { reduce: boolean }) => (
                     <span className="text-[16px] text-gray-200 text-center leading-tight">{n.text}</span>
                 </div>
             ))}
-            <motion.span className="absolute left-1/2 top-[76px] -translate-x-1/2 font-display text-[1.6rem] font-semibold" style={{ color: C.carnoSoft }}
-                initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 1.6 }}>
+            <motion.span className="absolute left-1/2 top-[76px] -translate-x-1/2 font-body text-[1.6rem] font-semibold" style={{ color: C.carnoSoft }}
+                initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: DUR.text, delay: 0.9, ease: EASE_OUT }}>
                 110 anos
             </motion.span>
         </div>
@@ -40,9 +41,9 @@ export const AnimalsVisual = ({ reduce }: { reduce: boolean }) => (
             const Icon = ANIMAL_ICONS[i];
             return (
                 <motion.div key={a.name} className="rounded-xl border border-white/10 bg-white/[0.04] p-5 flex flex-col gap-2"
-                    initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: i * 0.15 }}>
+                    initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: DUR.enter, delay: stagger(i, 0, 0.15), ease: EASE_OUT }}>
                     <Icon size={30} color={C.carno} aria-hidden />
-                    <span className="font-display text-[1.35rem] font-semibold text-white">{a.name}</span>
+                    <span className="font-body text-[1.35rem] font-semibold text-white">{a.name}</span>
                     <span className="text-[16px] text-gray-200">{a.detail}</span>
                 </motion.div>
             );
@@ -56,10 +57,12 @@ export const HumanVisual = ({ reduce }: { reduce: boolean }) => (
     <div className="h-full flex flex-col justify-center gap-5 px-4">
         <span className="text-[16px] text-gray-300">Carnosina no vasto lateral, mmol/kg de massa seca (biópsia, n = 50)</span>
         <div className="relative h-[54px] rounded-xl bg-white/[0.04] border border-white/10">
-            <motion.div className="absolute top-[10px] bottom-[10px] rounded-lg" style={{ background: `${C.carno}40`, border: `1px solid ${C.carno}` }}
-                initial={reduce ? false : { left: '0%', width: '0%' }}
-                animate={{ left: `${(HUMAN_RANGE.lo / SCALE) * 100}%`, width: `${((HUMAN_RANGE.hi - HUMAN_RANGE.lo) / SCALE) * 100}%` }}
-                transition={{ duration: 0.9, delay: 0.2 }} />
+            <motion.div className="absolute top-[10px] bottom-[10px] rounded-lg" style={{
+                background: `${C.carno}40`, border: `1px solid ${C.carno}`,
+                left: `${(HUMAN_RANGE.lo / SCALE) * 100}%`, width: `${((HUMAN_RANGE.hi - HUMAN_RANGE.lo) / SCALE) * 100}%`,
+            }}
+                initial={reduce ? false : { clipPath: 'inset(0 100% 0 0 round 8px)' }} animate={{ clipPath: 'inset(0 0% 0 0 round 8px)' }}
+                transition={{ duration: DUR.bar, delay: 0.2, ease: EASE_OUT }} />
             <span className="absolute top-[6px] bottom-[6px] w-[3px] rounded" style={{ left: `${(HUMAN_RANGE.mean / SCALE) * 100}%`, background: C.text }} />
         </div>
         <div className="flex justify-between font-mono text-[16px] text-gray-300 -mt-3">
@@ -69,8 +72,9 @@ export const HumanVisual = ({ reduce }: { reduce: boolean }) => (
             <div key={b.label} className="grid items-center gap-3" style={{ gridTemplateColumns: '110px minmax(0,1fr) 60px' }}>
                 <span className="text-[1.1rem] font-semibold text-white">{b.label}</span>
                 <div className="h-[20px] rounded-full bg-white/[0.06] overflow-hidden">
-                    <motion.div className="h-full rounded-full" style={{ background: C.carno }}
-                        initial={reduce ? false : { width: 0 }} animate={{ width: `${(b.value / SCALE) * 100}%` }} transition={{ duration: 0.8, delay: 0.5 + i * 0.2 }} />
+                    <motion.div className="h-full rounded-full" style={{ background: C.carno, width: `${(b.value / SCALE) * 100}%` }}
+                        initial={reduce ? false : { clipPath: 'inset(0 100% 0 0 round 10px)' }} animate={{ clipPath: 'inset(0 0% 0 0 round 10px)' }}
+                        transition={{ duration: 0.8, delay: stagger(i, 0.2), ease: EASE_OUT }} />
                 </div>
                 <span className="font-mono text-[1.15rem] font-semibold text-right" style={{ color: C.carno }}>{b.text}</span>
             </div>
@@ -89,8 +93,9 @@ export const LowerVisual = ({ reduce }: { reduce: boolean }) => (
                 </div>
                 <div className="relative h-[20px] rounded-full bg-white/[0.06] overflow-hidden">
                     <span className="absolute inset-y-0 left-0 rounded-full" style={{ width: '100%', background: `${C.co2}33` }} />
-                    <motion.div className="relative h-full rounded-full" style={{ background: C.carno }}
-                        initial={reduce ? false : { width: '100%' }} animate={{ width: `${b.value}%` }} transition={{ duration: 0.9, delay: 0.3 + i * 0.2 }} />
+                    <motion.div className="relative h-full rounded-full" style={{ background: C.carno, width: '100%' }}
+                        initial={reduce ? false : { clipPath: 'inset(0 0% 0 0 round 10px)' }} animate={{ clipPath: `inset(0 ${100 - b.value}% 0 0 round 10px)` }}
+                        transition={{ duration: 0.8, delay: stagger(i, 0.2), ease: EASE_OUT }} />
                 </div>
             </div>
         ))}

@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_IN_OUT, EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { COLS, PLACEBO_TRIALS, ROWS, WITNESSES, type Group, type Witness } from './evidenceContent';
 
@@ -61,14 +62,14 @@ const Grid = () => (
 const PlaceboBoard = () => (
     <motion.div className="absolute rounded-xl border-2 p-5 pt-16 flex flex-col gap-3"
         style={{ ...OVERLAY, zIndex: 2, background: 'rgba(4,10,20,0.97)', borderColor: `${C.co2}aa` }}
-        initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}>
-        <span className="absolute right-5 top-5 rotate-[-6deg] rounded-md border-2 px-3 py-1 font-display text-[1.25rem] font-semibold tracking-wide"
+        initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: DUR.enter, ease: EASE_OUT }}>
+        <span className="absolute right-5 top-5 rotate-[-6deg] rounded-md border-2 px-3 py-1 font-body text-[1.25rem] font-semibold tracking-wide"
             style={{ color: C.risk, borderColor: C.risk }}>PLACEBO</span>
         <p className="text-[1.08rem] leading-snug text-white">O “comprimido falso” destes ensaios de tamponantes:</p>
         <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5">
             {PLACEBO_TRIALS.map(t => <li key={t} className="text-[16px] text-gray-200">· {t}</li>)}
         </ul>
-        <p className="text-[16px] leading-snug" style={{ color: C.lactate }}>Por que o antiácido de farmácia não serve de tampão para o atleta?</p>
+        <p className="text-[16px] leading-snug" style={{ color: C.stone }}>Por que o antiácido de farmácia não serve de tampão para o atleta?</p>
     </motion.div>
 );
 
@@ -77,7 +78,14 @@ export const EvidenceMap = ({ groups, selected, revealed, onSelect }: EvidenceMa
     return (
         <div className="relative" style={{ width: MAP_W, height: MAP_H }}>
             <Grid />
-            {revealed && <PlaceboBoard />}
+            {revealed && (
+                <>
+                    {/* Véu sobre o mapa inteiro (e os rótulos das colunas, que descem abaixo dele): as fichas atrás do quadro somem por igual, sem pedaços espiando pelas bordas. */}
+                    <motion.div className="absolute rounded-xl" style={{ inset: '-6px -6px -20px -6px', zIndex: 2, background: 'rgba(4,10,20,0.86)' }}
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: DUR.enter, ease: EASE_OUT }} aria-hidden />
+                    <PlaceboBoard />
+                </>
+            )}
             {WITNESSES.filter(w => groups.includes(w.group)).map(w => {
                 const isCaco3 = w.id === 'caco3';
                 const pos = isCaco3 && revealed ? CACO3_REVEAL_POS : POSITIONS[w.id];
@@ -85,7 +93,7 @@ export const EvidenceMap = ({ groups, selected, revealed, onSelect }: EvidenceMa
                 const dim = revealed && !isCaco3;
                 return (
                     <motion.button key={w.id} type="button" onClick={() => onSelect(w.id)}
-                        className="absolute flex items-center gap-2 whitespace-nowrap rounded-lg border px-2.5 text-[16px] font-semibold cursor-pointer"
+                        className="absolute left-0 top-0 flex items-center gap-2 whitespace-nowrap rounded-lg border px-2.5 text-[16px] font-semibold cursor-pointer"
                         style={{
                             height: CHIP_H,
                             background: active ? `${w.color}2e` : w.group === 'fortes' ? `${w.color}14` : 'rgba(255,255,255,0.05)',
@@ -94,9 +102,9 @@ export const EvidenceMap = ({ groups, selected, revealed, onSelect }: EvidenceMa
                             boxShadow: active ? `0 0 18px -6px ${w.color}` : 'none',
                             zIndex: isCaco3 ? 3 : 1,
                         }}
-                        initial={reduce ? false : { opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: dim ? 0.3 : 1, scale: 1, left: pos.left, top: pos.top }}
-                        transition={{ duration: reduce ? 0 : 0.6, ease: 'easeInOut' }}
+                        initial={reduce ? false : { opacity: 0, scale: 0.9, x: pos.left, y: pos.top }}
+                        animate={{ opacity: dim ? 0.3 : 1, scale: 1, x: pos.left, y: pos.top }}
+                        transition={{ duration: reduce ? 0 : DUR.morph, ease: EASE_IN_OUT }}
                         aria-pressed={active}>
                         <span className="h-2.5 w-2.5 rounded-full" style={{ background: w.color }} />
                         {w.label}

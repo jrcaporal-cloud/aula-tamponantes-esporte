@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../lib/motion';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { PANEL_BG } from './kit/palette';
 import { CountUp } from './kit/CountUp';
@@ -24,21 +25,22 @@ const TakeawaysSim = () => {
                     const isActive = i === step;
                     return (
                         <motion.li key={t.title} className="flex min-h-0" style={{ flex: isActive ? '1 1 auto' : '0 0 auto' }}
-                            initial={false} animate={{ opacity: shown ? (isActive ? 1 : 0.72) : 0.3 }} transition={{ duration: reduce ? 0 : 0.35 }}>
+                            initial={false} animate={{ opacity: shown ? (isActive ? 1 : 0.72) : 0.3 }} transition={{ duration: reduce ? 0 : 0.35, ease: EASE_OUT }}>
                             <button type="button" onClick={() => setStep(i)} aria-current={isActive ? 'step' : undefined}
                                 className="flex w-full cursor-pointer items-start gap-3 rounded-2xl border px-4 py-2.5 text-left"
                                 style={{
                                     ...PANEL_BG,
                                     borderColor: isActive ? `${t.color}cc` : 'rgba(255,255,255,0.1)',
-                                    background: isActive ? `linear-gradient(100deg, ${t.color}26, rgba(4,10,20,0.8) 60%)` : PANEL_BG.background,
+                                    // Tinta chapada e discreta (sem degradê): o realce vem da borda e do número.
+                                    background: isActive ? `color-mix(in srgb, ${t.color} 10%, rgba(4,10,20,0.86))` : PANEL_BG.background,
                                 }}>
-                                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-[19px] font-semibold"
+                                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-body text-[19px] font-semibold"
                                     style={{ background: isActive ? t.color : 'rgba(255,255,255,0.1)', color: isActive ? '#04080F' : '#F3F4F6' }}>
                                     {i + 1}
                                 </span>
                                 <span className="flex min-w-0 flex-1 flex-col gap-1 self-stretch">
                                     {shown ? (
-                                        <span className="font-display text-[18px] font-semibold leading-tight text-white">{t.title}</span>
+                                        <span className="font-body text-[18px] font-semibold leading-tight text-white">{t.title}</span>
                                     ) : (
                                         <span aria-hidden className="mt-2.5 h-3 w-3/4 rounded-full bg-white/10" />
                                     )}

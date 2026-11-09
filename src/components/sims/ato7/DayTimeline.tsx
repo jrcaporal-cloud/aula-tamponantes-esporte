@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT, stagger } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { ALK_WINDOW, DAY_END, DAY_START, GI_WINDOW, type AthleteDay, type EventKind } from './day';
@@ -46,7 +47,7 @@ export const DayTimeline = ({ day, focus }: Props) => {
                         <SvgText x={0} y={mid + 6} text={lane.label} size={18} weight={700} color="#E5E7EB" />
                         <line x1={X0} x2={X1} y1={mid} y2={mid} stroke="rgba(255,255,255,0.22)" />
                         {lane.doses.map((d, di) => (
-                            <motion.g key={d.t} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : 0.2 + di * 0.3 }}>
+                            <motion.g key={d.t} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: DUR.enter, ease: EASE_OUT, delay: reduce ? 0 : stagger(di, 0.1) }}>
                                 <rect x={sx(d.t + GI_WINDOW[0])} y={top} width={sx(d.t + GI_WINDOW[1]) - sx(d.t + GI_WINDOW[0])} height={laneH}
                                     fill={C.risk} fillOpacity={d.tentative ? 0.14 : 0.28} rx={4} />
                                 <rect x={sx(d.t + ALK_WINDOW[0])} y={top} width={sx(d.t + ALK_WINDOW[1]) - sx(d.t + ALK_WINDOW[0])} height={laneH}
@@ -61,9 +62,11 @@ export const DayTimeline = ({ day, focus }: Props) => {
                             const y = e.row === 0 ? mid - 14 : mid + 26;
                             return (
                                 <motion.g key={`${e.t}-${e.label}`} initial={reduce ? false : { opacity: 0, y: -6 }} animate={{ opacity: e.tentative ? 0.75 : 1, y: 0 }}
-                                    transition={{ delay: reduce ? 0 : 0.5 + ei * 0.12 }}>
+                                    transition={{ duration: DUR.enter, ease: EASE_OUT, delay: reduce ? 0 : stagger(ei, 0.3) }}>
                                     <line x1={sx(e.t)} x2={sx(e.t)} y1={mid - 9} y2={mid + 9} stroke={color} strokeWidth={3} strokeDasharray={e.tentative ? '3 3' : undefined} />
-                                    <SvgText x={sx(e.t)} y={y} text={e.label} anchor="middle" size={17} weight={700} color={color} />
+                                    {/* "controle" cai na borda da janela de alcalose: alinhado à esquerda do traço, fica inteiro dentro dela. */}
+                                    <SvgText x={e.kind === 'controle' ? sx(e.t) - 8 : sx(e.t)} y={y} text={e.label}
+                                        anchor={e.kind === 'controle' ? 'end' : 'middle'} size={17} weight={700} color={color} />
                                 </motion.g>
                             );
                         })}
@@ -75,7 +78,7 @@ export const DayTimeline = ({ day, focus }: Props) => {
                 const active = focus === c.n;
                 return (
                     <motion.g key={c.n} initial={reduce ? false : { opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: active ? 1.2 : 1 }}
-                        style={{ transformBox: 'fill-box', transformOrigin: 'center' }} transition={{ delay: reduce ? 0 : active ? 0 : 0.9 + c.n * 0.15 }}>
+                        style={{ transformBox: 'fill-box', transformOrigin: 'center' }} transition={{ duration: DUR.enter, ease: EASE_OUT, delay: reduce ? 0 : active ? 0 : 0.6 + Math.min(c.n * 0.08, 0.3) }}>
                         <circle cx={sx(c.t) + 16} cy={top + 12} r={12} fill={C.lactate} stroke="#04080F" strokeWidth={2} />
                         <text x={sx(c.t) + 16} y={top + 18} textAnchor="middle" fontSize={16} fontWeight={800} fill="#04080F"
                             style={{ fontFamily: 'var(--font-body)' }}>{c.n}</text>

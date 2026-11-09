@@ -20,7 +20,8 @@ interface Route {
 const ROUTES: readonly Route[] = [
     { id: 'fibra', d: `${EXIT} L372 125 L494 125 L640 125`, count: 4, color: C.lactate },
     { id: 'coracao', d: `${EXIT} L372 272 L494 272 L640 272`, count: 3, color: C.lactate },
-    { id: 'figado', d: `${EXIT} L372 384 L494 384 L620 384`, count: 2, color: C.lactate },
+    // Entra no fígado abaixo do rótulo "vira glicose" (y 390): a partícula não passa por cima do texto.
+    { id: 'figado', d: `${EXIT} L372 410 L494 410 L620 410`, count: 2, color: C.lactate },
 ];
 
 /** Lactato parado dentro da fibra glicolítica (posições fixas). */

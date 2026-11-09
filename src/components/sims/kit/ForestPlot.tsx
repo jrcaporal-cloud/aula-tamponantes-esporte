@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { br } from './format';
 import { C } from './palette';
 import { SvgText } from './ui';
@@ -90,7 +91,7 @@ export const ForestPlot = ({
                         key={r.id}
                         initial={{ opacity: 0, x: -12 }}
                         animate={{ opacity: dim ? 0.3 : 1, x: 0 }}
-                        transition={{ duration: 0.35, delay: 0.05 * i }}
+                        transition={{ duration: 0.35, delay: 0.05 * i, ease: EASE_OUT }}
                         onMouseEnter={onFocus ? () => onFocus(r.id) : undefined}
                         onMouseLeave={onFocus ? () => onFocus(null) : undefined}
                         style={{ cursor: onFocus ? 'pointer' : 'default' }}

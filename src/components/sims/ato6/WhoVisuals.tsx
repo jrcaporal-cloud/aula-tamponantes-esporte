@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { br } from '../kit/format';
@@ -21,7 +22,7 @@ export const Waffle = () => {
                 return (
                     <motion.circle key={i} cx={60 + (i % 10) * 34} cy={60 + Math.floor(i / 10) * 34} r={13}
                         fill={woman ? WOMEN : MEN} fillOpacity={woman ? 0.95 : 0.45}
-                        initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.012, duration: 0.2 }} />
+                        initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.012, duration: 0.2, ease: EASE_OUT }} />
                 );
             })}
             <SvgText x={430} y={110} text="23%" color={WOMEN} size={64} weight={700} />

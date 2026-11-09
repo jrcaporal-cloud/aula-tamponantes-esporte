@@ -52,10 +52,10 @@ export const TIERS = [
 ] as const;
 
 export const CAST = [
-    { name: 'Júlia', who: '24 a · 800 m', woman: true, diffs: ['mulher'], gap: 'Mulher: 23% dos participantes; só 14% dos estudos com mulheres tentaram definir a fase do ciclo.' },
-    { name: 'Rafael', who: '28 a · jiu-jítsu', woman: false, diffs: ['luta: sem desfecho contínuo'], gap: 'O perfil mais estudado — mas luta não tem desfecho contínuo como um contrarrelógio.' },
-    { name: 'Carlos', who: '58 a · remo master', woman: false, diffs: ['58 anos', 'diurético'], gap: 'Hipertenso, com diurético: vale perguntar se algum ensaio incluiu alguém assim.' },
-    { name: 'Bianca', who: '18 a · natação 200 m', woman: true, diffs: ['mulher', 'vegetariana'], gap: 'Mulher e vegetariana: grupos com carnosina menor e pouco estudados (AIS 2025).' },
+    { id: 'julia', name: 'Júlia', who: '24 a · 800 m', woman: true, diffs: ['mulher'], gap: 'Mulher: 23% dos participantes; só 14% dos estudos com mulheres tentaram definir a fase do ciclo.' },
+    { id: 'rafael', name: 'Rafael', who: '28 a · jiu-jítsu', woman: false, diffs: ['luta: sem desfecho contínuo'], gap: 'O perfil mais estudado — mas luta não tem desfecho contínuo como um contrarrelógio.' },
+    { id: 'carlos', name: 'Carlos', who: '58 a · remo master', woman: false, diffs: ['58 anos', 'diurético'], gap: 'Hipertenso, com diurético: vale perguntar se algum ensaio incluiu alguém assim.' },
+    { id: 'bianca', name: 'Bianca', who: '18 a · natação 200 m', woman: true, diffs: ['mulher', 'vegetariana'], gap: 'Mulher e vegetariana: grupos com carnosina menor e pouco estudados (AIS 2025).' },
 ] as const;
 
 /** O participante típico da literatura (narração do passo 4). */

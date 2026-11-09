@@ -85,7 +85,7 @@ export interface VerdictLook {
 export const VERDICT_LOOK: Record<Verdict, VerdictLook> = {
     culpado: { label: 'Culpado', gloss: 'a acusação procede', brief: 'procede', color: C.risk },
     inocente: { label: 'Inocente', gloss: 'a acusação não procede', brief: 'não procede', color: C.ok },
-    depende: { label: 'Depende', gloss: 'procede só em parte', brief: 'em parte', color: C.lactate },
+    depende: { label: 'Depende', gloss: 'procede só em parte', brief: 'em parte', color: C.stone },
 };
 
 export const VERDICT_ORDER: readonly Verdict[] = ['culpado', 'inocente', 'depende'];
@@ -123,7 +123,11 @@ export const SUSPECTS: readonly string[] = ['ácido lático?', 'H⁺?', 'fosfato
 
 export type Sport = 'pista' | 'tatame' | 'remo' | 'piscina';
 
+/** Chave estável de cada atleta da aula (usada para a cor em todos os atos). */
+export type CastId = 'julia' | 'rafael' | 'carlos' | 'bianca';
+
 export interface CastMember {
+    id: CastId;
     name: string;
     meta: string;
     sport: Sport;
@@ -139,6 +143,7 @@ export interface CastMember {
 
 export const CAST: readonly CastMember[] = [
     {
+        id: 'julia',
         name: 'Júlia',
         meta: '24 anos · 54 kg',
         sport: 'pista',
@@ -150,6 +155,7 @@ export const CAST: readonly CastMember[] = [
         colorReason: 'tampão',
     },
     {
+        id: 'rafael',
         name: 'Rafael',
         meta: '28 anos · 76 kg na pesagem',
         sport: 'tatame',
@@ -161,6 +167,7 @@ export const CAST: readonly CastMember[] = [
         colorReason: 'sódio',
     },
     {
+        id: 'carlos',
         name: 'Carlos',
         meta: '58 anos · 82 kg',
         sport: 'remo',
@@ -172,6 +179,7 @@ export const CAST: readonly CastMember[] = [
         colorReason: 'risco',
     },
     {
+        id: 'bianca',
         name: 'Bianca',
         meta: '18 anos · 60 kg',
         sport: 'piscina',
@@ -183,6 +191,14 @@ export const CAST: readonly CastMember[] = [
         colorReason: 'carnosina',
     },
 ];
+
+/**
+ * Cor de cada atleta, definida uma vez aqui (Ato I) e importada em todos os atos que pintam o elenco:
+ * a Júlia é ciano no slide 4 e continua ciano na janela de duração, no sódio e nos vereditos.
+ */
+export const CAST_COLOR: Readonly<Record<CastId, string>> = Object.fromEntries(
+    CAST.map(m => [m.id, m.color]),
+) as Record<CastId, string>;
 
 // ─── Slide 13 · O Mapa do Inquérito ─────────────────────────────────────────
 
@@ -197,12 +213,12 @@ export interface Chapter {
 }
 
 export const CHAPTERS: readonly Chapter[] = [
-    { roman: 'I', title: 'O Inquérito', question: 'A cena do crime e o que a turma já acha.', icon: 'search', color: C.acid },
+    { roman: 'I', title: 'O Inquérito', question: 'A cena do crime e o que a turma já acha.', icon: 'search', color: C.caseFile },
     { roman: 'II', title: 'A Perícia', question: 'O que acontece com o H⁺ dentro e fora da fibra.', icon: 'microscope', color: C.acid },
     { roman: 'III', title: 'O Bicarbonato', question: 'Primeira testemunha: o tampão de fora. Quando ajuda e a que preço.', icon: 'flask', color: C.base },
     { roman: 'IV', title: 'A Beta-alanina', question: 'Segunda testemunha: o tampão de dentro, que leva semanas.', icon: 'atom', color: C.carno },
     { roman: 'V', title: 'Testemunhas fracas e alianças', question: 'Citrato, fosfato, água alcalina e as combinações.', icon: 'users', color: C.sodium },
-    { roman: 'VI', title: 'O Contra-interrogatório', question: 'Como um estudo engana sem mentir.', icon: 'scale', color: C.lactate },
+    { roman: 'VI', title: 'O Contra-interrogatório', question: 'Como um estudo engana sem mentir.', icon: 'scale', color: C.co2 },
     { roman: 'VII', title: 'O Veredito', question: 'Regras, segurança e os quatro casos.', icon: 'gavel', color: C.ok },
 ];
 

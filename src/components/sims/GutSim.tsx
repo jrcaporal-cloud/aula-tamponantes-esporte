@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useState } from 'react';
 import { useSlideSteps } from '../../store/useSlideSteps';
 import { Frame, Tag } from './ato3/Frame';
@@ -14,6 +14,7 @@ import { C } from './kit/palette';
 
 const GutSim = () => {
     const { step, setStep } = useSlideSteps(GUT_TABS.length);
+    const reduce = useReducedMotion() ?? false;
     // Cada passo abre com as suas estratégias ligadas; o clique muda só dentro do passo.
     const [override, setOverride] = useState<{ step: number; on: readonly string[] } | null>(null);
     const onList = override?.step === step ? override.on : GUT_DEFAULT_ON[step];
@@ -24,7 +25,7 @@ const GutSim = () => {
         <Frame tabs={GUT_TABS} step={step} setStep={setStep} layoutId="gut-tab" foot={GUT_FEET[step]}
             chips={<Tag color={C.muted}>esquema</Tag>}>
             <div className="h-full grid gap-5" style={{ gridTemplateColumns: '480px 1fr' }}>
-                <GutDiagram sites={step <= 1} on={on} />
+                <GutDiagram sites={step <= 1} on={on} reduce={reduce} />
                 <motion.div key={step} className="flex flex-col justify-center" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.35 }}>
                     {step === 0 && <PricePanel />}
                     {step === 1 && <SitesPanel />}

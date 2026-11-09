@@ -15,13 +15,15 @@ export interface PhMark {
     ph: number;
     /** Onde o pH foi medido: sangue (ciano) ou músculo (laranja). */
     where: 'sangue' | 'músculo';
+    /** Rótulo começa no ponto e segue para a direita (evita colidir com a marca vizinha da mesma linha). */
+    alignStart?: boolean;
 }
 
 export const MARKS: readonly PhMark[] = [
     { id: 'blood', label: 'sangue em repouso', ph: 7.42, where: 'sangue' },
     { id: 'rest', label: 'músculo em repouso', ph: 7.08, where: 'músculo' },
     { id: 'exhaust', label: 'músculo na exaustão', ph: 6.6, where: 'músculo' },
-    { id: 'race', label: 'sangue após 2.000 m', ph: 7.07, where: 'sangue' },
+    { id: 'race', label: 'sangue após 2.000 m', ph: 7.07, where: 'sangue', alignStart: true },
 ];
 
 export interface PhStep {

@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { PANEL_BG } from '../kit/palette';
+import { EASE_OUT } from '../../../lib/motion';
+import { BODY_FONT, PANEL_BG } from '../kit/palette';
 import type { ReactNode } from 'react';
 
 /** Peças comuns aos simuladores do Ato V (testemunhas fracas e alianças). */
@@ -13,7 +14,7 @@ export const StepFade = ({ stepKey, children, className = '' }: { stepKey: strin
     return (
         <motion.div key={stepKey} className={className}
             initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}>
+            transition={{ duration: 0.35, ease: EASE_OUT }}>
             {children}
         </motion.div>
     );
@@ -29,12 +30,12 @@ export const BigNumber = ({ value, label, color }: { value: string; label: strin
 
 /** Título curto do passo, no topo dos painéis de história. */
 export const StepTitle = ({ children }: { children: ReactNode }) => (
-    <h3 className="font-display text-[1.5rem] font-semibold leading-tight text-white">{children}</h3>
+    <h3 className="font-body text-[1.5rem] font-semibold leading-tight text-white text-balance" style={BODY_FONT}>{children}</h3>
 );
 
 /** Parágrafo de história: frase de quem fala com médicos, sem enfeite. */
 export const StepText = ({ children }: { children: ReactNode }) => (
-    <p className="text-[1.08rem] leading-snug text-gray-100">{children}</p>
+    <p className="text-[1.08rem] leading-snug text-gray-100 text-pretty">{children}</p>
 );
 
 /*

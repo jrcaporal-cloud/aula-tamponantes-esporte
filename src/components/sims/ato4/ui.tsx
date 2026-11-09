@@ -37,7 +37,7 @@ export const Tabs = ({ labels, step, onSelect, layoutId }: TabsProps) => (
     </div>
 );
 
-export const Tag = ({ children, color = C.lactate }: { children: ReactNode; color?: string }) => (
+export const Tag = ({ children, color = C.caveat }: { children: ReactNode; color?: string }) => (
     <span className="inline-flex shrink-0 items-center whitespace-nowrap rounded-md border px-2.5 py-1 font-mono text-[16px] leading-tight"
         style={{ ...PANEL_BG, borderColor: `${color}80`, color }}>
         {children}

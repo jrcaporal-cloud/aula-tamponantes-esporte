@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { HALF_LIFE_MIN as HALF_LIFE, remaining } from './shuttle.content';
@@ -92,7 +93,7 @@ export const Lane = ({ x, title, pct, slope, color, reveal, descent, reduce }: L
             </g>
             <Leg x={x + 470} y={50} tone={reveal ? (descent ? C.risk : C.baseSoft) : null} glow={reveal && descent} reduce={reduce} />
             {reveal && descent && (
-                <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.2 }}>
+                <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.2, ease: EASE_OUT }}>
                     <SvgText x={x0} y={190} text="contração excêntrica: o músculo freia alongando" size={16} color={C.risk} weight={600} />
                 </motion.g>
             )}
@@ -110,8 +111,9 @@ export const Lane = ({ x, title, pct, slope, color, reveal, descent, reduce }: L
                 <g>
                     <SvgText x={x0} y={256} text="CK 24 h" size={16} color={C.muted} weight={500} />
                     <rect x={barX} y={242} width={barW} height={16} rx={8} fill="rgba(255,255,255,0.08)" />
-                    <motion.rect x={barX} y={242} height={16} rx={8} fill={C.risk}
-                        initial={{ width: 0 }} animate={{ width: descent ? barW : 4 }} transition={{ duration: reduce ? 0 : 1.1, ease: 'easeOut' }} />
+                    <motion.rect x={barX} y={242} width={descent ? barW : 4} height={16} rx={8} fill={C.risk}
+                        initial={{ clipPath: 'inset(0 100% 0 0 round 8px)' }} animate={{ clipPath: 'inset(0 0% 0 0 round 8px)' }}
+                        transition={{ duration: reduce ? 0 : DUR.draw, ease: EASE_OUT }} />
                     <SvgText x={descent ? barX + barW + 10 : barX + 16} y={256} text={descent ? '+351%' : 'sem alta'} size={16} color={descent ? C.risk : '#E5E7EB'} weight={700} />
                     <SvgText x={x0} y={287} text={descent ? 'dor tardia: glúteos, quadríceps, pernas' : 'sem dor tardia'} size={18}
                         color={descent ? C.risk : C.baseSoft} weight={700} />
@@ -133,7 +135,7 @@ export const Chronology = ({ reduce }: { reduce: boolean }) => {
         const d = 0.5 + i * 0.1;
         return `${i ? 'L' : 'M'}${bx(d).toFixed(1)} ${y(Math.exp(-((d - 2) ** 2) / 1.3)).toFixed(1)}`;
     }).join(' ');
-    const draw = (delay: number) => ({ initial: { pathLength: reduce ? 1 : 0 }, animate: { pathLength: 1 }, transition: { duration: reduce ? 0 : 1, delay, ease: 'easeOut' as const } });
+    const draw = (delay: number) => ({ initial: { pathLength: reduce ? 1 : 0 }, animate: { pathLength: 1 }, transition: { duration: reduce ? 0 : 1, delay, ease: EASE_OUT } });
     const halves = [1, 2, 3].map(k => ({ t: HALF_LIFE * k, f: 0.5 ** k }));
     return (
         <g>
@@ -155,7 +157,7 @@ export const Chronology = ({ reduce }: { reduce: boolean }) => {
             <SvgText x={786} y={bottom + 53} text="dias depois" size={16} color={C.muted} />
             {/* meias-vidas */}
             {halves.map(h => (
-                <motion.g key={h.t} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: reduce ? 0 : 0.2 + h.t / 40 }}>
+                <motion.g key={h.t} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: reduce ? 0 : 0.2 + h.t / 40, ease: EASE_OUT }}>
                     <line x1={ax(h.t)} x2={ax(h.t)} y1={y(h.f)} y2={bottom} stroke={C.lactate} strokeDasharray="3 4" opacity={0.6} />
                     <circle cx={ax(h.t)} cy={y(h.f)} r={5} fill={C.lactate} />
                 </motion.g>
@@ -167,7 +169,7 @@ export const Chronology = ({ reduce }: { reduce: boolean }) => {
             <SvgText x={bx(2) + 14} y={top - 12} text="dor muscular tardia" size={17} color={C.risk} weight={700} />
             <SvgText x={bx(5)} y={bottom - 12} text="1–5 dias" anchor="end" size={16} color={C.risk} weight={600} />
             {/* o álibi: quando a dor chega, o lactato já foi embora */}
-            <motion.g initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: reduce ? 0 : 1.8 }}>
+            <motion.g initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: reduce ? 0 : 1.8, ease: EASE_OUT }}>
                 <rect x={420} y={top - 2} width={270} height={34} rx={17} fill="rgba(4,8,15,0.9)" stroke={C.baseSoft} strokeWidth={2} />
                 <SvgText x={555} y={top + 21} text="álibi: tempos não batem" anchor="middle" size={17} color={C.baseSoft} weight={700} />
             </motion.g>

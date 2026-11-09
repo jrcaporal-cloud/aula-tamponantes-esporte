@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { CountSvgText } from '../kit/CountUp';
@@ -30,7 +31,7 @@ export const ForestPlot = ({ step, reduce }: { step: number; reduce: boolean }) 
             const visible = step >= r.from;
             const y = rowY(i);
             return (
-                <motion.g key={r.label} initial={false} animate={{ opacity: visible ? 1 : 0 }} transition={{ duration: reduce ? 0 : 0.45 }}>
+                <motion.g key={r.label} initial={false} animate={{ opacity: visible ? 1 : 0 }} transition={{ duration: reduce ? 0 : 0.45, ease: EASE_OUT }}>
                     <SvgText x={14} y={y - 4} text={r.label} color={C.text} size={18} weight={700} />
                     <SvgText x={14} y={y + 18} text={r.detail} color={C.muted} size={16} weight={500} />
                     {/* o intervalo abre a partir da estimativa quando a linha aparece */}

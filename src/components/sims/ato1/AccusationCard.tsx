@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { Check, X } from 'lucide-react';
 import { C } from '../kit/palette';
 import { VERDICT_LOOK, VERDICT_ORDER, type Accusation, type Verdict } from './content';
@@ -31,7 +32,7 @@ export const AccusationCard = ({ item, index, flipped, current, vote, onVote }: 
     return (
         <motion.div className="relative [perspective:1400px]" style={{ rotate: TILT[index % TILT.length] }}
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reduce ? 0 : 0.4, delay: reduce ? 0 : index * 0.07 }}>
+            transition={{ duration: reduce ? 0 : 0.4, delay: reduce ? 0 : index * 0.07, ease: EASE_OUT }}>
             <Pin color={flipped ? look.color : C.acid} />
             <motion.div className="relative h-full w-full [transform-style:preserve-3d]"
                 animate={{ rotateY: flipped ? 180 : 0, scale: current ? 1.02 : 1 }}
@@ -44,7 +45,7 @@ export const AccusationCard = ({ item, index, flipped, current, vote, onVote }: 
                         <span className="text-gray-400">acusação {number}</span>
                         <span style={{ color: C.acidSoft }}>réu: {item.suspect}</span>
                     </div>
-                    <p className="font-display text-[1.42rem] font-semibold leading-tight text-white">{item.claim}</p>
+                    <p className="font-body text-[1.42rem] font-semibold leading-tight text-white">{item.claim}</p>
                     <div className="flex gap-1.5">
                         {VERDICT_ORDER.map(v => {
                             const on = vote === v;

@@ -1,4 +1,5 @@
 /** Medidas e entrada animada comuns aos quadros do slide "O Homem da Creatina". */
+import { EASE_OUT } from '../../../lib/motion';
 
 /** viewBox dos quadros: 1 unidade = 1 px de projeto (painel esquerdo de 600 px menos o respiro). */
 export const HARRIS_VB = { w: 568, h: 372 } as const;
@@ -7,5 +8,5 @@ export const HARRIS_VB = { w: 568, h: 372 } as const;
 export const delayed = (reduce: boolean, delay: number, duration = 0.35) => ({
     initial: reduce ? false as const : { opacity: 0 },
     animate: { opacity: 1 },
-    transition: { duration: reduce ? 0 : duration, delay: reduce ? 0 : delay },
+    transition: { duration: reduce ? 0 : duration, delay: reduce ? 0 : delay, ease: EASE_OUT },
 });

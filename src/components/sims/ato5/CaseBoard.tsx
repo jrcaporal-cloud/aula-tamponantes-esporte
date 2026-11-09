@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 
@@ -26,7 +27,7 @@ const left = (b: NodeBox) => ({ x: b.x, y: b.y + b.h / 2 });
 interface EdgeProps { from: { x: number; y: number }; to: { x: number; y: number }; color: string; dashed?: boolean; width?: number; opacity?: number }
 
 const Edge = ({ from, to, color, dashed = false, width = 3, opacity = 1 }: EdgeProps) => (
-    <motion.g animate={{ opacity }} transition={{ duration: 0.4 }}>
+    <motion.g animate={{ opacity }} transition={{ duration: 0.4, ease: EASE_OUT }}>
         <line x1={from.x} y1={from.y} x2={to.x - 6} y2={to.y} stroke={color} strokeWidth={width} strokeDasharray={dashed ? '7 6' : undefined} />
         <circle cx={to.x - 4} cy={to.y} r={5} fill={color} />
     </motion.g>
@@ -35,7 +36,7 @@ const Edge = ({ from, to, color, dashed = false, width = 3, opacity = 1 }: EdgeP
 interface BoardNodeProps { box: NodeBox; title: string; detail: string; color: string; opacity?: number; strong?: boolean }
 
 const BoardNode = ({ box, title, detail, color, opacity = 1, strong = false }: BoardNodeProps) => (
-    <motion.g animate={{ opacity }} transition={{ duration: 0.4 }}>
+    <motion.g animate={{ opacity }} transition={{ duration: 0.4, ease: EASE_OUT }}>
         <rect x={box.x} y={box.y} width={box.w} height={box.h} rx={12} fill={strong ? `${color}26` : 'rgba(255,255,255,0.05)'}
             stroke={color} strokeWidth={strong ? 3 : 1.5} />
         <SvgText x={box.x + box.w / 2} y={box.y + (detail ? box.h / 2 - 4 : box.h / 2 + 6)} text={title} anchor="middle" color="#fff" size={18} weight={700} />
@@ -48,7 +49,7 @@ const Stamp = ({ x, y, text, color, rotate }: { x: number; y: number; text: stri
     const w = text.length * 13 + 28;
     return (
         <motion.g initial={reduce ? false : { opacity: 0, scale: 1.6 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }} style={{ transformOrigin: `${x}px ${y}px` }}>
+            transition={{ duration: 0.35, ease: EASE_OUT }} style={{ transformOrigin: `${x}px ${y}px` }}>
             <g transform={`rotate(${rotate} ${x} ${y})`}>
                 <rect x={x - w / 2} y={y - 20} width={w} height={40} rx={6} fill="rgba(4,8,15,0.85)" stroke={color} strokeWidth={3} />
                 <text x={x} y={y + 7} textAnchor="middle" fontSize={20} fontWeight={800} fill={color} letterSpacing={2}
@@ -58,12 +59,18 @@ const Stamp = ({ x, y, text, color, rotate }: { x: number; y: number; text: stri
     );
 };
 
+/** Posição do ✕ na seta pH → tempo (0 = início, 1 = ponta). */
+const CROSS_AT = 0.55;
+/** Centro do carimbo "PISTA FALSA": 12 px à esquerda do centro da coluna, longe do ✕. */
+const FALSE_LEAD_X = 290;
+
 export const CaseBoard = ({ step }: { step: number }) => {
     const phFixed = step >= 3;
     const suspectColor = phFixed ? C.base : C.acid;
     const glyColor = step >= 4 ? C.risk : C.co2;
     const phToTime = { from: right(N.ph), to: left(N.time) };
-    const mid = { x: (phToTime.from.x + phToTime.to.x) / 2, y: (phToTime.from.y + phToTime.to.y) / 2 };
+    // O ✕ fica um pouco depois do meio da seta, e o carimbo um pouco à esquerda: o canto do carimbo girado não encosta no ✕.
+    const cross = { x: phToTime.from.x + (phToTime.to.x - phToTime.from.x) * CROSS_AT, y: phToTime.from.y + (phToTime.to.y - phToTime.from.y) * CROSS_AT };
 
     return (
         <svg width={BOARD_W} height={BOARD_H} viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} role="img"
@@ -90,13 +97,13 @@ export const CaseBoard = ({ step }: { step: number }) => {
             <BoardNode box={N.time} title="Tempo até a" detail="exaustão ↓" color={C.acid} strong={step >= 3} />
             {phFixed && (
                 <g>
-                    <line x1={mid.x - 12} y1={mid.y - 12} x2={mid.x + 12} y2={mid.y + 12} stroke={C.risk} strokeWidth={4} />
-                    <line x1={mid.x - 12} y1={mid.y + 12} x2={mid.x + 12} y2={mid.y - 12} stroke={C.risk} strokeWidth={4} />
+                    <line x1={cross.x - 12} y1={cross.y - 12} x2={cross.x + 12} y2={cross.y + 12} stroke={C.risk} strokeWidth={4} />
+                    <line x1={cross.x - 12} y1={cross.y + 12} x2={cross.x + 12} y2={cross.y - 12} stroke={C.risk} strokeWidth={4} />
                 </g>
             )}
-            {phFixed && step < 4 && <Stamp x={302} y={196} text="PISTA FALSA" color={C.risk} rotate={-8} />}
+            {phFixed && step < 4 && <Stamp x={FALSE_LEAD_X} y={196} text="PISTA FALSA" color={C.risk} rotate={-8} />}
             {step >= 4 && <Stamp x={302} y={398} text="CULPADO" color={C.risk} rotate={-6} />}
-            {step >= 4 && <Stamp x={302} y={196} text="PISTA FALSA" color={C.muted} rotate={-8} />}
+            {step >= 4 && <Stamp x={FALSE_LEAD_X} y={196} text="PISTA FALSA" color={C.muted} rotate={-8} />}
         </svg>
     );
 };

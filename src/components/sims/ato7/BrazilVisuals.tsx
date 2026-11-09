@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { DUR, EASE_OUT } from '../../../lib/motion';
 import { Ban } from 'lucide-react';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
@@ -35,7 +36,7 @@ export const LabelDay = () => {
                         <line x1={hourX(6)} x2={hourX(22)} y1={r.y} y2={r.y} stroke="rgba(255,255,255,0.18)" />
                         {r.doses.map((d, i) => (
                             <motion.circle key={d.h} cx={hourX(d.h)} cy={r.y} r={doseR(d.mg)} fill={r.color} fillOpacity={0.8}
-                                initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : 0.2 + i * 0.12 }} />
+                                initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : 0.2 + i * 0.12, duration: DUR.enter, ease: EASE_OUT }} />
                         ))}
                         <SvgText x={W} y={r.y + 7} text={r.total} anchor="end" size={22} weight={700} color="#fff" />
                     </g>

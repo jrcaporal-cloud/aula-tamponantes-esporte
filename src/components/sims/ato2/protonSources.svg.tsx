@@ -38,13 +38,18 @@ export const Move = ({ reduce, begin, dur = 0.8, from, to, children }: TimedProp
     </g>
 );
 
-/** Cresce do zero (filhos desenhados em torno de 0,0) e fica em (x, y). */
+/**
+ * Surge crescendo de 60% (nada nasce do zero) enquanto esmaece, e fica em (x, y); filhos desenhados em torno de 0,0.
+ * Antes do `begin` fica invisível pela opacidade (o Appear), não pela escala.
+ */
 export const Pop = ({ reduce, begin, dur = 0.45, x, y, to = 1, children }: TimedProps & { x: number; y: number; to?: number }) => (
     <g transform={`translate(${x} ${y})`}>
-        <g transform={`scale(${reduce ? to : 0})`}>
-            {!reduce && <animateTransform attributeName="transform" type="scale" from="0" to={`${to}`} begin={`${begin}s`} dur={`${dur}s`} fill="freeze" {...EASE} />}
-            {children}
-        </g>
+        <Appear reduce={reduce} begin={begin} dur={dur}>
+            <g transform={`scale(${reduce ? to : 0.6 * to})`}>
+                {!reduce && <animateTransform attributeName="transform" type="scale" from={`${0.6 * to}`} to={`${to}`} begin={`${begin}s`} dur={`${dur}s`} fill="freeze" {...EASE} />}
+                {children}
+            </g>
+        </Appear>
     </g>
 );
 

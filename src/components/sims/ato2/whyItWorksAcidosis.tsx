@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { EASE_OUT } from '../../../lib/motion';
 import { br } from '../kit/format';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
@@ -42,13 +43,13 @@ export const AcidosisChart = ({ alkalosis, reduce }: AcidosisChartProps) => {
     ];
     const draw = (delay: number) => ({
         initial: { pathLength: reduce ? 1 : 0 }, animate: { pathLength: 1 },
-        transition: { duration: reduce ? 0 : 1.1, delay: reduce ? 0 : delay, ease: 'easeOut' as const },
+        transition: { duration: reduce ? 0 : 1.1, delay: reduce ? 0 : delay, ease: EASE_OUT },
     });
     return (
         <svg viewBox={`0 0 ${MEM_W} ${MEM_H}`} width={MEM_W} height={MEM_H} role="img"
             aria-label="pH dentro da fibra no exercício progressivo: a acidose começa mais tarde com alcalose">
             <SvgText x={20} y={36} text="pH dentro da fibra" size={18} color={C.acidSoft} weight={700} />
-            <SvgText x={MEM_W - 20} y={36} text="forma ilustrativa" anchor="end" size={16} color={C.lactate} weight={600} />
+            <SvgText x={MEM_W - 20} y={36} text="forma ilustrativa" anchor="end" size={16} color={C.caveat} weight={600} />
             {rows.map((r, i) => (
                 <g key={r.k} style={{ opacity: r.on ? 1 : 0.5, transition: 'opacity 0.4s' }}>
                     <line x1={20 + i * 150} x2={48 + i * 150} y1={68} y2={68} stroke={r.color} strokeWidth={4} strokeLinecap="round" />
@@ -67,7 +68,7 @@ export const AcidosisChart = ({ alkalosis, reduce }: AcidosisChartProps) => {
                 <g key={r.k} style={{ opacity: r.on ? 1 : 0.45, transition: 'opacity 0.4s' }}>
                     <line x1={px(r.onset)} x2={px(r.onset)} y1={Y_TOP} y2={AXIS_Y} stroke={r.color} strokeDasharray="4 4" strokeWidth={2} />
                     <motion.path d={curve(r.onset, r.fatigue)} fill="none" stroke={r.color} strokeWidth={r.on ? 5 : 3.5} strokeLinecap="round" {...draw(r.delay)} />
-                    <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: reduce ? 0 : r.delay + 1 }}>
+                    <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: reduce ? 0 : r.delay + 1, ease: EASE_OUT }}>
                         <path d={`M${px(r.fatigue) - 8} ${Y_FLOOR - 8} l16 16 m0 -16 l-16 16`} stroke={r.color} strokeWidth={3.5} strokeLinecap="round" />
                     </motion.g>
                 </g>
@@ -76,7 +77,7 @@ export const AcidosisChart = ({ alkalosis, reduce }: AcidosisChartProps) => {
             <SvgText x={px(ACIDOSIS_ONSET_W.controle) - 6} y={AXIS_Y + 22} text={`${br(ACIDOSIS_ONSET_W.controle, 2)} W`} anchor="end" size={16} color={C.acidSoft} weight={700} />
             <SvgText x={px(ACIDOSIS_ONSET_W.alcalose) + 6} y={AXIS_Y + 22} text={`${br(ACIDOSIS_ONSET_W.alcalose, 2)} W`} size={16} color={C.baseSoft} weight={700} />
             <SvgText x={(px(ACIDOSIS_ONSET_W.controle) + px(ACIDOSIS_ONSET_W.alcalose)) / 2} y={Y_TOP - 14} text="início da acidose" anchor="middle" size={16} color="#E5E7EB" weight={600} />
-            <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: reduce ? 0 : 1.7 }}>
+            <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: reduce ? 0 : 1.7, ease: EASE_OUT }}>
                 <path d={`M${px(FATIGUE_C)} ${Y_FLOOR + 16} L${px(FATIGUE_C)} ${Y_FLOOR + 24} L${px(FATIGUE_A)} ${Y_FLOOR + 24} L${px(FATIGUE_A)} ${Y_FLOOR + 16}`}
                     fill="none" stroke={C.baseSoft} strokeWidth={2} />
                 <SvgText x={(px(FATIGUE_C) + px(FATIGUE_A)) / 2} y={AXIS_Y + 22} text="fadiga +~12%" anchor="middle" size={16} color={C.baseSoft} weight={700} />

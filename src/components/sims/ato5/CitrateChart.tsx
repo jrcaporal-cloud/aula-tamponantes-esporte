@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { EASE_IN_OUT } from '../../../lib/motion';
 import { C } from '../kit/palette';
 import { SvgText } from '../kit/ui';
 import { br } from '../kit/format';
@@ -22,6 +23,9 @@ const pathOf = (curve: AlkaliCurve, shift = 0): string => {
     for (let t = 0; t <= T_MAX; t += 3) pts.push(`${sx(t).toFixed(1)},${sy(hco3At(curve, t, shift)).toFixed(1)}`);
     return `M${pts.join(' L')}`;
 };
+
+/** Meia largura do número do pico (20 px): mais perto que isso, a linha da prova o atravessa. */
+const PEAK_LABEL_CLEAR = 30;
 
 const PATHS = CURVES.map(c => ({ curve: c, d: pathOf(c) }));
 const CITRATE = CURVES[1];
@@ -89,14 +93,20 @@ export const CitrateChart = ({ step, raceMin }: CitrateChartProps) => {
             {PATHS.map(({ curve, d }, i) => (
                 <motion.path key={curve.id} d={d} fill="none" stroke={CURVE_COLOR[curve.id]} strokeWidth={step === 3 && curve.id === 'cit' ? 2 : 4}
                     strokeLinecap="round" initial={draw} animate={{ pathLength: 1, opacity: step === 3 && curve.id === 'cit' ? 0.35 : 1 }}
-                    transition={{ duration: reduce ? 0 : 1.3, delay: reduce ? 0 : 0.2 + i * 0.5, ease: 'easeInOut' }} />
+                    transition={{ duration: reduce ? 0 : 0.9, delay: reduce ? 0 : 0.15 + i * 0.2, ease: EASE_IN_OUT }} />
             ))}
-            {(step < 2 || step === 4) && CURVES.map(c => (
-                <g key={c.id}>
-                    <circle cx={sx(c.tp)} cy={sy(c.peak)} r={6} fill={CURVE_COLOR[c.id]} stroke="#04080F" strokeWidth={2} />
-                    <SvgText x={sx(c.tp)} y={sy(c.peak) - 14} text={br(c.peak)} anchor="middle" color={CURVE_COLOR[c.id]} size={20} weight={700} />
-                </g>
-            ))}
+            {(step < 2 || step === 4) && CURVES.map(c => {
+                // Se a linha da prova passa pelo pico, o número sai para o lado (a linha não risca o 33,6).
+                const crossed = step >= 2 && Math.abs(sx(c.tp) - sx(raceMin)) < PEAK_LABEL_CLEAR;
+                const side = sx(c.tp) <= sx(raceMin) ? -1 : 1;
+                return (
+                    <g key={c.id}>
+                        <circle cx={sx(c.tp)} cy={sy(c.peak)} r={6} fill={CURVE_COLOR[c.id]} stroke="#04080F" strokeWidth={2} />
+                        <SvgText x={crossed ? sx(raceMin) + side * 10 : sx(c.tp)} y={sy(c.peak) - 14} text={br(c.peak)}
+                            anchor={crossed ? (side < 0 ? 'end' : 'start') : 'middle'} color={CURVE_COLOR[c.id]} size={20} weight={700} />
+                    </g>
+                );
+            })}
             {step >= 2 && step !== 3 && (
                 <g>
                     <line x1={sx(raceMin)} x2={sx(raceMin)} y1={M.t - 4} y2={CHART_H - M.b} stroke={C.acid} strokeWidth={3} />
