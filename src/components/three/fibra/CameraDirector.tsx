@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import * as THREE from 'three';
@@ -35,6 +35,10 @@ interface Props {
 }
 
 const setV = (v: THREE.Vector3, p: Pose['pos']) => v.set(p[0], p[1], p[2]);
+const makeFlight = (): Flight => ({
+    active: false, u: 0, fromP: new THREE.Vector3(), fromT: new THREE.Vector3(), toP: new THREE.Vector3(), toT: new THREE.Vector3(), lift: 0,
+    a: new THREE.Spherical(), b: new THREE.Spherical(),
+});
 const TMP = new THREE.Vector3();
 const SPH = new THREE.Spherical();
 
@@ -42,10 +46,9 @@ export const CameraDirector = ({ step, pin, recenterKey, reduced, onSettled }: P
     const get = useThree(s => s.get);
     const gl = useThree(s => s.gl);
     const controls = useThree(s => s.controls) as OrbitControlsImpl | null;
-    const flightRef = useRef<Flight>({
-        active: false, u: 0, fromP: new THREE.Vector3(), fromT: new THREE.Vector3(), toP: new THREE.Vector3(), toT: new THREE.Vector3(), lift: 0,
-        a: new THREE.Spherical(), b: new THREE.Spherical(),
-    });
+    // criado uma vez (só lido em efeitos e no quadro): nada de Vector3 novo a cada render
+    const [flight] = useState(makeFlight);
+    const flightRef = useRef(flight);
     const first = useRef(true);
     const pending = useRef<number | null>(null);
 

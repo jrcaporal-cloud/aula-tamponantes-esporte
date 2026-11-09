@@ -11,7 +11,7 @@ import { CameraDirector } from './CameraDirector';
 import { Capillary } from './Capillary';
 import { Fiber } from './Fiber';
 import { Particles } from './Particles';
-import { PickLayer } from './PickLayer';
+import { CursorSync, PickLayer } from './PickLayer';
 import { stepSim } from './sim';
 import { FIBER_STEPS } from './steps';
 import type { StructureId } from './structures';
@@ -72,10 +72,12 @@ const Backdrop = () => {
             float h = vP.y * 0.5 + 0.5;
             vec3 c = mix(vec3(0.010,0.016,0.032), vec3(0.028,0.055,0.095), smoothstep(0.25, 0.95, h));
             // faixa difusa no horizonte (profundidade do tecido), mais rosada atrás da fibra
-            c += vec3(0.05, 0.022, 0.055) * exp(-pow(vP.y * 2.6, 2.0)) * (0.6 + 0.4 * smoothstep(0.0, -1.0, vP.z));
+            float y = vP.y * 2.6;
+            c += vec3(0.05, 0.022, 0.055) * exp(-y * y) * (0.6 + 0.4 * (1.0 - smoothstep(-1.0, 0.0, vP.z)));
             gl_FragColor = vec4(c, 1.0);
         }`,
     }), []);
+    useLayoutEffect(() => () => mat.dispose(), [mat]);
     return <mesh material={mat} scale={150} raycast={noRaycast}><sphereGeometry args={[1, 48, 24]} /></mesh>;
 };
 
@@ -105,6 +107,7 @@ const FiberSceneImpl = ({ step, settled, pin, recenterKey, reduced, onSettled, o
             <OrbitControls makeDefault enablePan={false} enableDamping dampingFactor={0.08} minDistance={4} maxDistance={40} />
             <CameraDirector step={step} pin={pin} recenterKey={recenterKey} reduced={reduced} onSettled={onSettled} />
             <PickLayer />
+            <CursorSync />
             <ReadyProbe onReady={onReady} />
 
             <Fiber simRef={simRef} />
@@ -118,5 +121,5 @@ const FiberSceneImpl = ({ step, settled, pin, recenterKey, reduced, onSettled, o
     );
 };
 
-/** `memo`: o modal re-renderiza a cada hover, e a cena não depende disso. */
+/** `memo`: o modal re-renderiza a cada troca de etapa/controle, e a cena só depende das props. */
 export const FiberScene = memo(FiberSceneImpl);

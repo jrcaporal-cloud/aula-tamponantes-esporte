@@ -1,13 +1,15 @@
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { C } from '../../sims/kit/palette';
-import { frac, putInstance, randoms, stationWeight, type TimeBox } from './common';
+import { frac, putInstance, randoms, showStation, stationWeight, type TimeBox } from './common';
 import { flushGlow, moleculeMaterial, putGlow, tissueMaterial, withRim } from './fx';
 import { STATION, stationX } from './layout';
 import { AMIDE_C, makeCarnosineParts } from './molecule';
 import { redCellGeometry, wobble } from './shapes';
 import { useGlowMesh } from './useGlow';
+import { endotheliumMaterial, makeTimeUniform, redCellMaterial, tickTime, type TimeUniform } from './tissueShaders';
 import { useStructure } from './useStructure';
 
 /*
@@ -38,7 +40,7 @@ const GAP = 1.9;
 const NMOTE = 48;
 
 /** Vaso em corte: parede externa, endotélio por dentro (irregular) e a borda do corte. */
-const Vessel = () => {
+const Vessel = ({ time }: { time: TimeUniform }) => {
     const outer = useMemo(() => {
         const g = new THREE.CylinderGeometry(R_OUT, R_OUT, LEN + 4, 64, 24, true, GAP / 2, Math.PI * 2 - GAP);
         g.rotateZ(Math.PI / 2);
@@ -60,18 +62,27 @@ const Vessel = () => {
         g.rotateZ(Math.PI / 2);
         return g;
     }, []);
-    const lip = useMemo(() => new THREE.BoxGeometry(LEN + 4, R_OUT - R_IN, 0.06), []);
+    // as duas bordas do corte numa geometria só (um draw call)
+    const lip = useMemo(() => {
+        const lipY = (R_IN + R_OUT) / 2;
+        const parts = [GAP / 2, -GAP / 2].map(a => {
+            const b = new THREE.BoxGeometry(LEN + 4, R_OUT - R_IN, 0.06);
+            b.rotateX(Math.PI / 2 - a);
+            b.translate(0, Math.sin(a) * lipY, Math.cos(a) * lipY);
+            return b;
+        });
+        const g = mergeGeometries(parts);
+        parts.forEach(p => p.dispose());
+        return g;
+    }, []);
     const outerMat = useMemo(() => withRim(tissueMaterial('#9f1239', '#fda4af', '#4c0519', { transparent: true, opacity: 0.55, depthWrite: false, side: THREE.FrontSide }), '#fb7185', 2.6, 0.6), []);
-    const innerMat = useMemo(() => tissueMaterial('#7f1d3a', '#fecdd3', '#3b0716', { side: THREE.BackSide }), []);
+    const innerMat = useMemo(() => endotheliumMaterial(tissueMaterial('#8a2342', '#fecdd3', '#3b0716', { side: THREE.BackSide }), time, R_IN), [time]);
     const lipMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#e11d48', emissive: '#9f1239', emissiveIntensity: 0.6, roughness: 0.5 }), []);
-    const lipY = (R_IN + R_OUT) / 2;
     return (
         <group>
             <mesh geometry={inner} material={innerMat} />
             <mesh geometry={outer} material={outerMat} renderOrder={4} />
-            {[GAP / 2, -GAP / 2].map(a => (
-                <mesh key={a} geometry={lip} material={lipMat} position={[0, Math.sin(a) * lipY, Math.cos(a) * lipY]} rotation={[Math.PI / 2 - a, 0, 0]} />
-            ))}
+            <mesh geometry={lip} material={lipMat} />
         </group>
     );
 };
@@ -173,7 +184,10 @@ const Carnosines = ({ timeRef }: { timeRef: TimeBox }) => {
         }
         flushGlow(flash);
         flushGlow(spark);
-        [ba, his, ring, amide].forEach(r => { if (r.current) r.current.instanceMatrix.needsUpdate = true; });
+        ba.current.instanceMatrix.needsUpdate = true;
+        his.current.instanceMatrix.needsUpdate = true;
+        ring.current.instanceMatrix.needsUpdate = true;
+        amide.current.instanceMatrix.needsUpdate = true;
     });
     return (
         <group {...bind}>
@@ -191,7 +205,7 @@ const RedCells = ({ timeRef }: { timeRef: TimeBox }) => {
     const ref = useRef<THREE.InstancedMesh>(null);
     const { bind, lit } = useStructure('hemacia');
     const geo = useMemo(() => redCellGeometry(30), []);
-    const mat = useMemo(() => new THREE.MeshPhysicalMaterial({ color: '#dc2626', emissive: '#7f1d1d', emissiveIntensity: 0.4, roughness: 0.38, clearcoat: 0.8, clearcoatRoughness: 0.25, sheen: 0.8, sheenColor: new THREE.Color('#fecaca') }), []);
+    const mat = useMemo(() => redCellMaterial(new THREE.MeshPhysicalMaterial({ color: '#d42424', emissive: '#7f1d1d', emissiveIntensity: 0.4, roughness: 0.38, clearcoat: 0.8, clearcoatRoughness: 0.25, sheen: 0.8, sheenColor: new THREE.Color('#fecaca') })), []);
     const seeds = useMemo(() => Array.from({ length: NR }, (_, k) => randoms(500 + k, 4)), []);
     useLayoutEffect(() => { mat.setValues({ emissiveIntensity: lit ? 1.3 : 0.45 }); }, [lit, mat]);
     useFrame(({ clock }) => {
@@ -213,10 +227,16 @@ const RedCells = ({ timeRef }: { timeRef: TimeBox }) => {
 
 export const BloodStation = ({ timeRef }: { timeRef: TimeBox }) => {
     const g = useRef<THREE.Group>(null);
-    useFrame(() => { if (g.current) g.current.visible = stationWeight(timeRef.current.t, I) > 0; });
+    const time = useMemo(() => makeTimeUniform(), []);
+    useFrame(({ clock }) => {
+        if (!g.current) return;
+        const vis = stationWeight(timeRef.current.t, I) > 0;
+        showStation(g.current, vis);
+        if (vis) tickTime(time, clock.elapsedTime);
+    });
     return (
         <group ref={g} position={[stationX(I), 0, 0]}>
-            <Vessel />
+            <Vessel time={time} />
             <PlasmaFlow timeRef={timeRef} />
             <RedCells timeRef={timeRef} />
             <Enzymes timeRef={timeRef} />

@@ -1,13 +1,14 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { lerp, smooth } from '../shared/math';
-import { frac, glowMaterial, putInstance, randoms, stationWeight, type TimeBox } from './common';
+import { frac, glowMaterial, putInstance, randoms, showStation, stationWeight, type TimeBox } from './common';
 import { flushGlow, putGlow, withRim } from './fx';
 import { STATION, stationX } from './layout';
 import { transporterGeometry } from './shapes';
 import { useGlowMesh } from './useGlow';
+import { lipidMaterial, makeTimeUniform, tickTime } from './tissueShaders';
 import { useStructure } from './useStructure';
 
 /*
@@ -49,17 +50,35 @@ const cool = (heat: Heat, i: number, dt: number) => {
 
 const TAIL_L = 0.46;
 
-const Bilayer = () => {
+/** Índice do lipídio dono de cada instância (cabeça k·2 + folha); as caudas herdam o da cabeça. */
+const lipidIds = (perHead: number) => {
+    const ids = new Float32Array(HEADS.length * 2 * perHead);
+    for (let k = 0; k < HEADS.length; k++) {
+        for (let leaf = 0; leaf < 2; leaf++) {
+            for (let j = 0; j < perHead; j++) ids[(k * 2 + leaf) * perHead + j] = k * 2 + leaf;
+        }
+    }
+    return ids;
+};
+
+const Bilayer = ({ timeRef }: { timeRef: TimeBox }) => {
     const ref = useRef<THREE.InstancedMesh>(null);
     const tails = useRef<THREE.InstancedMesh>(null);
-    const geo = useMemo(() => new THREE.SphereGeometry(0.34, 14, 10), []);
-    const mat = useMemo(() => new THREE.MeshPhysicalMaterial({ color: '#d9b77a', roughness: 0.42, clearcoat: 0.8, clearcoatRoughness: 0.2, emissive: '#3b2a12', emissiveIntensity: 0.35 }), []);
+    const time = useMemo(() => makeTimeUniform(), []);
+    // cabeça leve (10×7) e material padrão: são ~940 instâncias; o verniz molhado vem do shader
+    const geo = useMemo(() => {
+        const g = new THREE.SphereGeometry(0.34, 10, 7);
+        g.setAttribute('aLipid', new THREE.InstancedBufferAttribute(lipidIds(1), 1));
+        return g;
+    }, []);
+    const mat = useMemo(() => lipidMaterial(new THREE.MeshStandardMaterial({ color: '#d9b77a', roughness: 0.34, metalness: 0, emissive: '#3b2a12', emissiveIntensity: 0.35, envMapIntensity: 1.2 }), { time, gates: GATES, part: 'head' }), [time]);
     const tailGeo = useMemo(() => {
         const g = new THREE.CylinderGeometry(0.055, 0.04, TAIL_L, 5, 1);
         g.translate(0, -TAIL_L / 2, 0);
+        g.setAttribute('aLipid', new THREE.InstancedBufferAttribute(lipidIds(2), 1));
         return g;
     }, []);
-    const tailMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#8a7044', roughness: 0.7, emissive: '#2a1c08', emissiveIntensity: 0.4 }), []);
+    const tailMat = useMemo(() => lipidMaterial(new THREE.MeshStandardMaterial({ color: '#8a7044', roughness: 0.7, emissive: '#2a1c08', emissiveIntensity: 0.4 }), { time, gates: GATES, part: 'tail' }), [time]);
     useLayoutEffect(() => {
         const m = ref.current;
         const tl = tails.current;
@@ -79,13 +98,21 @@ const Bilayer = () => {
         m.instanceMatrix.needsUpdate = true;
         tl.instanceMatrix.needsUpdate = true;
     }, []);
+    // um uniforme só para cabeças e caudas, atualizado uma vez por quadro (e só com a estação em cena)
+    useFrame(({ clock }) => {
+        if (stationWeight(timeRef.current.t, I) <= 0) return;
+        tickTime(time, clock.elapsedTime);
+    });
     return (
         <group>
-            <instancedMesh ref={ref} args={[geo, mat, HEADS.length * 2]} />
-            <instancedMesh ref={tails} args={[tailGeo, tailMat, HEADS.length * 4]} />
+            <instancedMesh ref={ref} args={[geo, mat, HEADS.length * 2]} frustumCulled={false} />
+            <instancedMesh ref={tails} args={[tailGeo, tailMat, HEADS.length * 4]} frustumCulled={false} />
         </group>
     );
 };
+
+const RIM_TAUT = new THREE.Color(C.carnoSoft).multiplyScalar(1.4);
+const RIM_PAT1 = new THREE.Color(C.carno).multiplyScalar(1.4);
 
 const TransporterMesh = ({ gate }: { gate: Gate }) => {
     const { bind, lit } = useStructure(gate.kind);
@@ -96,14 +123,14 @@ const TransporterMesh = ({ gate }: { gate: Gate }) => {
         emissive: isTaut ? '#0f4c45' : '#0c3b4f', emissiveIntensity: 0.5,
     }), isTaut ? '#99f6e4' : '#bae6fd', 2.2, 0.6), [isTaut]);
     useLayoutEffect(() => { mat.setValues({ emissiveIntensity: lit ? 1.4 : 0.5 }); }, [lit, mat]);
-    const rim = isTaut ? C.carnoSoft : C.carno;
+    const rimColor = isTaut ? RIM_TAUT : RIM_PAT1;
     return (
         <group position={[gate.x, 0, gate.z]} {...bind}>
             <mesh geometry={geo} material={mat} />
             {[1.85, -1.85].map(y => (
                 <mesh key={y} position={[0, y, 0]} rotation={[Math.PI / 2, 0, 0]}>
                     <torusGeometry args={[1.32, 0.05, 8, 48]} />
-                    <meshBasicMaterial color={new THREE.Color(rim).multiplyScalar(1.4)} toneMapped={false} />
+                    <meshBasicMaterial color={rimColor} toneMapped={false} />
                 </mesh>
             ))}
         </group>
@@ -187,11 +214,11 @@ const TAUT_ONLY = GATES.filter(g => g.kind === 'taut');
 
 export const MembraneStation = ({ timeRef }: { timeRef: TimeBox }) => {
     const g = useRef<THREE.Group>(null);
-    const heat = useRef(new Float32Array(GATES.length));
-    useFrame(() => { if (g.current) g.current.visible = stationWeight(timeRef.current.t, I) > 0; });
+    const [heat] = useState<Heat>(() => ({ current: new Float32Array(GATES.length) }));
+    useFrame(() => { if (g.current) showStation(g.current, stationWeight(timeRef.current.t, I) > 0); });
     return (
         <group ref={g} position={[stationX(I), 0, 0]}>
-            <Bilayer />
+            <Bilayer timeRef={timeRef} />
             {GATES.map(gate => <TransporterMesh key={`${gate.x}`} gate={gate} />)}
             <PoreGlow timeRef={timeRef} heat={heat} />
             <Flow timeRef={timeRef} n={NB} color={C.carno} seed={700} gates={GATES} period={9} id="bala" heat={heat} glowK={1.5} />

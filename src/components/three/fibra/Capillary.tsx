@@ -76,11 +76,12 @@ const RedCells = ({ simRef }: { simRef: SimRef }) => {
         const m = mesh.current;
         if (!m) return;
         const t = simRef.current.clock;
-        RED_CELLS.forEach((c, i) => {
+        for (let i = 0; i < RED_CELLS.length; i++) {
+            const c = RED_CELLS[i];
             const x = wrapX(c.x0 + t * FLOW_SPEED);
             E.set(c.spin + t * 0.4, Math.PI / 2 + Math.sin(c.spin + clock.elapsedTime * 0.5) * 0.4, 0);
             m.setMatrixAt(i, M.compose(P.set(x, CAP_Y + c.dy, CAP_Z + c.dz), Q.setFromEuler(E), S.set(1, 1, 1)));
-        });
+        }
         m.instanceMatrix.needsUpdate = true;
     });
     return (
@@ -105,17 +106,18 @@ const PlasmaBicarbonate = ({ simRef }: { simRef: SimRef }) => {
         const sim = simRef.current;
         const density = Math.min(0.42 + 0.48 * sim.meter.bicLevel - 0.14 * sim.meter.load, 1);
         const t = sim.clock;
-        seeds.forEach((s, i) => {
+        for (let i = 0; i < seeds.length; i++) {
+            const s = seeds[i];
             const on = s.th < density ? 1 : 0;
             const x = wrapX(s.x0 + t * FLOW_SPEED * s.sp);
             const k = 0.085 * on;
             E.set(t * 0.8 + s.a, s.a, 0);
             m.setMatrixAt(i, M.compose(P.set(x, CAP_Y + Math.cos(s.a) * s.rr, CAP_Z + Math.sin(s.a) * s.rr), Q.setFromEuler(E), S.set(k, k, k)));
-        });
+        }
         m.instanceMatrix.needsUpdate = true;
     });
     return (
-        <instancedMesh ref={mesh} args={[TREFOIL, undefined, HCO3_N]} frustumCulled={false} raycast={() => undefined}>
+        <instancedMesh ref={mesh} args={[TREFOIL, undefined, HCO3_N]} frustumCulled={false} raycast={noRaycast}>
             <meshStandardMaterial color={C.base} emissive={C.base} emissiveIntensity={0.8} roughness={0.3} />
         </instancedMesh>
     );

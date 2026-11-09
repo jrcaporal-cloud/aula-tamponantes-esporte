@@ -25,6 +25,9 @@ const Q = new THREE.Quaternion();
 const P = new THREE.Vector3();
 const S = new THREE.Vector3(1, 1, 1);
 const E = new THREE.Euler();
+const MYO_COLOR = new THREE.Color(C.acidDeep);
+/** Linhas Z: uma a cada 0,5 ao longo da fibra. */
+const Z_XS: readonly number[] = Array.from({ length: Math.round(LEN / 0.5) }, (_, i) => FIBER.x0 + 0.25 + i * 0.5);
 
 export const FiberDetails = ({ stateRef }: { stateRef: JourneyStateRef }) => {
     const { bind, lit } = useStructure('mct');
@@ -61,13 +64,13 @@ export const FiberDetails = ({ stateRef }: { stateRef: JourneyStateRef }) => {
     }, [geo, mats]);
 
     const subRef = useRef<THREE.InstancedMesh>(null);
-    const poreRef = useRef<THREE.Mesh>(null);
+    const poreRef = useRef<THREE.InstancedMesh>(null);
     const myoRef = useRef<THREE.InstancedMesh>(null);
-    const ringRef = useRef<THREE.Mesh>(null);
+    const ringRef = useRef<THREE.InstancedMesh>(null);
 
     const placed = useRef(false);
     /** Posições fixas das instâncias: escritas no primeiro quadro. */
-    const place = (s: THREE.InstancedMesh, m: THREE.InstancedMesh) => {
+    const place = (s: THREE.InstancedMesh, m: THREE.InstancedMesh, ring: THREE.InstancedMesh, pore: THREE.InstancedMesh) => {
         MCT_X.forEach((x, p) => {
             for (let k = 0; k < SUB; k++) {
                 const a = (k / SUB) * Math.PI * 2;
@@ -85,12 +88,20 @@ export const FiberDetails = ({ stateRef }: { stateRef: JourneyStateRef }) => {
             m.setMatrixAt(i, M.compose(P, Q, S));
         });
         m.instanceMatrix.needsUpdate = true;
+        // anel em meia-volta: gira para o plano da seção (y-z) com a abertura para a frente
+        Q.setFromEuler(E.set(0, Math.PI / 2, -Math.PI / 2, 'XYZ'));
+        Z_XS.forEach((x, i) => ring.setMatrixAt(i, M.compose(P.set(x, FIBER.y, 0), Q, S)));
+        ring.instanceMatrix.needsUpdate = true;
+        Q.setFromEuler(E.set(Math.PI / 2, 0, 0, 'XYZ'));
+        MCT_X.forEach((x, i) => pore.setMatrixAt(i, M.compose(P.set(x, MEMBRANE_Y - 0.02, -0.12), Q, S)));
+        pore.instanceMatrix.needsUpdate = true;
+        for (const im of [s, m, ring, pore]) im.computeBoundingSphere();
         Q.identity();
     };
 
     useFrame(({ clock }) => {
-        if (!placed.current && subRef.current && myoRef.current) {
-            place(subRef.current, myoRef.current);
+        if (!placed.current && subRef.current && myoRef.current && ringRef.current && poreRef.current) {
+            place(subRef.current, myoRef.current, ringRef.current, poreRef.current);
             placed.current = true;
         }
         const focus = 0.2 + 0.8 * stateRef.current.f.w[SYS.muscle];
@@ -104,7 +115,7 @@ export const FiberDetails = ({ stateRef }: { stateRef: JourneyStateRef }) => {
         }
         const mm = myoRef.current?.material as THREE.MeshPhysicalMaterial | undefined;
         if (mm) {
-            mm.color.set(C.acidDeep).multiplyScalar(0.4 * focus);
+            mm.color.copy(MYO_COLOR).multiplyScalar(0.4 * focus);
             mm.sheen = 0.35 * focus;
             mm.envMapIntensity = focus;
         }
@@ -112,19 +123,12 @@ export const FiberDetails = ({ stateRef }: { stateRef: JourneyStateRef }) => {
         if (rm) rm.emissiveIntensity = 0.28 * focus;
     });
 
-    const xs = useMemo(() => Array.from({ length: Math.round(LEN / 0.5) }, (_, i) => FIBER.x0 + 0.25 + i * 0.5), []);
     return (
         <group>
-            {xs.map((x, i) => (
-                <group key={x} position={[x, FIBER.y, 0]} rotation={[0, Math.PI / 2, 0]}>
-                    <mesh ref={i === 0 ? ringRef : undefined} geometry={geo.ring} material={mats.ring} rotation={[0, 0, -Math.PI / 2]} />
-                </group>
-            ))}
+            <instancedMesh ref={ringRef} args={[geo.ring, mats.ring, Z_XS.length]} />
             <instancedMesh ref={myoRef} args={[geo.myo, mats.myo, MYO_Y.length]} />
             <instancedMesh ref={subRef} args={[geo.sub, mats.sub, MCT_X.length * SUB]} {...bind} />
-            {MCT_X.map((x, i) => (
-                <mesh key={x} ref={i === 0 ? poreRef : undefined} geometry={geo.pore} material={mats.pore} position={[x, MEMBRANE_Y - 0.02, -0.12]} rotation={[Math.PI / 2, 0, 0]} {...bind} />
-            ))}
+            <instancedMesh ref={poreRef} args={[geo.pore, mats.pore, MCT_X.length]} {...bind} />
         </group>
     );
 };

@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { C } from '../../sims/kit/palette';
 import { HudBox } from './hudParts';
-import { toPath, useRaf } from './hudUtils';
+import { setAttr, setText, toPath, useRaf } from './hudUtils';
 import { br, gainAtWeek, loadingGain, playWeek, washoutWeeks, WEEK_AXIS, type LoadPlan } from './model';
 import { useCarnoSim } from './store';
 
@@ -41,11 +41,11 @@ export const LoadHud = () => {
         const w = playWeek(sec);
         const g = gainAtWeek(w, plan);
         const x = sx(w);
-        line.current?.setAttribute('x1', `${x}`);
-        line.current?.setAttribute('x2', `${x}`);
-        dot.current?.setAttribute('cx', `${x}`);
-        dot.current?.setAttribute('cy', `${sy(g)}`);
-        if (read.current) read.current.textContent = `semana ${br(w)} · +${br(g)}%`;
+        setAttr(line.current, 'x1', `${x}`);
+        setAttr(line.current, 'x2', `${x}`);
+        setAttr(dot.current, 'cx', `${x}`);
+        setAttr(dot.current, 'cy', `${sy(g)}`);
+        setText(read.current, `semana ${br(w)} · +${br(g)}%`);
     });
 
     return (

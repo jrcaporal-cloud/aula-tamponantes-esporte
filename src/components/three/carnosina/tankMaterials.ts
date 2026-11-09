@@ -95,7 +95,8 @@ export const makeSurfaceMaterial = () => new THREE.ShaderMaterial({
             vec3 v = normalize(cameraPosition - vW);
             vec3 l = normalize(vec3(0.4, 1.0, 0.6));
             float spec = pow(max(dot(reflect(-l, n), v), 0.0), 48.0);
-            float fres = pow(1.0 - max(dot(n, v), 0.0), 3.0);
+            float fr1 = 1.0 - max(dot(n, v), 0.0);
+            float fres = fr1 * fr1 * fr1;
             vec3 col = uColor * 0.9 + uHi * (spec * 1.4 + fres * 0.5);
             col += uHi * smoothstep(2.55, 2.88, vR) * 0.55;
             gl_FragColor = vec4(col, 0.92);

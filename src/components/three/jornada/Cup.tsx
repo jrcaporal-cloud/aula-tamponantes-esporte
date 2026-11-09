@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { rng } from '../shared/math';
 import { CUP, ESOPHAGUS } from './anatomy';
-import { HIDDEN, SPHERE_LO, additiveMaterial, bubbleMaterial, glowMaterial, put } from './materials';
+import { SPHERE_LO, additiveMaterial, bubbleMaterial, commit, glowMaterial, push, sleep } from './materials';
 import { SYS, type JourneyStateRef } from './state';
 
 /*
@@ -50,6 +50,8 @@ export const Cup = ({ stateRef }: { stateRef: JourneyStateRef }) => {
         water.uniforms.uCutY.value = WATER_Y;
         const glass = bubbleMaterial('#e6f4ff', { rim: 0.85, body: 0.03, spec: 1.1 });
         glass.side = THREE.DoubleSide;
+        // água e vidro apagam juntos: uma uniforme só, escrita uma vez por quadro
+        water.uniforms.uDim = glass.uniforms.uDim;
         return {
             glass,
             water,
@@ -69,7 +71,6 @@ export const Cup = ({ stateRef }: { stateRef: JourneyStateRef }) => {
     }, []);
     const root = useRef<THREE.Group>(null);
     const glassRef = useRef<THREE.Mesh>(null);
-    const waterRef = useRef<THREE.Mesh>(null);
     const grains = useRef<THREE.InstancedMesh>(null);
     const drops = useRef<THREE.InstancedMesh>(null);
 
@@ -83,31 +84,32 @@ export const Cup = ({ stateRef }: { stateRef: JourneyStateRef }) => {
         cup.visible = k > 0.02;
         if (!cup.visible) return;
         const t = clock.elapsedTime;
-        for (const mesh of [glassRef.current, waterRef.current]) {
-            if (mesh) (mesh.material as THREE.ShaderMaterial).uniforms.uDim.value = k;
-        }
+        const glass = glassRef.current?.material as THREE.ShaderMaterial | undefined;
+        if (glass) glass.uniforms.uDim.value = k;
         // grãos: giram dentro do copo (coordenadas locais do copo inclinado), abaixo do nível da água
+        let kg = 0;
         for (let i = 0; i < GRAINS; i++) {
             const s = seeds[i];
             const a = s.a + t * s.sp;
             const ly = -half + 0.15 + s.h * 0.75 + Math.sin(t * 0.7 + s.a) * 0.06;
             const lx = Math.cos(a) * s.rr * CUP.r * 0.8;
             P.set(CUP.x + SIDE.x * lx + UP.x * ly, CUP.y + SIDE.y * lx + UP.y * ly, CUP.z + Math.sin(a) * s.rr * CUP.r * 0.6);
-            put(g, i, P, P.y < WATER_Y - 0.03 ? s.s * k : 0);
+            if (P.y < WATER_Y - 0.03) kg = push(g, kg, P, s.s * k);
         }
-        g.instanceMatrix.needsUpdate = true;
+        commit(g, kg);
+        if (w[SYS.stream] < 0.05) { sleep(d); return; }
+        let kd = 0;
         for (let i = 0; i < DROPS; i++) {
             const q = (t * 0.9 + i / DROPS) % 1;
-            if (w[SYS.stream] < 0.05) { d.setMatrixAt(i, HIDDEN); continue; }
-            put(d, i, streamPoint(q, P), (0.05 + 0.025 * Math.sin(i * 2.1 + t * 6)) * w[SYS.stream]);
+            kd = push(d, kd, streamPoint(q, P), (0.05 + 0.025 * Math.sin(i * 2.1 + t * 6)) * w[SYS.stream]);
         }
-        d.instanceMatrix.needsUpdate = true;
+        commit(d, kd);
     });
 
     return (
         <group ref={root}>
             <group position={[CUP.x, CUP.y, CUP.z]} rotation={[0, 0, TILT]}>
-                <mesh ref={waterRef} geometry={geo.water} material={mats.water} renderOrder={1} />
+                <mesh geometry={geo.water} material={mats.water} renderOrder={1} />
                 <mesh ref={glassRef} geometry={geo.glass} material={mats.glass} renderOrder={2} />
                 <mesh geometry={geo.rim} material={mats.rim} position={[0, half, 0]} rotation={[Math.PI / 2, 0, 0]} />
             </group>

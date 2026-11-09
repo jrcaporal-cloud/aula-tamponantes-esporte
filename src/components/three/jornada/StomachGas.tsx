@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { rng, smooth } from '../shared/math';
 import { STOMACH, buildLut, centroidOf, lutPoint } from './anatomy';
-import { HIDDEN, SPHERE_LO, SPHERE_MID, additiveMaterial, bubbleMaterial, glowMaterial, put, putScaled } from './materials';
+import { SPHERE_LO, SPHERE_MID, additiveMaterial, bubbleMaterial, commit, glowMaterial, push, pushScaled, sleep } from './materials';
 import type { JourneyStateRef } from './state';
 
 /*
@@ -73,38 +73,36 @@ export const StomachGas = ({ stateRef }: { stateRef: JourneyStateRef }) => {
         const k = 1 + 0.13 * lvl;
         const n = Math.round(N * Math.min(lvl / 1.2, 1));
         const t = clock.elapsedTime;
-        for (let i = 0; i < N; i++) {
-            if (i >= n) { ma.setMatrixAt(i, HIDDEN); mb.setMatrixAt(i, HIDDEN); mg.setMatrixAt(i, HIDDEN); mf.setMatrixAt(i, HIDDEN); continue; }
-            const d = slots[i];
-            const L = (t * 0.16 * d.sp + d.ph) % 1;
-            lutPoint(LUT, d.s, d.a, d.b, MEET);
-            // clarão do encontro: cresce e apaga logo depois da reação
-            const fl = (L - REACT + 0.015) / 0.07;
-            put(mf, i, inflate(P.copy(MEET), k), fl > 0 && fl < 1 ? 0.24 * Math.sin(Math.PI * fl) * (1 - fl * 0.5) : 0);
-            if (L < REACT) {
-                const e = smooth(L / REACT);
-                lutPoint(LUT, d.s, d.side * 0.95, d.b, A);
-                B.copy(MEET).y += 1.3;
-                put(ma, i, inflate(P.copy(A).lerp(MEET, e), k), 0.075);
-                put(mb, i, inflate(P.copy(B).lerp(MEET, e), k), 0.075);
-                put(mg, i, P, 0);
-                continue;
+        if (n === 0) {
+            sleep(ma); sleep(mb); sleep(mg); sleep(mf);
+        } else {
+            let ia = 0; let ib = 0; let ig = 0; let jf = 0;
+            for (let i = 0; i < n; i++) {
+                const d = slots[i];
+                const L = (t * 0.16 * d.sp + d.ph) % 1;
+                lutPoint(LUT, d.s, d.a, d.b, MEET);
+                // clarão do encontro: cresce e apaga logo depois da reação
+                const fl = (L - REACT + 0.015) / 0.07;
+                if (fl > 0 && fl < 1) jf = push(mf, jf, inflate(P.copy(MEET), k), 0.24 * Math.sin(Math.PI * fl) * (1 - fl * 0.5));
+                if (L < REACT) {
+                    const e = smooth(L / REACT);
+                    lutPoint(LUT, d.s, d.side * 0.95, d.b, A);
+                    B.copy(MEET).y += 1.3;
+                    ia = push(ma, ia, inflate(P.copy(A).lerp(MEET, e), k), 0.075);
+                    ib = push(mb, ib, inflate(P.copy(B).lerp(MEET, e), k), 0.075);
+                    continue;
+                }
+                const g = (L - REACT) / (1 - REACT);
+                A.set(FUNDUS.x + d.fx * 0.6, FUNDUS.y + d.fy * 0.5, FUNDUS.z);
+                P.copy(MEET).lerp(A, smooth(g));
+                P.x += Math.sin(t * 2.3 + d.ph * 9) * 0.08;
+                const grow = Math.min(g * 4, 1) * (1 - smooth(Math.max((g - 0.85) / 0.15, 0)));
+                const sz = (0.05 + 0.1 * g) * d.size * (0.8 + 0.3 * lvl) * grow;
+                const wob = Math.sin(t * 9 * d.sp + d.ph * 20) * 0.1;
+                ig = pushScaled(mg, ig, inflate(P, k), sz * (1 + wob), sz * (1 - wob), sz);
             }
-            ma.setMatrixAt(i, HIDDEN);
-            mb.setMatrixAt(i, HIDDEN);
-            const g = (L - REACT) / (1 - REACT);
-            A.set(FUNDUS.x + d.fx * 0.6, FUNDUS.y + d.fy * 0.5, FUNDUS.z);
-            P.copy(MEET).lerp(A, smooth(g));
-            P.x += Math.sin(t * 2.3 + d.ph * 9) * 0.08;
-            const grow = Math.min(g * 4, 1) * (1 - smooth(Math.max((g - 0.85) / 0.15, 0)));
-            const sz = (0.05 + 0.1 * g) * d.size * (0.8 + 0.3 * lvl) * grow;
-            const wob = Math.sin(t * 9 * d.sp + d.ph * 20) * 0.1;
-            putScaled(mg, i, inflate(P, k), sz * (1 + wob), sz * (1 - wob), sz);
+            commit(ma, ia); commit(mb, ib); commit(mg, ig); commit(mf, jf);
         }
-        mf.instanceMatrix.needsUpdate = true;
-        ma.instanceMatrix.needsUpdate = true;
-        mb.instanceMatrix.needsUpdate = true;
-        mg.instanceMatrix.needsUpdate = true;
         const pk = pocket.current;
         if (pk) {
             const s = lvl > 0.02 ? 0.5 + 0.9 * Math.min(lvl, 1.4) : 0;

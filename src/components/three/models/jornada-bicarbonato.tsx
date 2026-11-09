@@ -43,7 +43,8 @@ const JornadaBicarbonato = ({ onClose }: Modal3DProps) => {
     const [athlete, setAthlete] = useState(2);
     const [alkaline, setAlkaline] = useState(true);
     const timeRef = useRef<TimeState>({ t: 0 });
-    const stateRef = useRef<JourneyState>(makeJourneyState());
+    const [initialState] = useState(makeJourneyState);
+    const stateRef = useRef<JourneyState>(initialState);
     const stepRef = useRef(0);
     const scroller = useRef<HTMLDivElement>(null);
     const pin = useSelection(s => s.pin);
@@ -91,12 +92,11 @@ const JornadaBicarbonato = ({ onClose }: Modal3DProps) => {
         return () => window.clearTimeout(t);
     }, [playing, settled, step, go]);
 
+    // ▶ na última etapa recomeça do início (efeito fora do atualizador de estado)
     const togglePlay = useCallback(() => {
-        setPlaying(p => {
-            if (!p && stepRef.current === LAST_STEP) go(0);
-            return !p;
-        });
-    }, [go]);
+        if (!playing && stepRef.current === LAST_STEP) go(0);
+        setPlaying(!playing);
+    }, [go, playing]);
 
     useJourneyKeys({
         next: () => goManual(stepRef.current + 1),

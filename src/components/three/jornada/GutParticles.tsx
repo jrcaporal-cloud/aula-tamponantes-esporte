@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { rng, smooth } from '../shared/math';
 import { GUT, buildLut, lutPoint } from './anatomy';
-import { HIDDEN, SPHERE_LO, glowMaterial, put } from './materials';
+import { SPHERE_LO, commit, glowMaterial, push, sleep } from './materials';
 import { SYS, type JourneyStateRef } from './state';
 
 /*
@@ -50,6 +50,22 @@ const water = (d: Seed, L: number, out: THREE.Vector3) => {
 
 const fade = (L: number) => Math.min(L / 0.12, 1, (1 - L) / 0.15);
 
+/** Na⁺ ou HCO₃⁻: os `nAbs` primeiros atravessam a parede, os `nStay` da segunda metade ficam no lúmen. */
+const writeIons = (m: THREE.InstancedMesh, list: readonly Seed[], t: number, nAbs: number, nStay: number) => {
+    let k = 0;
+    for (let i = 0; i < nAbs; i++) {
+        const d = list[i];
+        const L = (t * 0.2 * d.sp + d.ph) % 1;
+        k = push(m, k, absorbed(d, L, P), 0.075 * fade(L));
+    }
+    for (let i = HALF; i < HALF + nStay; i++) {
+        const d = list[i];
+        const L = (t * 0.2 * d.sp + d.ph) % 1;
+        k = push(m, k, drifting(d, L, P), 0.075 * fade(L));
+    }
+    commit(m, k);
+};
+
 export const GutParticles = ({ stateRef }: { stateRef: JourneyStateRef }) => {
     const na = useRef<THREE.InstancedMesh>(null);
     const hco = useRef<THREE.InstancedMesh>(null);
@@ -74,22 +90,21 @@ export const GutParticles = ({ stateRef }: { stateRef: JourneyStateRef }) => {
         const nStay = Math.round(HALF * load);
         const nWater = Math.round(PER * load);
         const t = clock.elapsedTime;
-        for (let i = 0; i < PER; i++) {
-            for (const [m, list] of [[a, seeds.na], [b, seeds.hco]] as const) {
-                const d = list[i];
-                const L = (t * 0.2 * d.sp + d.ph) % 1;
-                const on = i < HALF ? i < nAbs : i - HALF < nStay;
-                if (!on) { m.setMatrixAt(i, HIDDEN); continue; }
-                put(m, i, i < HALF ? absorbed(d, L, P) : drifting(d, L, P), 0.075 * fade(L));
-            }
+        if (nAbs + nStay === 0) {
+            sleep(a);
+            sleep(b);
+        } else {
+            writeIons(a, seeds.na, t, nAbs, nStay);
+            writeIons(b, seeds.hco, t, nAbs, nStay);
+        }
+        if (nWater === 0) { sleep(w); return; }
+        let k = 0;
+        for (let i = 0; i < nWater; i++) {
             const d = seeds.h2o[i];
             const L = (t * 0.17 * d.sp + d.ph) % 1;
-            if (i >= nWater) { w.setMatrixAt(i, HIDDEN); continue; }
-            put(w, i, water(d, L, P), 0.085 * fade(L));
+            k = push(w, k, water(d, L, P), 0.085 * fade(L));
         }
-        a.instanceMatrix.needsUpdate = true;
-        b.instanceMatrix.needsUpdate = true;
-        w.instanceMatrix.needsUpdate = true;
+        commit(w, k);
     });
 
     return (

@@ -140,3 +140,10 @@ export const withRim = <M extends THREE.MeshStandardMaterial>(mat: M, hex: strin
     mat.customProgramCacheKey = () => `rim-${hex}-${power}-${strength}`;
     return mat;
 };
+
+/*
+ * Escritas diretas de material para o laço de quadros (sem `setValues({...})`, que aloca um objeto por
+ * quadro). Ficam fora dos componentes: o compilador do React não deixa mutar ali valores de `useMemo`.
+ */
+export const setEmissiveIntensity = (m: THREE.MeshStandardMaterial, v: number) => { m.emissiveIntensity = v; };
+export const setOpacity = (m: THREE.Material, v: number) => { m.opacity = v; };

@@ -3,13 +3,14 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { frac, glowMaterial, putInstance, randoms, stationWeight, type TimeBox } from './common';
-import { flushGlow, putGlow, tissueMaterial, withRim } from './fx';
+import { frac, glowMaterial, putInstance, randoms, showStation, stationWeight, type TimeBox } from './common';
+import { flushGlow, putGlow, setEmissiveIntensity, tissueMaterial, withRim } from './fx';
 import { STATION, stationX, type Vec3 } from './layout';
 import { firing, plasma, playHour, PEAK } from './model';
 import { useCarnoSim } from './store';
 import { wobble } from './shapes';
 import { useGlowMesh } from './useGlow';
+import { corneumMaterial, keratinocyteMaterial } from './tissueShaders';
 import { useStructure } from './useStructure';
 
 /*
@@ -62,7 +63,7 @@ const CELLS: [number, number, number, number][] = [];
 const Layers = () => {
     const cells = useRef<THREE.InstancedMesh>(null);
     const cellGeo = useMemo(() => new THREE.IcosahedronGeometry(1, 1), []);
-    const cellMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#f1c4ad', emissive: '#5c2e1f', emissiveIntensity: 0.35, roughness: 0.55, transparent: true, opacity: 0.3, depthWrite: false, flatShading: true }), []);
+    const cellMat = useMemo(() => keratinocyteMaterial(new THREE.MeshStandardMaterial({ color: '#f1c4ad', emissive: '#5c2e1f', emissiveIntensity: 0.35, roughness: 0.55, transparent: true, opacity: 0.3, depthWrite: false, flatShading: true })), []);
     const corneum = useMemo(() => {
         const g = new THREE.PlaneGeometry(19, 9.5, 120, 60);
         g.rotateX(-Math.PI / 2);
@@ -71,7 +72,7 @@ const Layers = () => {
         g.computeVertexNormals();
         return g;
     }, []);
-    const corneumMat = useMemo(() => tissueMaterial('#f5d0b5', '#fff7ed', '#3b1d10', { transparent: true, opacity: 0.8, side: THREE.DoubleSide }), []);
+    const corneumMat = useMemo(() => corneumMaterial(tissueMaterial('#f5d0b5', '#fff7ed', '#3b1d10', { transparent: true, opacity: 0.8, side: THREE.DoubleSide })), []);
     // junção dermoepidérmica: membrana ondulada (papilas dérmicas)
     const basement = useMemo(() => {
         const g = new THREE.PlaneGeometry(19, 9.5, 120, 60);
@@ -136,46 +137,56 @@ const Neuron = () => {
     );
 };
 
-const Receptors = ({ litRef }: { litRef: { current: number } }) => {
+const RECEPTOR_GEO = new THREE.SphereGeometry(0.3, 24, 18);
+
+const Receptors = ({ litRef, timeRef }: { litRef: { current: number }; timeRef: TimeBox }) => {
     const { bind, lit } = useStructure('mrgprd');
     const mat = useMemo(() => new THREE.MeshPhysicalMaterial({ color: C.risk, emissive: C.risk, emissiveIntensity: 0.3, roughness: 0.25, clearcoat: 1 }), []);
     const halo = useGlowMesh(TIPS.length * 2, C.risk, 1.4, 1.2);
     useFrame(({ clock }) => {
+        if (stationWeight(timeRef.current.t, I) <= 0) return;
         const f = litRef.current;
-        mat.setValues({ emissiveIntensity: (lit ? 1 : 0.3) + f * 2.2 });
+        setEmissiveIntensity(mat, (lit ? 1 : 0.3) + f * 2.2);
         const t = clock.elapsedTime;
-        TIPS.forEach((p, k) => {
+        for (let k = 0; k < TIPS.length; k++) {
+            const p = TIPS[k];
             // pulso que se abre a cada disparo, mais rápido e forte quanto maior o disparo
             const ph = frac(t * (0.8 + f * 1.6) + k * 0.27);
             putGlow(halo, k * 2, p[0], p[1], p[2], 1.2 + f * 0.8, 0.15 + f * 0.7);
             putGlow(halo, k * 2 + 1, p[0], p[1], p[2], 1 + ph * 3.4 * f, f * (1 - ph) * 0.8);
-        });
+        }
         flushGlow(halo);
     });
     return (
         <group {...bind}>
-            {TIPS.map(p => <mesh key={p[0]} position={p} material={mat}><sphereGeometry args={[0.3, 24, 18]} /></mesh>)}
+            {TIPS.map(p => <mesh key={p[0]} position={p} geometry={RECEPTOR_GEO} material={mat} />)}
             <primitive object={halo} />
         </group>
     );
 };
 
+const N_GRANULES = 12;
+
 const MastCell = () => {
     const { bind, lit } = useStructure('mastocito');
-    const granules = useMemo(() => randoms(1800, 36), []);
+    const granulesRef = useRef<THREE.InstancedMesh>(null);
+    const granuleGeo = useMemo(() => new THREE.SphereGeometry(0.16, 8, 6), []);
+    const granuleMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#64748b', roughness: 0.6 }), []);
     const membrane = useMemo(() => withRim(new THREE.MeshPhysicalMaterial({ color: '#94a3b8', emissive: '#334155', emissiveIntensity: 0.3, transparent: true, opacity: 0.4, roughness: 0.4, clearcoat: 0.8, depthWrite: false }), '#cbd5e1', 2.2, 0.5), []);
     useLayoutEffect(() => { membrane.setValues({ emissiveIntensity: lit ? 1 : 0.3 }); }, [lit, membrane]);
+    useLayoutEffect(() => {
+        const m = granulesRef.current;
+        if (!m) return;
+        const r = randoms(1800, 36);
+        for (let k = 0; k < N_GRANULES; k++) putInstance(m, k, (r[k * 3] - 0.5) * 1.5, (r[k * 3 + 1] - 0.5) * 1.5, (r[k * 3 + 2] - 0.5) * 1.5, 1);
+        m.instanceMatrix.needsUpdate = true;
+    }, []);
     return (
         <group position={[5.2, -1.6, 1.2]} {...bind}>
             <mesh material={membrane}>
                 <sphereGeometry args={[1.25, 40, 28]} />
             </mesh>
-            {Array.from({ length: 12 }, (_, k) => (
-                <mesh key={k} position={[(granules[k * 3] - 0.5) * 1.5, (granules[k * 3 + 1] - 0.5) * 1.5, (granules[k * 3 + 2] - 0.5) * 1.5]}>
-                    <sphereGeometry args={[0.16, 8, 6]} />
-                    <meshStandardMaterial color="#64748b" roughness={0.6} />
-                </mesh>
-            ))}
+            <instancedMesh ref={granulesRef} args={[granuleGeo, granuleMat, N_GRANULES]} />
         </group>
     );
 };
@@ -200,7 +211,7 @@ export const SkinStation = ({ timeRef }: { timeRef: TimeBox }) => {
     useFrame(({ clock }) => {
         if (!g.current) return;
         const vis = stationWeight(timeRef.current.t, I) > 0;
-        g.current.visible = vis;
+        showStation(g.current, vis);
         if (!vis || !imp.current || !bala.current) return;
         const mode = useCarnoSim.getState().release;
         const h = playHour(performance.now() / 1000);
@@ -245,7 +256,7 @@ export const SkinStation = ({ timeRef }: { timeRef: TimeBox }) => {
             <Layers />
             <mesh geometry={capGeo} material={capMat} />
             <Neuron />
-            <Receptors litRef={fireRef} />
+            <Receptors litRef={fireRef} timeRef={timeRef} />
             <MastCell />
             <instancedMesh ref={imp} args={[impGeo, impMat, NI]} frustumCulled={false} />
             <primitive object={impGlow} />

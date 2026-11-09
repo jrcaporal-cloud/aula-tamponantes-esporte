@@ -39,3 +39,19 @@ export const putInstance = (
 
 /** Fração de [a, b] com rebobinagem cíclica (para trajetórias em laço). */
 export const frac = (x: number) => x - Math.floor(x);
+
+/** Camada das estações fora de cena: nem a câmera nem o raycaster do R3F (camada 0) as testam. */
+const HIDDEN_LAYER = 31;
+const toHidden = (o: THREE.Object3D) => { o.layers.set(HIDDEN_LAYER); };
+const toShown = (o: THREE.Object3D) => { o.layers.set(0); };
+
+/**
+ * Mostra ou esconde uma estação. Escondida, toda a subárvore sai da camada 0: o R3F testa o raio em todo
+ * objeto com handler, visível ou não, e as estações fora de cena têm geometria pesada (transportadores,
+ * vilosidades, enzimas). Só percorre a árvore quando o estado muda.
+ */
+export const showStation = (g: THREE.Object3D, vis: boolean) => {
+    if (g.visible === vis) return;
+    g.visible = vis;
+    g.traverse(vis ? toShown : toHidden);
+};

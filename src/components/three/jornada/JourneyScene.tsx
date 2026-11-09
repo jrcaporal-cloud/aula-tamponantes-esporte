@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Environment, Lightformer, OrbitControls } from '@react-three/drei';
 import { Bloom, EffectComposer, N8AO, Vignette } from '@react-three/postprocessing';
@@ -8,7 +8,7 @@ import { buildCameraPath } from './camera';
 import { CameraDirector } from './CameraDirector';
 import { Cup } from './Cup';
 import { STEPS, type StructureId } from './content';
-import type { DoseSummary } from './dose';
+import { summarize, type DoseSummary } from './dose';
 import { Flows } from './Flows';
 import { GutParticles } from './GutParticles';
 import { labelsForStep } from './labels';
@@ -61,14 +61,23 @@ const Backdrop = () => {
         fragmentShader: `varying vec3 vP; void main(){
             float h = vP.y * 0.5 + 0.5;
             vec3 c = mix(vec3(0.012,0.024,0.045), vec3(0.03,0.06,0.09), smoothstep(0.2, 0.95, h));
-            c += vec3(0.0,0.06,0.08) * pow(max(vP.y, 0.0), 2.0) * 0.5;
-            float halo = pow(max(-vP.z, 0.0), 6.0);
+            float up = max(vP.y, 0.0);
+            c += vec3(0.0,0.06,0.08) * (up * up) * 0.5;
+            float back = max(-vP.z, 0.0);
+            float back2 = back * back;
+            float halo = back2 * back2 * back2;
             c += vec3(0.02,0.05,0.07) * halo;
             gl_FragColor = vec4(c, 1.0);
         }`,
     }), []);
+    useEffect(() => () => mat.dispose(), [mat]);
     return <mesh material={mat} scale={180}><sphereGeometry args={[1, 32, 16]} /></mesh>;
 };
+
+/** Etapa da pilha de sódio: a única cujos rótulos trazem números da dose. */
+const SODIUM_STEP = 5;
+/** Dose fixa para as outras etapas (os rótulos delas não leem a dose): mexer na dose não os refaz. */
+const NEUTRAL_DOSE = summarize(70, 0.3);
 
 export interface JourneySceneProps {
     step: number;
@@ -85,8 +94,9 @@ export interface JourneySceneProps {
 
 const JourneySceneImpl = ({ step, settled, reduced, pin, recenterKey, dose, onSettled, onReady, stateRef, timeRef }: JourneySceneProps) => {
     const path = useMemo(() => buildCameraPath(STEPS.map(s => s.pose)), []);
+    const labelDose = step === SODIUM_STEP ? dose : NEUTRAL_DOSE;
     // com algo fixado, os rótulos da etapa sairiam na frente do close-up
-    const labels = useMemo(() => (settled === step && !pin ? labelsForStep(step, dose) : []), [settled, step, pin, dose]);
+    const labels = useMemo(() => (settled === step && !pin ? labelsForStep(step, labelDose) : []), [settled, step, pin, labelDose]);
 
     return (
         <>
@@ -115,7 +125,7 @@ const JourneySceneImpl = ({ step, settled, reduced, pin, recenterKey, dose, onSe
             <MuscleEfflux stateRef={stateRef} />
             <SodiumStack stateRef={stateRef} />
 
-            {labels.map((l, i) => <Label3D key={`${step}-${l.id}-${l.text}`} spec={l} timeRef={timeRef} delay={0.08 + i * 0.12} />)}
+            {labels.map((l, i) => <Label3D key={`${step}-${l.id}`} spec={l} timeRef={timeRef} delay={0.08 + i * 0.12} />)}
 
             <EffectComposer multisampling={2}>
                 <N8AO halfRes aoRadius={0.9} distanceFalloff={0.6} intensity={1.6} quality="performance" />

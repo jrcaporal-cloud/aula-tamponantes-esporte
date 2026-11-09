@@ -14,6 +14,8 @@ const W = 500;
 const H = 214;
 const PAD = { l: 50, r: 14, t: 16, b: 38 };
 const X_MAX = 240;
+/** Menor passo do relógio (min) que vale reescrever o cursor (~0,1 px). */
+const MIN_STEP = 0.05;
 const Y_MAX = 13;
 const sx = (m: number) => PAD.l + (m / X_MAX) * (W - PAD.l - PAD.r);
 const sy = (v: number) => H - PAD.b - (v / Y_MAX) * (H - PAD.t - PAD.b);
@@ -57,9 +59,16 @@ export const BloodChart = ({ curves, selected, onSelect, stateRef }: BloodChartP
     useEffect(() => {
         let raf = 0;
         let last = '';
+        let lastMinute = -1;
+        let lastCurve: Curve | null = null;
         const tick = () => {
             raf = requestAnimationFrame(tick);
             const { minute, rise, ph } = stateRef.current.f;
+            // só reescreve o SVG quando o relógio andou (ou o atleta mudou)
+            const curve = stateRef.current.in.curve;
+            if (Math.abs(minute - lastMinute) < MIN_STEP && curve === lastCurve) return;
+            lastMinute = minute;
+            lastCurve = curve;
             const x = sx(minute);
             cursor.current?.setAttribute('x1', `${x}`);
             cursor.current?.setAttribute('x2', `${x}`);

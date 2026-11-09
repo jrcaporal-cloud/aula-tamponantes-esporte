@@ -1,6 +1,6 @@
 import { rng } from '../shared/math';
 import { BUFFER_SITES, CARNO_BASE, CARNO_LOADED, type BufferKind } from './layout';
-import { advance, END_CO2, END_HB, makePool, type Pool } from './pool';
+import { advance, END_CO2, END_HB, makePool, type Pool, type PoolEvents } from './pool';
 import { bufferRoute, co2Route, exportRoute, freeRoute, hbRoute, nbcRoute, type Rand } from './routes';
 
 /*
@@ -39,6 +39,8 @@ export interface Sim {
     clock: number;
     meter: Meter;
     rand: Rand;
+    /** Callbacks dos reservatórios, criados uma vez (nada de closure nova por quadro). */
+    readonly ev: { readonly h: PoolEvents; readonly bic: PoolEvents; readonly none: PoolEvents };
 }
 
 export const SITE_KINDS: readonly BufferKind[] = ['proteina', 'fosfato', 'carnosina', 'ck'];
@@ -53,45 +55,67 @@ const SITE_TOTAL = SITE_KINDS.reduce((s, k) => s + BUFFER_SITES[k].length, 0);
 /** Tamanho de cada reservatório (as malhas instanciadas são criadas com estes tamanhos). */
 export const POOL_SIZES = { h: 320, lac: 300, na: 90, bic: 50, co2: 200 } as const;
 
-export const createSim = (): Sim => ({
-    h: makePool(POOL_SIZES.h),
-    lac: makePool(POOL_SIZES.lac),
-    na: makePool(POOL_SIZES.na),
-    bic: makePool(POOL_SIZES.bic),
-    co2: makePool(POOL_SIZES.co2),
-    acc: { h: 0, nbc: 0 },
-    siteHit: new Float32Array(SITE_TOTAL).fill(-99),
-    clock: 0,
-    meter: { load: 0, bicLevel: 0, baLevel: 0, pHi: 7.08, pHe: 7.42, efflux: 0 },
-    rand: rng(2026),
-});
+/** Ponto final reaproveitado ao encadear rotas (spawn copia os valores, então pode ser sobrescrito). */
+const END_P: [number, number, number] = [0, 0, 0];
+
+export const createSim = (): Sim => {
+    // as callbacks leem `sim` só quando chamadas (depois da criação); o relógio já avançou antes de
+    // advance(), então sim.clock é o instante do quadro
+    const onHold = (site: number) => { sim.siteHit[site] = sim.clock; };
+    const onEnd = (x: number, y: number, z: number, end: number) => {
+        END_P[0] = x;
+        END_P[1] = y;
+        END_P[2] = z;
+        if (end === END_CO2) co2Route(sim, END_P);
+        else if (end === END_HB) hbRoute(sim, END_P);
+    };
+    const sim: Sim = {
+        h: makePool(POOL_SIZES.h),
+        lac: makePool(POOL_SIZES.lac),
+        na: makePool(POOL_SIZES.na),
+        bic: makePool(POOL_SIZES.bic),
+        co2: makePool(POOL_SIZES.co2),
+        acc: { h: 0, nbc: 0 },
+        siteHit: new Float32Array(SITE_TOTAL).fill(-99),
+        clock: 0,
+        meter: { load: 0, bicLevel: 0, baLevel: 0, pHi: 7.08, pHe: 7.42, efflux: 0 },
+        rand: rng(2026),
+        ev: { h: { onHold, onEnd }, bic: { onHold }, none: {} },
+    };
+    return sim;
+};
 
 /** H⁺ por segundo a 100% de intensidade. */
 const H_RATE = 24;
 
 /** Destinos do H⁺ por etapa (ilustrativo). A carnosina recebe ~7% do que é tamponado (MANNION1992). */
-const fates = (c: SimCtrl) => {
-    const buf = c.stage >= 2 ? (c.stage >= 3 ? 0.4 : 0.5) + (c.ba ? 0.04 : 0) : 0;
-    const exp = c.stage >= 3 ? (c.bic ? 0.52 : 0.28) : 0;
-    return { buf, exp };
-};
+const bufferedShare = (c: SimCtrl) => (c.stage >= 2 ? (c.stage >= 3 ? 0.4 : 0.5) + (c.ba ? 0.04 : 0) : 0);
+const exportShare = (c: SimCtrl) => (c.stage >= 3 ? (c.bic ? 0.52 : 0.28) : 0);
 export const carnoShare = (ba: boolean): number => (ba ? 0.11 : 0.07);
 
-const pickSite = (r: Rand, ba: boolean): { kind: BufferKind; index: number } => {
+/** Sítio sorteado (reaproveitado a cada nascimento; lido logo em seguida). */
+const PICK: { kind: BufferKind; index: number } = { kind: 'proteina', index: 0 };
+
+const pickSite = (r: Rand, ba: boolean): typeof PICK => {
     const x = r();
     const cs = carnoShare(ba);
     if (x < cs) {
         const lit = ba ? CARNO_LOADED : CARNO_BASE;
-        return { kind: 'carnosina', index: Math.floor(r() * lit) };
+        PICK.kind = 'carnosina';
+        PICK.index = Math.floor(r() * lit);
+        return PICK;
     }
     const y = (x - cs) / (1 - cs);
     const kind: BufferKind = y < 0.5 ? 'proteina' : y < 0.78 ? 'fosfato' : 'ck';
-    return { kind, index: Math.floor(r() * BUFFER_SITES[kind].length) };
+    PICK.kind = kind;
+    PICK.index = Math.floor(r() * BUFFER_SITES[kind].length);
+    return PICK;
 };
 
 const birth = (sim: Sim, c: SimCtrl) => {
     const r = sim.rand;
-    const { buf, exp } = fates(c);
+    const buf = bufferedShare(c);
+    const exp = exportShare(c);
     const x = r();
     if (x < buf) {
         const { kind, index } = pickSite(r, c.ba);
@@ -132,14 +156,9 @@ export const stepSim = (sim: Sim, c: SimCtrl, rawDt: number): void => {
         while (sim.acc.nbc >= 1) { sim.acc.nbc -= 1; nbcRoute(sim, c.bic); }
     }
     const t = sim.clock;
-    const onHold = (site: number) => { sim.siteHit[site] = t; };
-    const onEnd = (x: number, y: number, z: number, end: number) => {
-        if (end === END_CO2) co2Route(sim, [x, y, z]);
-        else if (end === END_HB) hbRoute(sim, [x, y, z]);
-    };
-    advance(sim.h, dt, t, { onHold, onEnd });
-    advance(sim.lac, dt, t, {});
-    advance(sim.na, dt, t, {});
-    advance(sim.bic, dt, t, { onHold });
-    advance(sim.co2, dt, t, {});
+    advance(sim.h, dt, t, sim.ev.h);
+    advance(sim.lac, dt, t, sim.ev.none);
+    advance(sim.na, dt, t, sim.ev.none);
+    advance(sim.bic, dt, t, sim.ev.bic);
+    advance(sim.co2, dt, t, sim.ev.none);
 };

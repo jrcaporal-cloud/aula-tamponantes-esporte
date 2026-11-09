@@ -3,8 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { phase } from '../shared/math';
-import { putInstance, stationWeight, type TimeBox } from './common';
-import { flushGlow, moleculeMaterial, putGlow, withRim } from './fx';
+import { putInstance, showStation, stationWeight, type TimeBox } from './common';
+import { flushGlow, moleculeMaterial, putGlow, setEmissiveIntensity, setOpacity, withRim } from './fx';
 import { baPart, HERO_S, heroFrame, hisPart, POOL_BA, POOL_HIS, poolHome } from './synthesisPool';
 import { STATION, stationX } from './layout';
 import { AMIDE_C, makeCarnosineParts, RING_CENTER } from './molecule';
@@ -40,6 +40,10 @@ interface HeroRefs {
     ba: THREE.Group | null; his: THREE.Group | null; amide: THREE.Mesh | null;
     water: THREE.Group | null; atp: THREE.Group | null; pi: THREE.Mesh | null; wave: THREE.Mesh | null;
 }
+
+/** Esfera única do ATP e da água (os hidrogênios usam a mesma, em escala). */
+const BALL = new THREE.SphereGeometry(0.3, 24, 16);
+const H_SCALE = 0.16 / 0.3;
 
 const atpMat = () => new THREE.MeshPhysicalMaterial({ color: '#e2e8f0', emissive: '#64748b', emissiveIntensity: 0.4, roughness: 0.3, clearcoat: 1 });
 /** Brilhos do herói: 0 clarão da ligação, 1 sítio ativo, 2 aura da carnosina pronta, 3 fosfato que sai, 4 anel. */
@@ -83,7 +87,7 @@ const Hero = ({ timeRef }: { timeRef: TimeBox }) => {
         atp.scale.setScalar(1 - phase(u, 0.62, 0.72));
         const split = phase(u, 0.34, 0.5);
         pi.position.set(split * 1.6, split * -0.6, 0);
-        ringMat.setValues({ emissiveIntensity: 0.8 + rise * (1.6 + Math.sin(clock.elapsedTime * 5) * 0.6) });
+        setEmissiveIntensity(ringMat, 0.8 + rise * (1.6 + Math.sin(clock.elapsedTime * 5) * 0.6));
 
         // o momento da ligação: clarão no ponto da ligação peptídica e uma onda que se abre
         const bond = phase(u, 0.33, 0.37) * (1 - phase(u, 0.4, 0.5));
@@ -94,7 +98,7 @@ const Hero = ({ timeRef }: { timeRef: TimeBox }) => {
         wave.position.set(ax, ay, tmp.z + 0.2);
         wave.quaternion.copy(camera.quaternion);
         wave.scale.setScalar(0.2 + wu * 4.5);
-        waveMat.setValues({ opacity: wu > 0 && wu < 1 ? (1 - wu) * 0.9 : 0 });
+        setOpacity(waveMat, wu > 0 && wu < 1 ? (1 - wu) * 0.9 : 0);
         // sítio ativo: pulsa enquanto as metades chegam
         const site = (1 - rise) * (0.45 + 0.25 * Math.sin(clock.elapsedTime * 3));
         putGlow(fx, 1, 0, 0.1, 2.3, 2.6, site * Math.min(u / 0.05, 1));
@@ -117,15 +121,15 @@ const Hero = ({ timeRef }: { timeRef: TimeBox }) => {
             </group>
             <mesh ref={m => { r.current.amide = m; }} geometry={parts.amide} material={mat} />
             <group ref={g => { r.current.water = g; }}>
-                <mesh material={waterMat}><sphereGeometry args={[0.3, 24, 16]} /></mesh>
-                <mesh position={[0.32, 0.2, 0]} material={waterMat}><sphereGeometry args={[0.16, 16, 12]} /></mesh>
-                <mesh position={[-0.3, 0.22, 0]} material={waterMat}><sphereGeometry args={[0.16, 16, 12]} /></mesh>
+                <mesh geometry={BALL} material={waterMat} />
+                <mesh position={[0.32, 0.2, 0]} geometry={BALL} scale={H_SCALE} material={waterMat} />
+                <mesh position={[-0.3, 0.22, 0]} geometry={BALL} scale={H_SCALE} material={waterMat} />
             </group>
             <group ref={g => { r.current.atp = g; }}>
                 {[0, 1].map(k => (
-                    <mesh key={k} position={[-0.75 + k * 0.5, -0.15 * k, 0]} material={pMat}><sphereGeometry args={[0.3, 24, 16]} /></mesh>
+                    <mesh key={k} position={[-0.75 + k * 0.5, -0.15 * k, 0]} geometry={BALL} material={pMat} />
                 ))}
-                <mesh ref={m => { r.current.pi = m; }} material={pMat}><sphereGeometry args={[0.3, 24, 16]} /></mesh>
+                <mesh ref={m => { r.current.pi = m; }} geometry={BALL} material={pMat} />
             </group>
             <mesh ref={m => { r.current.wave = m; }} material={waveMat}><ringGeometry args={[0.86, 1, 64]} /></mesh>
             <primitive object={fx} />
@@ -180,7 +184,7 @@ const Pool = ({ timeRef }: { timeRef: TimeBox }) => {
 
 export const SynthesisStation = ({ timeRef }: { timeRef: TimeBox }) => {
     const g = useRef<THREE.Group>(null);
-    useFrame(() => { if (g.current) g.current.visible = stationWeight(timeRef.current.t, I) > 0; });
+    useFrame(() => { if (g.current) showStation(g.current, stationWeight(timeRef.current.t, I) > 0); });
     return (
         <group ref={g} position={[stationX(I), 0, 0]}>
             <Enzyme />

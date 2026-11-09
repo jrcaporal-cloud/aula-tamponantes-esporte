@@ -51,7 +51,6 @@ const CarnosinaModal = ({ onClose }: Modal3DProps) => {
     const timeRef = useRef<TimeState>({ t: 0 });
     const stepRef = useRef(0);
     const pin = useSelection(s => s.pin);
-    const hovering = useSelection(s => s.hoverId !== null);
     const release = useSelection(s => s.release);
     const last = CARNO_STEPS.length - 1;
     const data = CARNO_STEPS[step];
@@ -84,12 +83,11 @@ const CarnosinaModal = ({ onClose }: Modal3DProps) => {
         return () => window.clearTimeout(t);
     }, [playing, settled, step, last, go]);
 
+    // efeitos fora do atualizador de estado: o atualizador fica puro
     const togglePlay = useCallback(() => {
-        setPlaying(p => {
-            if (!p && stepRef.current === last) go(0);
-            return !p;
-        });
-    }, [last, go]);
+        if (!playing && stepRef.current === last) go(0);
+        setPlaying(!playing);
+    }, [playing, last, go]);
 
     useCarnoKeys({
         next: () => goManual(stepRef.current + 1),
@@ -104,8 +102,7 @@ const CarnosinaModal = ({ onClose }: Modal3DProps) => {
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}>
             <div className="absolute top-0 bottom-0 left-0" style={{ right: PANEL_W }}>
                 <Canvas dpr={[1, 1.5]} camera={{ position: [...CARNO_STEPS[0].cam.pos], fov: 40, near: 0.1, far: 900 }}
-                    gl={{ antialias: false, powerPreference: 'high-performance' }} resize={{ offsetSize: true }}
-                    className={`${pin || hovering ? 'cursor-pointer' : 'cursor-grab'} active:cursor-grabbing`}>
+                    gl={{ antialias: false, powerPreference: 'high-performance' }} resize={{ offsetSize: true }}>
                     <Suspense fallback={null}>
                         <CarnoScene step={step} settled={settled} reduced={reduced} pin={pin} recenterKey={recenterKey}
                             onSettled={onSettled} onReady={onReady} timeRef={timeRef} />
@@ -117,7 +114,7 @@ const CarnosinaModal = ({ onClose }: Modal3DProps) => {
                     </motion.div>
                 </div>
                 <button type="button" onClick={recenter} aria-label="Recentrar a câmera na pose da etapa"
-                    className="absolute z-[46] top-6 right-6 flex items-center gap-2 pl-3.5 pr-4 h-10 rounded-full text-[14px] font-semibold text-gray-100 hover:text-white bg-black/60 hover:bg-white/15 border border-white/15 backdrop-blur-xl">
+                    className="absolute z-[46] top-6 right-6 flex items-center gap-2 pl-3.5 pr-4 h-10 rounded-full text-[14px] font-semibold text-gray-100 hover:text-white bg-black/80 hover:bg-white/15 border border-white/15">
                     <LocateFixed size={16} aria-hidden /> Recentrar
                 </button>
                 <AnimatePresence>{!ready && <LoadingVeil reduced={reduced} />}</AnimatePresence>

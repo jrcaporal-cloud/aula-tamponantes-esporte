@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { rng, smooth } from '../shared/math';
 import { CAPILLARY_Y, FIBER, MCT_X, MEMBRANE_Y } from './anatomy';
-import { HIDDEN, SPHERE_LO, SPHERE_MID, glowMaterial, put } from './materials';
+import { SPHERE_LO, SPHERE_MID, commit, glowMaterial, push, sleep } from './materials';
 import { SYS, type JourneyStateRef } from './state';
 
 /*
@@ -18,6 +18,9 @@ const CLOUD = 90;
 const OUT = 48;
 const RATIO = 4.2 / 10;
 const P = new THREE.Vector3();
+const M = new THREE.Matrix4();
+const Q = new THREE.Quaternion();
+const S = new THREE.Vector3();
 const A = new THREE.Vector3();
 const B = new THREE.Vector3();
 
@@ -79,35 +82,37 @@ export const MuscleEfflux = ({ stateRef }: { stateRef: JourneyStateRef }) => {
         const rate = inp.alkaline ? 1 : RATIO;
         const lf = life.current ?? (life.current = Float32Array.from(exits, e => e.ph));
         const dt = Math.min(delta, 0.05);
+        // a fase das saídas segue correndo mesmo apagada (sem custo de GPU)
+        for (let i = 0; i < OUT; i++) lf[i] = (lf[i] + dt * 0.2 * exits[i].sp * rate) % 1;
+        if (w <= 1e-3) {
+            sleep(mc); sleep(mh); sleep(ml); sleep(mb); sleep(mo);
+            return;
+        }
         const t = clock.elapsedTime;
         for (let i = 0; i < CLOUD; i++) {
             const d = dots[i];
             P.set(d.x + Math.sin(t * 0.9 + d.ph) * 0.12, d.y + Math.cos(t * 1.1 + d.ph * 1.3) * 0.1, d.z);
-            put(mc, i, P, 0.055 * w);
+            mc.setMatrixAt(i, M.compose(P, Q, S.setScalar(0.055 * w)));
         }
+        commit(mc, CLOUD);
         const n = Math.round(OUT * w * (inp.alkaline ? 1 : 0.55));
-        for (let i = 0; i < OUT; i++) {
+        let ih = 0; let il = 0; let ib = 0; let io = 0;
+        for (let i = 0; i < n; i++) {
             const e = exits[i];
-            lf[i] = (lf[i] + dt * 0.2 * e.sp * rate) % 1;
             const L = lf[i];
-            if (i >= n) { mh.setMatrixAt(i, HIDDEN); ml.setMatrixAt(i, HIDDEN); mb.setMatrixAt(i, HIDDEN); mo.setMatrixAt(i, HIDDEN); continue; }
             const fadeIn = Math.min(L / 0.06, 1);
             const fadeOut = Math.min((1 - L) / 0.12, 1);
-            put(mh, i, exitPoint(e, L, 0, P), L < 0.62 ? 0.085 * fadeIn : 0);
-            put(ml, i, exitPoint(e, L, 0.2, P), 0.095 * fadeIn * fadeOut);
+            if (L < 0.62) ih = push(mh, ih, exitPoint(e, L, 0, P), 0.085 * fadeIn);
+            il = push(ml, il, exitPoint(e, L, 0.2, P), 0.095 * fadeIn * fadeOut);
             // o HCO₃⁻ chega pelo capilar e encontra o H⁺ na saída do poro
             if (L > 0.5 && L < 0.62) {
                 const k = smooth((L - 0.5) / 0.12);
                 P.set(MCT_X[e.pore] - 1.1 * (1 - k), CAPILLARY_Y + 0.1, -0.05);
-                put(mb, i, P, 0.08);
-            } else mb.setMatrixAt(i, HIDDEN);
-            put(mo, i, exitPoint(e, L, -0.15, P).setY(P.y + (L - 0.62) * 0.6), L >= 0.62 ? 0.11 * fadeOut : 0);
+                ib = push(mb, ib, P, 0.08);
+            }
+            if (L >= 0.62) io = push(mo, io, exitPoint(e, L, -0.15, P).setY(P.y + (L - 0.62) * 0.6), 0.11 * fadeOut);
         }
-        mc.instanceMatrix.needsUpdate = true;
-        mh.instanceMatrix.needsUpdate = true;
-        ml.instanceMatrix.needsUpdate = true;
-        mb.instanceMatrix.needsUpdate = true;
-        mo.instanceMatrix.needsUpdate = true;
+        commit(mh, ih); commit(ml, il); commit(mb, ib); commit(mo, io);
     });
 
     return (

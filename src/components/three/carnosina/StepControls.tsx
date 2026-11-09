@@ -24,11 +24,11 @@ const LoadControls = () => {
         <div className="flex flex-col gap-2">
             <span className="text-[14px] text-gray-300">Dose diária (g/d)</span>
             <Seg options={GPD_OPTIONS} value={gpd} onChange={setGpd} fmt={v => br(v, 1)} color={C.carno} />
-            <label className="flex items-center justify-between text-[14px] text-gray-300 mt-1">
+            <label htmlFor="carno-weeks" className="flex items-center justify-between text-[14px] text-gray-300 mt-1">
                 <span>Semanas de uso</span>
                 <span className="font-mono text-white">{weeks}</span>
             </label>
-            <input type="range" min={2} max={24} step={1} value={weeks} onChange={e => setWeeks(Number(e.target.value))}
+            <input id="carno-weeks" type="range" min={2} max={24} step={1} value={weeks} onChange={e => setWeeks(Number(e.target.value))}
                 aria-label="Semanas de uso" className="w-full accent-violet-400" />
             <span className="text-[14px] text-gray-400">Dose acumulada: {br(gpd * 7 * weeks)} g · o tanque segue o modelo ilustrativo</span>
         </div>
@@ -39,15 +39,15 @@ const PhControls = () => {
     const { ph, setPh } = useCarnoSim();
     return (
         <div className="flex flex-col gap-2">
-            <label className="flex items-center justify-between text-[14px] text-gray-300">
-                <span>pH do sarcoplasma</span>
+            <div className="flex items-center justify-between text-[14px] text-gray-300">
+                <label htmlFor="carno-ph">pH do sarcoplasma</label>
                 <button type="button" onClick={() => setPh(null)}
                     className="px-2.5 h-7 rounded-full text-[14px] border border-white/15"
                     style={ph === null ? { background: `${C.acid}26`, color: '#fff', borderColor: C.acid } : { color: '#D1D5DB' }}>
                     ciclo automático
                 </button>
-            </label>
-            <input type="range" min={6.5} max={7.1} step={0.01} value={ph ?? 6.8} onChange={e => setPh(Number(e.target.value))}
+            </div>
+            <input id="carno-ph" type="range" min={6.5} max={7.1} step={0.01} value={ph ?? 6.8} onChange={e => setPh(Number(e.target.value))}
                 aria-label="pH do sarcoplasma" className="w-full accent-orange-400" />
             <div className="flex justify-between text-[14px] text-gray-400"><span>6,5 (exaustão)</span><span>7,1 (repouso)</span></div>
         </div>

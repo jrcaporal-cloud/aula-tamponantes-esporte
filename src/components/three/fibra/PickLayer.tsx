@@ -46,3 +46,36 @@ export const PickLayer = () => {
 
     return null;
 };
+
+/**
+ * Cursor do canvas escrito direto no elemento (sem estado do React): mãozinha sobre uma estrutura ou
+ * com algo fixado, "pegar" no vazio e "agarrando" enquanto o botão está apertado.
+ */
+export const CursorSync = () => {
+    const get = useThree(s => s.get);
+
+    useEffect(() => {
+        const el = get().gl.domElement;
+        let down = false;
+        const apply = () => {
+            const s = useSelection.getState();
+            el.style.cursor = down ? 'grabbing' : s.pin || s.hoverId ? 'pointer' : 'grab';
+        };
+        const onDown = (e: PointerEvent) => { if (e.button === 0) { down = true; apply(); } };
+        const onUp = () => { if (down) { down = false; apply(); } };
+        apply();
+        const unsub = useSelection.subscribe(apply);
+        el.addEventListener('pointerdown', onDown);
+        window.addEventListener('pointerup', onUp);
+        window.addEventListener('pointercancel', onUp);
+        return () => {
+            unsub();
+            el.removeEventListener('pointerdown', onDown);
+            window.removeEventListener('pointerup', onUp);
+            window.removeEventListener('pointercancel', onUp);
+            el.style.cursor = '';
+        };
+    }, [get]);
+
+    return null;
+};

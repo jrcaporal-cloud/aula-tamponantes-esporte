@@ -5,7 +5,7 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 import { C } from '../../sims/kit/palette';
 import { STACK, stackHeight } from './anatomy';
 import { ANTACID_NA_G, WHO_NA_G } from './dose';
-import { HIDDEN, bubbleMaterial, rimMaterial } from './materials';
+import { bubbleMaterial, commit, rimMaterial } from './materials';
 import { useStructure } from './selection';
 import { SYS, type JourneyStateRef } from './state';
 
@@ -43,9 +43,14 @@ const discGeometry = (): THREE.LatheGeometry => {
     return new THREE.LatheGeometry(pts, 48);
 };
 
+/** Anel de 0,5 g: deitado (eixo do toro na vertical). */
+const RING_Q = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0));
+const ONE = new THREE.Vector3(1, 1, 1);
+
 const Ghost = ({ x, grams }: { x: number; grams: number }) => {
     const h = stackHeight(grams / STACK.grams);
     const ticks = Math.floor(grams / STACK.grams);
+    const rings = useRef<THREE.InstancedMesh>(null);
     const geo = useMemo(() => ({
         glass: new THREE.CylinderGeometry(STACK.r * 1.04, STACK.r * 1.04, h, 48, 1, true),
         ring: new THREE.TorusGeometry(STACK.r * 1.04, 0.012, 6, 64),
@@ -64,12 +69,18 @@ const Ghost = ({ x, grams }: { x: number; grams: number }) => {
         Object.values(geo).forEach(g => g.dispose());
         Object.values(mats).forEach(m => m.dispose());
     }, [geo, mats]);
+    // anéis fixos (um a cada 0,5 g): uma malha instanciada, escrita uma vez
+    useEffect(() => {
+        const m = rings.current;
+        if (!m) return;
+        for (let i = 0; i < ticks; i++) m.setMatrixAt(i, M.compose(P.set(0, (i + 1) * STEP_H, 0), RING_Q, ONE));
+        m.instanceMatrix.needsUpdate = true;
+        m.computeBoundingSphere();
+    }, [ticks]);
     return (
         <group position={[x, STACK.y, STACK.z]}>
             <mesh geometry={geo.glass} material={mats.glass} position={[0, h / 2, 0]} renderOrder={2} />
-            {Array.from({ length: ticks }, (_, i) => (
-                <mesh key={i} geometry={geo.ring} material={mats.ring} position={[0, (i + 1) * STEP_H, 0]} rotation={[Math.PI / 2, 0, 0]} />
-            ))}
+            <instancedMesh ref={rings} args={[geo.ring, mats.ring, ticks]} />
             <mesh geometry={geo.top} material={mats.top} position={[0, h, 0]} rotation={[Math.PI / 2, 0, 0]} />
         </group>
     );
@@ -98,17 +109,21 @@ export const SodiumStack = ({ stateRef }: { stateRef: JourneyStateRef }) => {
         if (!m) return;
         const { in: inp, f } = stateRef.current;
         const w = f.w[SYS.sodium];
-        if (root.current) root.current.visible = w > 0.01;
+        const shown = w > 0.01;
+        if (root.current) root.current.visible = shown;
+        // fora da etapa: nada a escrever; a pilha volta a se montar do zero quando a câmera chegar
+        if (!shown) { level.current = 0; return; }
         const target = w > 0.5 ? Math.min(inp.discs, MAX_DISCS) : 0;
         level.current += (target - level.current) * (1 - Math.exp(-Math.min(delta, 0.05) * 3));
         const lv = level.current;
+        let k = 0;
         for (let i = 0; i < MAX_DISCS; i++) {
             const fill = Math.min(Math.max(lv - i, 0), 1);
-            if (fill <= 0.01) { m.setMatrixAt(i, HIDDEN); continue; }
+            if (fill <= 0.01) break;
             P.set(STACK.xs[2], STACK.y + i * STEP_H + (STACK.disc * fill) / 2, STACK.z);
-            m.setMatrixAt(i, M.compose(P, Q, S.set(1, fill, 1)));
+            m.setMatrixAt(k++, M.compose(P, Q, S.set(1, fill, 1)));
         }
-        m.instanceMatrix.needsUpdate = true;
+        commit(m, k);
         (m.material as THREE.MeshPhysicalMaterial).emissiveIntensity = lit ? 0.7 : 0.22;
     });
 

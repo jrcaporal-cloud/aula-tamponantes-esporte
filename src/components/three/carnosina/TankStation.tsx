@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
-import { frac, putInstance, randoms, stationWeight, type TimeBox } from './common';
+import { frac, putInstance, randoms, showStation, stationWeight, type TimeBox } from './common';
 import { flushGlow, putGlow, withRim } from './fx';
 import { levelY, STATION, stationX, TANK } from './layout';
 import { gainAtWeek, playWeek } from './model';
@@ -27,6 +27,12 @@ const CAP_RATE = 0.55;
 const LIQ_R = R - 0.12;
 
 /** Onde cada cápsula cai (x, z no referencial da estação). */
+/* Cores dos anéis acesos (fora do tone mapping, acima de 1 para o bloom): uma vez, não a cada render. */
+const BASE_RING = new THREE.Color(C.carno).multiplyScalar(1.8);
+const MARK_BASAL = new THREE.Color('#f1f5f9').multiplyScalar(1.4);
+const MARK_GAIN = new THREE.Color('#a5b4fc').multiplyScalar(1.1);
+const MENISCUS = new THREE.Color(C.carnoSoft).multiplyScalar(1.7);
+
 const CAP_XZ = Array.from({ length: NCAP }, (_, k) => [Math.sin(k * 2.3) * 1.2, Math.cos(k * 1.7) * 1.2] as const);
 
 const Glass = () => {
@@ -52,12 +58,12 @@ const Glass = () => {
             </mesh>
             <mesh position={[0, BOTTOM - 0.18, 0]} rotation={[Math.PI / 2, 0, 0]}>
                 <torusGeometry args={[R + 0.36, 0.045, 8, 96]} />
-                <meshBasicMaterial color={new THREE.Color(C.carno).multiplyScalar(1.8)} toneMapped={false} />
+                <meshBasicMaterial color={BASE_RING} toneMapped={false} />
             </mesh>
             {[1, 1.5, 2].map(r => (
                 <mesh key={r} position={[0, levelY(r), 0]} rotation={[Math.PI / 2, 0, 0]}>
                     <torusGeometry args={[R + 0.03, r === 1 ? 0.05 : 0.03, 8, 96]} />
-                    <meshBasicMaterial color={new THREE.Color(r === 1 ? '#f1f5f9' : '#a5b4fc').multiplyScalar(r === 1 ? 1.4 : 1.1)} toneMapped={false} />
+                    <meshBasicMaterial color={r === 1 ? MARK_BASAL : MARK_GAIN} toneMapped={false} />
                 </mesh>
             ))}
             <mesh position={[0, BOTTOM + H, 0]} rotation={[Math.PI / 2, 0, 0]} material={metal}>
@@ -99,12 +105,13 @@ export const TankStation = ({ timeRef }: { timeRef: TimeBox }) => {
     useFrame(({ clock }) => {
         if (!g.current) return;
         const vis = stationWeight(timeRef.current.t, I) > 0;
-        g.current.visible = vis;
+        showStation(g.current, vis);
         if (!vis || !liquid.current || !surface.current || !meniscus.current || !caps.current) return;
-        const { gpd, weeks } = useCarnoSim.getState();
+        const sim = useCarnoSim.getState();
+        const { gpd, weeks } = sim;
         const t = clock.elapsedTime;
         const w = playWeek(performance.now() / 1000);
-        const ratio = 1 + gainAtWeek(w, { gpd, weeks }) / 100;
+        const ratio = 1 + gainAtWeek(w, sim) / 100;
         const top = levelY(ratio);
         const h = top - BOTTOM;
         liquid.current.scale.set(1, h, 1);
@@ -153,7 +160,7 @@ export const TankStation = ({ timeRef }: { timeRef: TimeBox }) => {
             <mesh ref={surface} rotation={[-Math.PI / 2, 0, 0]} geometry={surfGeo} material={surfMat} />
             <mesh ref={meniscus} rotation={[Math.PI / 2, 0, 0]}>
                 <torusGeometry args={[LIQ_R - 0.02, 0.06, 8, 96]} />
-                <meshBasicMaterial color={new THREE.Color(C.carnoSoft).multiplyScalar(1.7)} toneMapped={false} />
+                <meshBasicMaterial color={MENISCUS} toneMapped={false} />
             </mesh>
             <primitive object={bubbles} />
             <instancedMesh ref={caps} args={[capGeo, capMat, NCAP]} frustumCulled={false} />

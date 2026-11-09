@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { C } from '../../sims/kit/palette';
 import { HudBox } from './hudParts';
-import { useRaf } from './hudUtils';
+import { setText, useRaf } from './hudUtils';
 import { autoPh, br, protonatedFraction } from './model';
 import { useCarnoSim } from './store';
 
@@ -18,9 +18,11 @@ export const BufferHud = () => {
     useRaf(sec => {
         const p = useCarnoSim.getState().ph ?? autoPh(sec);
         const f = protonatedFraction(p);
-        if (ph.current) ph.current.textContent = br(p, 2);
-        if (frac.current) frac.current.textContent = `${br(f * 100)}%`;
-        if (bar.current) bar.current.style.width = `${f * 100}%`;
+        setText(ph.current, br(p, 2));
+        setText(frac.current, `${br(f * 100)}%`);
+        // barra em décimos de ponto: o mesmo desenho, sem reescrever o estilo a cada quadro à toa
+        const width = `${Math.round(f * 1000) / 10}%`;
+        if (bar.current && bar.current.style.width !== width) bar.current.style.width = width;
     });
 
     return (

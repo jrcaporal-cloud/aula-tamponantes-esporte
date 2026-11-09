@@ -1,8 +1,8 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
-import { putInstance, randoms, stationWeight, tmpColor, dummy, type TimeBox } from './common';
+import { dummy, putInstance, randoms, showStation, stationWeight, tmpColor, type TimeBox } from './common';
 import { flushGlow, moleculeMaterial, putGlow, tissueMaterial } from './fx';
 import { STATION, stationX } from './layout';
 import { autoPh, protonatedFraction } from './model';
@@ -30,6 +30,7 @@ const Myofibrils = () => {
     const rows = useMemo(() => Array.from({ length: 7 }, (_, k) => [-4.6 + k * 1.55, -7 - (k % 2) * 1.2] as const), []);
     const bandGeo = useMemo(() => new THREE.CylinderGeometry(0.72, 0.72, 0.14, 20), []);
     const bandMat = useMemo(() => new THREE.MeshPhysicalMaterial({ color: '#fda4af', emissive: '#9f1239', emissiveIntensity: 0.45, roughness: 0.4, clearcoat: 0.6 }), []);
+    const fibGeo = useMemo(() => new THREE.CylinderGeometry(0.66, 0.66, 30, 28, 1, true), []);
     const fibMat = useMemo(() => tissueMaterial('#9f1239', '#fecdd3', '#4c0519'), []);
     useLayoutEffect(() => { fibMat.setValues({ emissiveIntensity: lit ? 1.1 : 0.35 }); }, [lit, fibMat]);
     useLayoutEffect(() => {
@@ -43,9 +44,7 @@ const Myofibrils = () => {
     return (
         <group {...bind}>
             {rows.map(([y, z]) => (
-                <mesh key={y} position={[0, y, z]} rotation={[0, 0, Math.PI / 2]} material={fibMat}>
-                    <cylinderGeometry args={[0.66, 0.66, 30, 28, 1, true]} />
-                </mesh>
+                <mesh key={y} position={[0, y, z]} rotation={[0, 0, Math.PI / 2]} geometry={fibGeo} material={fibMat} />
             ))}
             <instancedMesh ref={bands} args={[bandGeo, bandMat, rows.length * 14]} />
         </group>
@@ -71,8 +70,15 @@ export const BufferStation = ({ timeRef }: { timeRef: TimeBox }) => {
     const capture = useGlowMesh(NM + 1, '#fff7ed', 1.4, 2);
     const seeds = useMemo(() => Array.from({ length: NP }, (_, k) => randoms(1500 + k, 5)), []);
     // ordem em que as carnosinas recebem H⁺ (o herói é o primeiro)
-    const rank = useMemo(() => [0, ...randoms(77, NM - 1).map((v, k) => ({ v, k: k + 1 })).sort((a, b) => a.v - b.v).map(o => o.k)], []);
-    const bindRef = useRef(new Float32Array(NM));
+    // ordem invertida: order[j] = posição da carnosina j na fila (sem `indexOf` por quadro)
+    const order = useMemo(() => {
+        const rank = [0, ...randoms(77, NM - 1).map((v, k) => ({ v, k: k + 1 })).sort((a, b) => a.v - b.v).map(o => o.k)];
+        const inv = new Int32Array(NM);
+        for (let i = 0; i < NM; i++) inv[rank[i]] = i;
+        return inv;
+    }, []);
+    const [bindInit] = useState(() => new Float32Array(NM));
+    const bindRef = useRef(bindInit);
     const nWorld = useMemo(() => Array.from({ length: NM }, () => new THREE.Vector3()), []);
     const free = useMemo(() => new THREE.Vector3(), []);
 
@@ -87,7 +93,7 @@ export const BufferStation = ({ timeRef }: { timeRef: TimeBox }) => {
     useFrame(({ clock }, delta) => {
         if (!g.current) return;
         const vis = stationWeight(timeRef.current.t, I) > 0;
-        g.current.visible = vis;
+        showStation(g.current, vis);
         if (!vis || !body.current || !ring.current || !protons.current) return;
         const t = clock.elapsedTime;
         const pH = useCarnoSim.getState().ph ?? autoPh(performance.now() / 1000);
@@ -105,7 +111,7 @@ export const BufferStation = ({ timeRef }: { timeRef: TimeBox }) => {
             putInstance(body.current, j, x, y, z, s, hero ? 0.2 : q[4] * 3, ry, 0);
             putInstance(ring.current, j, x, y, z, s, hero ? 0.2 : q[4] * 3, ry, 0);
             nWorld[j].copy(RING_N).multiplyScalar(1.25).applyMatrix4(dummy.matrix);
-            const target = rank.indexOf(j) < nBound ? 1 : 0;
+            const target = order[j] < nBound ? 1 : 0;
             bindP[j] += Math.sign(target - bindP[j]) * Math.min(Math.abs(target - bindP[j]), dt * 1.6);
             ring.current.setColorAt(j, tmpColor.copy(BASE).lerp(ACID, bindP[j]));
         }

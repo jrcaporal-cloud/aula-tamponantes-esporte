@@ -3,11 +3,12 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { lerp, smooth } from '../shared/math';
-import { frac, glowMaterial, putInstance, randoms, stationWeight, type TimeBox } from './common';
+import { frac, glowMaterial, putInstance, randoms, showStation, stationWeight, type TimeBox } from './common';
 import { flushGlow, putGlow, tissueMaterial, withRim } from './fx';
 import { STATION, stationX } from './layout';
 import { redCellGeometry, villusGeometry, wobble } from './shapes';
 import { useGlowMesh } from './useGlow';
+import { redCellMaterial } from './tissueShaders';
 import { useStructure } from './useStructure';
 
 /*
@@ -97,7 +98,7 @@ const Capillary = ({ timeRef }: { timeRef: TimeBox }) => {
         transparent: true, opacity: 0.32, side: THREE.DoubleSide, depthWrite: false,
     }), '#fb7185', 2.0, 0.9), []);
     const rbcGeo = useMemo(() => redCellGeometry(18), []);
-    const rbcMat = useMemo(() => new THREE.MeshPhysicalMaterial({ color: '#dc2626', emissive: '#7f1d1d', emissiveIntensity: 0.35, roughness: 0.4, clearcoat: 0.5 }), []);
+    const rbcMat = useMemo(() => redCellMaterial(new THREE.MeshPhysicalMaterial({ color: '#d42424', emissive: '#7f1d1d', emissiveIntensity: 0.35, roughness: 0.4, clearcoat: 0.5 }), 0.8), []);
     const seeds = useMemo(() => Array.from({ length: NRBC }, (_, k) => randoms(140 + k, 3)), []);
     useLayoutEffect(() => { mat.setValues({ emissiveIntensity: lit ? 1.3 : 0.4 }); }, [lit, mat]);
     useFrame(({ clock }) => {
@@ -200,7 +201,7 @@ const LumenMotes = ({ timeRef }: { timeRef: TimeBox }) => {
 
 export const GutStation = ({ timeRef }: { timeRef: TimeBox }) => {
     const g = useRef<THREE.Group>(null);
-    useFrame(() => { if (g.current) g.current.visible = stationWeight(timeRef.current.t, I) > 0; });
+    useFrame(() => { if (g.current) showStation(g.current, stationWeight(timeRef.current.t, I) > 0); });
     return (
         <group ref={g} position={[stationX(I), 0, 0]}>
             <Mucosa />

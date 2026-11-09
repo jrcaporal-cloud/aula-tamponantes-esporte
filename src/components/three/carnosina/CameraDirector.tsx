@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import * as THREE from 'three';
@@ -55,9 +55,12 @@ export const CameraDirector = ({ step, reduced, pin, recenterKey, onSettled, tim
     const gl = useThree(s => s.gl);
     const controls = useThree(s => s.controls) as OrbitControlsImpl | null;
     const path = useMemo(() => buildStepPath(CARNO_STEPS), []);
-    const tween = useRef<Tween>({ active: false, u: 1, offP: new THREE.Vector3(), offT: new THREE.Vector3() });
+    // estado de animação criado uma vez (inicializador preguiçoso), mutado só pelos refs
+    const [tween0] = useState<Tween>(() => ({ active: false, u: 1, offP: new THREE.Vector3(), offT: new THREE.Vector3() }));
+    const [idle0] = useState<Idle>(() => ({ active: false, t0: 0, pos: new THREE.Vector3(), tgt: new THREE.Vector3() }));
+    const tween = useRef(tween0);
     const flight = useRef<Flight>({ active: false, u: 0, path: null, anim: null });
-    const idle = useRef<Idle>({ active: false, t0: 0, pos: new THREE.Vector3(), tgt: new THREE.Vector3() });
+    const idle = useRef(idle0);
     const swell = useRef(0);
     const clock = useThree(s => s.clock);
     const stepRef = useRef(step);
@@ -114,7 +117,8 @@ export const CameraDirector = ({ step, reduced, pin, recenterKey, onSettled, tim
             onUpdate: () => { tw.u = anim.progress(); },
             onComplete: () => { tw.active = false; startIdle(); onSettled(step); },
         });
-        return () => { anim.kill(); };
+        // o tween do gsap é a "assinatura" deste efeito: morre junto, e a transição para de mandar na câmera
+        return () => { anim.kill(); tw.active = false; };
     }, [step, controls, camera, path, reduced, onSettled, timeRef, tp, tt, startIdle]);
 
     // voo: fixar (close-up), soltar ou recentrar (pose da etapa)

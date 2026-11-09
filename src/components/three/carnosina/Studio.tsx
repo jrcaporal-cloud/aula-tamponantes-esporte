@@ -20,8 +20,10 @@ export const Backdrop = () => {
         fragmentShader: `varying vec3 vP; void main(){
             float h = vP.y * 0.5 + 0.5;
             vec3 c = mix(vec3(0.010,0.010,0.028), vec3(0.055,0.038,0.11), smoothstep(0.25, 0.95, h));
-            c += vec3(0.07,0.035,0.14) * pow(max(vP.y, 0.0), 2.0) * 0.6;
-            c += vec3(0.02,0.05,0.07) * pow(max(-vP.y, 0.0), 3.0);
+            float up = max(vP.y, 0.0);
+            float dn = max(-vP.y, 0.0);
+            c += vec3(0.07,0.035,0.14) * (up * up) * 0.6;
+            c += vec3(0.02,0.05,0.07) * (dn * dn * dn);
             gl_FragColor = vec4(c, 1.0);
         }`,
     }), []);
@@ -49,7 +51,7 @@ export const StudioLights = () => (
 );
 
 export const StudioPost = () => (
-    <EffectComposer multisampling={4}>
+    <EffectComposer multisampling={2}>
         <Bloom mipmapBlur luminanceThreshold={0.82} luminanceSmoothing={0.22} intensity={0.75} radius={0.6} />
         <Vignette offset={0.28} darkness={0.62} />
     </EffectComposer>

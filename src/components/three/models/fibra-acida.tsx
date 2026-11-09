@@ -42,7 +42,6 @@ const FibraAcidaModal = ({ onClose }: Modal3DProps) => {
     const ctrlRef = useRef<SimCtrl>({ stage: 0, ...FIBER_STEPS[0].preset, reduced });
     const stepRef = useRef(0);
     const pin = useSelection(s => s.pin);
-    const hovering = useSelection(s => s.hoverId !== null);
     const release = useSelection(s => s.release);
 
     // a simulação lê os controles por quadro, sem re-render
@@ -90,7 +89,6 @@ const FibraAcidaModal = ({ onClose }: Modal3DProps) => {
                     camera={{ position: FIBER_STEPS[0].pose.pos as [number, number, number], fov: 40, near: 0.1, far: 300 }}
                     gl={{ antialias: false, powerPreference: 'high-performance' }}
                     resize={{ offsetSize: true }}
-                    className={`${pin || hovering ? 'cursor-pointer' : 'cursor-grab'} active:cursor-grabbing`}
                 >
                     <Suspense fallback={null}>
                         <FiberScene
@@ -103,7 +101,7 @@ const FibraAcidaModal = ({ onClose }: Modal3DProps) => {
                     type="button"
                     onClick={recenter}
                     aria-label="Recentrar a câmera na pose da etapa"
-                    className="absolute z-[46] top-6 right-6 flex items-center gap-2 pl-3.5 pr-4 h-10 rounded-full text-[14px] font-semibold text-gray-100 hover:text-white bg-black/60 hover:bg-white/15 border border-white/15 backdrop-blur-xl"
+                    className="absolute z-[46] top-6 right-6 flex items-center gap-2 pl-3.5 pr-4 h-10 rounded-full text-[14px] font-semibold text-gray-100 hover:text-white bg-[rgba(4,8,15,0.82)] hover:bg-[rgba(40,46,58,0.9)] border border-white/15"
                 >
                     <LocateFixed size={16} aria-hidden />
                     Recentrar
@@ -141,7 +139,7 @@ const FibraAcidaModal = ({ onClose }: Modal3DProps) => {
             </aside>
 
             <footer className="absolute bottom-6 flex flex-col items-end gap-2 pointer-events-none" style={{ right: PANEL_W + 24, left: 340 }}>
-                <p className="px-3 py-1 rounded-full text-[14px] font-mono tracking-wide text-orange-100 bg-black/55 border border-orange-300/25 backdrop-blur-md" aria-hidden>
+                <p className="px-3 py-1 rounded-full text-[14px] font-mono tracking-wide text-orange-100 bg-[rgba(4,8,15,0.82)] border border-orange-300/25" aria-hidden>
                     <span className="text-orange-300">{step + 1}/{LAST + 1}</span> · {data.short}
                 </p>
                 <Timeline steps={FIBER_STEPS} step={step} accent={ACCENT} onGo={go} />

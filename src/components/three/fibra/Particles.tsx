@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
 import { ICO, LINEAR3, SPHERE, TREFOIL } from './geometry';
+import { noRaycast } from './materials';
 import type { Pool } from './pool';
 import { POOL_SIZES, type Sim } from './sim';
 import type { SimRef } from './types';
@@ -17,10 +18,12 @@ const HALO_VS = `
 attribute float aScale;
 uniform float uSize;
 uniform float uPx;
+uniform float uMaxPx;
 void main() {
     vec4 mv = modelViewMatrix * vec4(position, 1.0);
     gl_Position = projectionMatrix * mv;
-    gl_PointSize = uSize * aScale * uPx / max(-mv.z, 0.1);
+    // teto em pixels: de perto, o halo aditivo não vira um disco enorme somando no Bloom
+    gl_PointSize = min(uSize * aScale * uPx / max(-mv.z, 0.1), uMaxPx);
     if (aScale < 0.02) gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
 }`;
 const HALO_FS = `
@@ -35,6 +38,11 @@ void main() {
 /** Amostras do rastro e intervalo entre elas (s): ~0,33 s de caminho visível. */
 const TRAIL_K = 11;
 const TRAIL_DT = 1 / 33;
+/** Teto do ponto (px CSS; multiplicado pelo dpr) e tamanho relativo do rastro. */
+const MAX_POINT_CSS_PX = 48;
+const TRAIL_SIZE = 4.8;
+/** Afinamento do rastro por amostra (a = 0 é a mais recente), calculado uma vez. */
+const TRAIL_TAPER = Float32Array.from({ length: TRAIL_K }, (_, a) => (1 - a / TRAIL_K) ** 1.3);
 
 type PoolKey = keyof typeof POOL_SIZES;
 
@@ -75,8 +83,15 @@ interface Trail {
     lastAge: Float32Array;
 }
 
+const uploadRange = (attr: THREE.BufferAttribute, count: number) => {
+    attr.clearUpdateRanges();
+    if (count > 0) attr.addUpdateRange(0, count);
+    attr.needsUpdate = true;
+};
+
 /**
- * Empurra uma amostra no histórico a cada TRAIL_DT e escreve o rastro: a amostra mais velha é a menor.
+ * Empurra uma amostra no histórico a cada TRAIL_DT e escreve o rastro só das partículas vivas, em
+ * sequência no começo do buffer (o resto fica fora do drawRange e não sobe para a GPU).
  * Partícula que renasceu (idade voltou para trás) tem o histórico zerado na posição nova, sem risco
  * atravessando a cena.
  */
@@ -92,7 +107,9 @@ const writeTrail = (pool: Pool, tr: Trail, dt: number) => {
     const sc = tr.geo.getAttribute('aScale') as THREE.BufferAttribute;
     const out = pos.array as Float32Array;
     const outS = sc.array as Float32Array;
+    let w = 0;
     for (let i = 0; i < n; i++) {
+        if (!pool.alive[i]) continue;
         const o = i * 3;
         const reborn = pool.age[i] < tr.lastAge[i];
         tr.lastAge[i] = pool.age[i];
@@ -114,15 +131,18 @@ const writeTrail = (pool: Pool, tr: Trail, dt: number) => {
             // a = 0 é a amostra mais recente
             const k = (tr.head.k - a + TRAIL_K) % TRAIL_K;
             const src = base + k * 3;
-            const dst = (i * TRAIL_K + a) * 3;
+            const dst = (w * TRAIL_K + a) * 3;
             out[dst] = tr.hist[src];
             out[dst + 1] = tr.hist[src + 1];
             out[dst + 2] = tr.hist[src + 2];
-            outS[i * TRAIL_K + a] = s > 0 ? s * (1 - a / TRAIL_K) ** 1.3 : 0;
+            outS[w * TRAIL_K + a] = s * TRAIL_TAPER[a];
         }
+        w++;
     }
-    pos.needsUpdate = true;
-    sc.needsUpdate = true;
+    const pts = w * TRAIL_K;
+    tr.geo.setDrawRange(0, pts);
+    uploadRange(pos, pts * 3);
+    uploadRange(sc, pts);
 };
 
 const SpeciesMesh = ({ sp, simRef }: { sp: Species; simRef: SimRef }) => {
@@ -137,7 +157,7 @@ const SpeciesMesh = ({ sp, simRef }: { sp: Species; simRef: SimRef }) => {
         const mat = new THREE.ShaderMaterial({
             vertexShader: HALO_VS,
             fragmentShader: HALO_FS,
-            uniforms: { uSize: { value: sp.size * 9 * sp.halo }, uPx: { value: 400 }, uColor: { value: new THREE.Color(sp.color) }, uOpacity: { value: 0.55 } },
+            uniforms: { uSize: { value: sp.size * 9 * sp.halo }, uPx: { value: 400 }, uMaxPx: { value: MAX_POINT_CSS_PX }, uColor: { value: new THREE.Color(sp.color) }, uOpacity: { value: 0.55 } },
             transparent: true,
             depthWrite: false,
             blending: THREE.AdditiveBlending,
@@ -155,7 +175,7 @@ const SpeciesMesh = ({ sp, simRef }: { sp: Species; simRef: SimRef }) => {
         const mat = new THREE.ShaderMaterial({
             vertexShader: HALO_VS,
             fragmentShader: HALO_FS,
-            uniforms: { uSize: { value: sp.size * 5.5 }, uPx: { value: 400 }, uColor: { value: new THREE.Color(sp.color) }, uOpacity: { value: 0.5 * sp.trail } },
+            uniforms: { uSize: { value: sp.size * TRAIL_SIZE }, uPx: { value: 400 }, uMaxPx: { value: MAX_POINT_CSS_PX }, uColor: { value: new THREE.Color(sp.color) }, uOpacity: { value: 0.5 * sp.trail } },
             transparent: true,
             depthWrite: false,
             blending: THREE.AdditiveBlending,
@@ -171,42 +191,59 @@ const SpeciesMesh = ({ sp, simRef }: { sp: Species; simRef: SimRef }) => {
         if (!m || !pts) return;
         const pool = poolOf(simRef.current, sp.key);
         const t = clock.elapsedTime;
+        const pos = pts.geometry.getAttribute('position') as THREE.BufferAttribute;
+        const sc = pts.geometry.getAttribute('aScale') as THREE.BufferAttribute;
+        const hp = pos.array as Float32Array;
+        const hs = sc.array as Float32Array;
+        // só as vivas, em sequência: núcleo (count) e halo (drawRange) desenham e sobem só isso
+        let live = 0;
         for (let i = 0; i < pool.n; i++) {
-            let s = pool.scale[i] * sp.size;
-            if (s <= 0) { m.setMatrixAt(i, M.makeScale(0, 0, 0)); continue; }
+            const base = pool.scale[i];
+            if (!pool.alive[i] || base <= 0) continue;
+            let s = base * sp.size;
             if (sp.burst) s *= 1 + 1.6 * Math.exp(-pool.age[i] * 5);
             const o = i * 3;
             P.set(pool.pos[o], pool.pos[o + 1], pool.pos[o + 2]);
             if (sp.spin) {
                 const ph = pool.phase[i];
                 E.set(t * 0.9 + ph, t * 0.7 + ph * 2, ph);
-                m.setMatrixAt(i, M.compose(P, Q.setFromEuler(E), S.set(s, s, s)));
+                m.setMatrixAt(live, M.compose(P, Q.setFromEuler(E), S.set(s, s, s)));
             } else {
-                m.setMatrixAt(i, M.makeScale(s, s, s).setPosition(P));
+                m.setMatrixAt(live, M.makeScale(s, s, s).setPosition(P));
             }
+            const w = live * 3;
+            hp[w] = pool.pos[o];
+            hp[w + 1] = pool.pos[o + 1];
+            hp[w + 2] = pool.pos[o + 2];
+            hs[live] = base;
+            live++;
         }
-        m.instanceMatrix.needsUpdate = true;
-        const pos = pts.geometry.getAttribute('position') as THREE.BufferAttribute;
-        const sc = pts.geometry.getAttribute('aScale') as THREE.BufferAttribute;
-        (pos.array as Float32Array).set(pool.pos);
-        (sc.array as Float32Array).set(pool.scale);
-        pos.needsUpdate = true;
-        sc.needsUpdate = true;
+        m.count = live;
+        uploadRange(m.instanceMatrix, live * 16);
+        pts.geometry.setDrawRange(0, live);
+        uploadRange(pos, live * 3);
+        uploadRange(sc, live);
+        const dpr = gl.getPixelRatio();
         const fov = camera instanceof THREE.PerspectiveCamera ? camera.fov : 40;
-        const px = (size.height * gl.getPixelRatio()) / (2 * Math.tan((fov * Math.PI) / 360));
-        (pts.material as THREE.ShaderMaterial).uniforms.uPx.value = px;
+        const px = (size.height * dpr) / (2 * Math.tan((fov * Math.PI) / 360));
+        const hu = (pts.material as THREE.ShaderMaterial).uniforms;
+        hu.uPx.value = px;
+        hu.uMaxPx.value = MAX_POINT_CSS_PX * dpr;
         const tm = trailPts.current?.material as THREE.ShaderMaterial | undefined;
-        if (tm) tm.uniforms.uPx.value = px;
-        writeTrail(pool, trail, dt);
+        if (tm) {
+            tm.uniforms.uPx.value = px;
+            tm.uniforms.uMaxPx.value = MAX_POINT_CSS_PX * dpr;
+            writeTrail(pool, trail, dt);
+        }
     });
 
     return (
         <>
-            <instancedMesh ref={mesh} args={[sp.geo, undefined, n]} frustumCulled={false} raycast={() => undefined}>
+            <instancedMesh ref={mesh} args={[sp.geo, undefined, n]} frustumCulled={false} raycast={noRaycast}>
                 <meshStandardMaterial color={sp.color} emissive={sp.color} emissiveIntensity={0.85} roughness={0.25} metalness={0.05} />
             </instancedMesh>
-            <points ref={points} geometry={halo.geo} material={halo.mat} frustumCulled={false} raycast={() => undefined} />
-            {sp.trail > 0 && <points ref={trailPts} geometry={trail.geo} material={trail.mat} frustumCulled={false} raycast={() => undefined} />}
+            <points ref={points} geometry={halo.geo} material={halo.mat} frustumCulled={false} raycast={noRaycast} />
+            {sp.trail > 0 && <points ref={trailPts} geometry={trail.geo} material={trail.mat} frustumCulled={false} raycast={noRaycast} />}
         </>
     );
 };

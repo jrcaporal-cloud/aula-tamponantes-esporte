@@ -86,5 +86,14 @@ export const firing = (h: number, mode: Release) => Math.min(Math.max((plasma(h,
 /** Meia-vida plasmática (min) — DEJAGER2023. */
 export const HALF_LIFE = { carnosina: 1.2, balenina: 34.9 } as const;
 
+/** Um formatador por número de casas (o HUD formata a cada quadro; criar o Intl a cada chamada custa caro). */
+const BR_FMT = new Map<number, Intl.NumberFormat>();
 /** Formatação brasileira com casas fixas. */
-export const br = (x: number, d = 0) => x.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+export const br = (x: number, d = 0) => {
+    let f = BR_FMT.get(d);
+    if (!f) {
+        f = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+        BR_FMT.set(d, f);
+    }
+    return f.format(x);
+};

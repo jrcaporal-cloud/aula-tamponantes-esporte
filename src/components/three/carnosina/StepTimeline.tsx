@@ -15,7 +15,7 @@ interface StepTimelineProps {
 export const StepTimeline = ({ steps, step, playing, accent, onGo, onTogglePlay }: StepTimelineProps) => {
     const last = steps.length - 1;
     return (
-        <div className="pointer-events-auto flex items-center gap-2 px-3 py-2.5 rounded-full bg-black/65 border border-white/10 backdrop-blur-xl">
+        <div className="pointer-events-auto flex items-center gap-2 px-3 py-2.5 rounded-full bg-black/85 border border-white/10">
             <button type="button" aria-label="Etapa anterior" onClick={() => onGo(step - 1)} disabled={step === 0}
                 className="w-9 h-9 flex items-center justify-center rounded-full text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-25">
                 <ChevronLeft size={18} />

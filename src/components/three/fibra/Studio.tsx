@@ -5,7 +5,7 @@ import { ToneMappingMode } from 'postprocessing';
 /*
  * Luz de estúdio e acabamento da imagem. O ambiente de reflexo é gerado na hora com painéis de luz
  * (Lightformer), sem arquivo HDR: a aula roda offline. Luz principal de cima e da frente, preenchimento
- * frio da esquerda, luz de recorte por trás (contorno da fibra e do capilar) e um brilho quente dentro
+ * frio da esquerda e lilás de baixo (painéis do ambiente), luz de recorte por trás (contorno da fibra e do capilar) e um brilho quente dentro
  * do corte. Pós-processamento leve: bloom só no que já brilha, tom neutro (não lava as cores da aula) e
  * vinheta suave.
  */
@@ -14,7 +14,9 @@ export const StudioLights = () => (
     <>
         <Environment resolution={128} frames={1}>
             <Lightformer form="rect" intensity={2.4} color="#ffffff" position={[0, 9, 9]} rotation-x={-Math.PI / 4} scale={[16, 5, 1]} />
-            <Lightformer form="rect" intensity={1.1} color="#A5B4FC" position={[-12, 2, 4]} rotation-y={Math.PI / 2} scale={[10, 6, 1]} />
+            {/* preenchimento frio da esquerda e lilás de baixo/trás: antes eram luzes direcionais, aqui saem de graça (ambiente gerado 1 vez) */}
+            <Lightformer form="rect" intensity={1.9} color="#A5B4FC" position={[-12, 2, 5]} rotation-y={Math.PI / 2} scale={[12, 7, 1]} />
+            <Lightformer form="rect" intensity={1.4} color="#F5D0FE" position={[-6, -7, -10]} rotation-x={Math.PI / 4} rotation-y={Math.PI * 0.2} scale={[12, 5, 1]} />
             <Lightformer form="rect" intensity={1.6} color="#E0F2FE" position={[6, 5, -12]} rotation-y={Math.PI} scale={[18, 3, 1]} />
             <Lightformer form="ring" intensity={1.2} color="#FDE2E4" position={[10, 0, 6]} rotation-y={-Math.PI / 2} scale={3} />
         </Environment>
@@ -22,11 +24,8 @@ export const StudioLights = () => (
         <hemisphereLight args={['#e0e7ff', '#0b1020', 0.45]} />
         {/* principal */}
         <directionalLight position={[5, 14, 16]} intensity={2.1} color="#ffffff" />
-        {/* preenchimento frio */}
-        <directionalLight position={[-14, 3, 7]} intensity={0.75} color="#a5b4fc" />
         {/* recorte por trás: desenha o contorno */}
         <directionalLight position={[2, 9, -14]} intensity={2.4} color="#dbeafe" />
-        <directionalLight position={[-6, -6, -10]} intensity={0.9} color="#f5d0fe" />
         {/* brilho quente dentro da fatia aberta */}
         <pointLight position={[0, 0.8, 2.4]} intensity={7} distance={9} decay={1.6} color="#fde2e4" />
     </>

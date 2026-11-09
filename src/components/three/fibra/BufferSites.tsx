@@ -35,6 +35,8 @@ const SiteKind = ({ kind, simRef }: { kind: BufferKind; simRef: SimRef }) => {
     const spec = SPEC[kind];
     const sites = BUFFER_SITES[kind];
     const base = useMemo(() => new THREE.Color(spec.color), [spec]);
+    // brilho de captura já escrito em cada instância: a cor só sobe para a GPU quando muda
+    const shownRef = useRef<Float32Array | null>(null);
 
     useLayoutEffect(() => {
         const m = mesh.current;
@@ -48,6 +50,8 @@ const SiteKind = ({ kind, simRef }: { kind: BufferKind; simRef: SimRef }) => {
         if (!m) return;
         const sim = simRef.current;
         const ba = sim.meter.baLevel;
+        let recolor = false;
+        const shown = (shownRef.current ??= new Float32Array(sites.length));
         for (let i = 0; i < sites.length; i++) {
             const o = sites[i];
             const hit = Math.exp(-(sim.clock - sim.siteHit[SITE_OFFSET[kind] + i]) * 3.2);
@@ -56,10 +60,15 @@ const SiteKind = ({ kind, simRef }: { kind: BufferKind; simRef: SimRef }) => {
             const s = spec.size * o.s * show * (1 + 0.55 * hit) * (lit ? 1.25 : 1);
             E.set(o.rot + clock.elapsedTime * 0.3, o.rot * 2, 0);
             m.setMatrixAt(i, M.compose(P.set(o.p[0], o.p[1], o.p[2]), Q.setFromEuler(E), S.set(s, s, s)));
-            m.setColorAt(i, COL.copy(base).lerp(WHITE, 0.65 * hit));
+            const glow = hit > 0.003 ? hit : 0;
+            if (glow !== shown[i]) {
+                shown[i] = glow;
+                m.setColorAt(i, COL.copy(base).lerp(WHITE, 0.65 * glow));
+                recolor = true;
+            }
         }
         m.instanceMatrix.needsUpdate = true;
-        if (m.instanceColor) m.instanceColor.needsUpdate = true;
+        if (recolor && m.instanceColor) m.instanceColor.needsUpdate = true;
     });
 
     return (

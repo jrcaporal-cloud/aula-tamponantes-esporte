@@ -9,9 +9,11 @@ import {
 import type { StructureId } from './content';
 import { COL, cutFaceMaterial, dark, fresnelMaterial, rimMaterial, tissueMaterial, withPulse, type PulseUniforms } from './materials';
 import { FiberDetails } from './FiberDetails';
+import { Plasma } from './Plasma';
 import { useStructure } from './selection';
+import { withMucosa, type MucosaKind, type MucosaUniforms } from './shaders';
 import { SYS, type JourneyStateRef } from './state';
-import { endotheliumTexture, rugaeTexture, striationTexture, villiTexture } from './textures';
+import { endotheliumTexture, striationTexture } from './textures';
 
 /*
  * Órgãos em corte, como peça anatômica seccionada: a metade de trás mostra a mucosa por dentro
@@ -26,9 +28,9 @@ const RISK = new THREE.Color(C.risk);
 const TINT = new THREE.Color();
 const WHITE = new THREE.Color(1, 1, 1);
 
-type TextureKind = 'rugae' | 'villi' | 'striation' | 'endothelium';
-const makeTexture = (k: TextureKind): THREE.Texture =>
-    k === 'rugae' ? rugaeTexture() : k === 'villi' ? villiTexture() : k === 'striation' ? striationTexture() : endotheliumTexture();
+/** Relevo: textura de altura (vaso, fibra) ou mucosa procedural no shader (estômago, intestino). */
+type TextureKind = 'striation' | 'endothelium';
+const makeTexture = (k: TextureKind): THREE.Texture => (k === 'striation' ? striationTexture() : endotheliumTexture());
 
 interface WallLook {
     base: THREE.Color;
@@ -36,7 +38,8 @@ interface WallLook {
     sheen: string;
     rim: string;
     layers: readonly WallLayer[];
-    texture: TextureKind;
+    /** Relevo: textura de altura ou mucosa procedural (e se a parede faz peristalse). */
+    relief: { texture: TextureKind } | { mucosa: MucosaKind; peristalsis?: boolean };
     bumpScale: number;
     shell: number;
     clearcoat?: number;
@@ -73,12 +76,15 @@ const CutOrgan = ({ id, organ, look, inset, tubular, radial, sys, stateRef, dist
         };
     }, [organ, tubular, radial, inset, look.layers, pulse]);
     const mats = useMemo(() => {
-        const bump = makeTexture(look.texture);
-        const wall = tissueMaterial({
+        const { relief } = look;
+        const bump = 'texture' in relief ? makeTexture(relief.texture) : undefined;
+        const tissue = tissueMaterial({
             color: look.base, emissive: look.emissive, emissiveIntensity: 0.1, sheen: look.sheen,
             bump, bumpScale: look.bumpScale, clearcoat: look.clearcoat,
         });
+        const wall = 'mucosa' in relief ? withMucosa(tissue, relief.mucosa, look.bumpScale, relief.peristalsis ?? false) : tissue;
         return {
+            emissive: new THREE.Color(look.emissive),
             bump,
             wall: pulse ? withPulse(wall, pulse.total, C.baseSoft) : wall,
             face: cutFaceMaterial(),
@@ -94,7 +100,7 @@ const CutOrgan = ({ id, organ, look, inset, tubular, radial, sys, stateRef, dist
 
     useEffect(() => () => {
         Object.values(geo).forEach(g => g.dispose());
-        Object.values(mats).forEach(m => m.dispose());
+        [mats.bump, mats.wall, mats.face, mats.shell, mats.rim].forEach(m => m?.dispose());
     }, [geo, mats]);
 
     // materiais mexidos pela malha (ref), não pelo valor memorizado
@@ -108,7 +114,7 @@ const CutOrgan = ({ id, organ, look, inset, tubular, radial, sys, stateRef, dist
         const focus = 0.2 + 0.8 * f.w[sys];
         const v = distress ? f.gasLevel : 0;
         const pink = Math.min(v * 1.1, 1);
-        TINT.set(look.emissive);
+        TINT.copy(mats.emissive);
         if (distress) TINT.lerp(RISK, pink);
         wall.emissive.copy(TINT);
         wall.emissiveIntensity = ((lit ? look.glow + 0.32 : look.glow) + v * 0.32) * focus;
@@ -126,13 +132,16 @@ const CutOrgan = ({ id, organ, look, inset, tubular, radial, sys, stateRef, dist
             pu.uTime.value = clock.elapsedTime;
             pu.uK.value = 0.9 * focus;
         }
+        const mu = wall.userData.mucosa as MucosaUniforms | undefined;
+        if (mu) mu.uTime.value = clock.elapsedTime;
     });
 
+    // o ponteiro testa só a casca (tubo inteiro em baixa resolução), não a parede detalhada nem o corte
     return (
         <group>
-            <mesh ref={wallRef} geometry={geo.wall} material={mats.wall} {...bind} />
-            <mesh ref={faceRef} geometry={geo.faceA} material={mats.face} {...bind} />
-            <mesh geometry={geo.faceB} material={mats.face} {...bind} />
+            <mesh ref={wallRef} geometry={geo.wall} material={mats.wall} />
+            <mesh ref={faceRef} geometry={geo.faceA} material={mats.face} />
+            <mesh geometry={geo.faceB} material={mats.face} />
             <mesh ref={shellRef} geometry={geo.shell} material={mats.shell} {...bind} />
             <mesh ref={rimRef} geometry={geo.rimA} material={mats.rim} />
             <mesh geometry={geo.rimB} material={mats.rim} />
@@ -152,10 +161,11 @@ const GI_LAYERS: readonly WallLayer[] = [
     { at: 0.9, color: slate(0.26) },
     { at: 1, color: slate(0.85) },      // serosa
 ];
-const GI: WallLook = { base: COL.tissue, emissive: C.co2, sheen: '#cbd5e1', rim: C.co2, layers: GI_LAYERS, texture: 'villi', bumpScale: 1.6, shell: 0.42, glow: 0.1 };
-const STOMACH_LOOK: WallLook = { ...GI, texture: 'rugae', bumpScale: 2.2, shell: 0.5 };
+const GI: WallLook = { base: COL.tissue, emissive: C.co2, sheen: '#cbd5e1', rim: C.co2, layers: GI_LAYERS, relief: { mucosa: 'rugae' }, bumpScale: 1.6, shell: 0.42, glow: 0.1 };
+const STOMACH_LOOK: WallLook = { ...GI, bumpScale: 2.2, shell: 0.5 };
+const GUT_LOOK: WallLook = { ...GI, relief: { mucosa: 'villi', peristalsis: true }, bumpScale: 2.4 };
 const VESSEL_LOOK: WallLook = {
-    base: COL.vessel, emissive: C.baseDeep, sheen: C.baseSoft, rim: C.base, texture: 'endothelium', bumpScale: 0.5, shell: 0.45, clearcoat: 0.9, glow: 0.42,
+    base: COL.vessel, emissive: C.baseDeep, sheen: C.baseSoft, rim: C.base, relief: { texture: 'endothelium' }, bumpScale: 0.5, shell: 0.45, clearcoat: 0.9, glow: 0.42,
     layers: [
         { at: 0, color: dark(C.baseSoft, 0.9) },   // íntima
         { at: 0.18, color: dark(C.base, 0.55) },
@@ -166,7 +176,7 @@ const VESSEL_LOOK: WallLook = {
     ],
 };
 const FIBER_LOOK: WallLook = {
-    base: COL.fiber, emissive: C.acidDeep, sheen: C.acidSoft, rim: C.acid, texture: 'striation', bumpScale: 1.4, shell: 0.4, glow: 0.16,
+    base: COL.fiber, emissive: C.acidDeep, sheen: C.acidSoft, rim: C.acid, relief: { texture: 'striation' }, bumpScale: 1.4, shell: 0.4, glow: 0.16,
     layers: [{ at: 0, color: dark(C.acidSoft, 0.7) }, { at: 0.6, color: dark(C.acid, 0.6) }, { at: 1, color: dark(C.acidSoft, 0.9) }],
 };
 
@@ -228,6 +238,7 @@ const VESSEL_INSET = flat(0.84);
 
 const VesselParts = ({ stateRef }: { stateRef: JourneyStateRef }) => (
     <group>
+        <Plasma stateRef={stateRef} />
         <CutOrgan id="veia" organ={PORTAL} look={VESSEL_LOOK} inset={VESSEL_INSET} tubular={140} radial={22} sys={SYS.blood} stateRef={stateRef} pulse={PORTAL_PULSE} />
         <CutOrgan id="capilar" organ={CAPILLARY} look={VESSEL_LOOK} inset={VESSEL_INSET} tubular={90} radial={22} sys={SYS.blood} stateRef={stateRef} pulse={CAPILLARY_PULSE} />
     </group>
@@ -240,7 +251,7 @@ export const Organs = ({ stateRef }: { stateRef: JourneyStateRef }) => (
     <group>
         <CutOrgan id="estomago" organ={ESOPHAGUS} look={GI} inset={ESO_INSET} tubular={28} radial={24} sys={SYS.stomach} stateRef={stateRef} />
         <Stomach stateRef={stateRef} />
-        <CutOrgan id="intestino" organ={GUT} look={GI} inset={plicae} tubular={620} radial={26} sys={SYS.gut} stateRef={stateRef} />
+        <CutOrgan id="intestino" organ={GUT} look={GUT_LOOK} inset={plicae} tubular={620} radial={26} sys={SYS.gut} stateRef={stateRef} />
         <VesselParts stateRef={stateRef} />
         <CutOrgan id="fibra" organ={FIBER_ORGAN} look={FIBER_LOOK} inset={FIBER_INSET} tubular={24} radial={48} sys={SYS.muscle} stateRef={stateRef} />
         <FiberDetails stateRef={stateRef} />

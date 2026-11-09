@@ -15,18 +15,63 @@ export type Rand = () => number;
 const nudge = (p: P3, r: Rand, a: number): P3 => [p[0] + (r() * 2 - 1) * a, p[1] + (r() * 2 - 1) * a, p[2] + (r() * 2 - 1) * a];
 const clampX = (x: number) => Math.max(-FIBER_HALF + 0.8, Math.min(FIBER_HALF - 0.8, x));
 
+/*
+ * Rascunhos reaproveitados pelas rotas mais frequentes: spawn() copia pontos e durações para os arrays
+ * tipados do reservatório, então os rascunhos podem ser sobrescritos na rota seguinte.
+ */
+type V3 = [number, number, number];
+const v3 = (): V3 => [0, 0, 0];
+const nudgeInto = (out: V3, p: P3, r: Rand, a: number): V3 => {
+    out[0] = p[0] + (r() * 2 - 1) * a;
+    out[1] = p[1] + (r() * 2 - 1) * a;
+    out[2] = p[2] + (r() * 2 - 1) * a;
+    return out;
+};
+const FREE_A = v3();
+const FREE_B = v3();
+const FREE_PTS: P3[] = [FREE_A, FREE_A, FREE_B];
+const FREE_DUR = [0, 0];
+const FREE_JIT = [0.22, 0.22] as const;
+const BUF_S = v3();
+const BUF_M = v3();
+const BUF_PTS: P3[] = [BUF_S, BUF_M, BUF_S, BUF_S];
+const BUF_DUR = [0, 0.8, 2.4];
+const BUF_JIT = [0.22, 0.06, 0.02] as const;
+const TAIL_END = v3();
+const TAIL_PTS: P3[] = [TAIL_END, TAIL_END];
+const TAIL_DUR = [0];
+const CO2_JIT = [0.06] as const;
+const HB_DUR = [1.7] as const;
+const HB_JIT = [0.02] as const;
+const HOLD_NOW = { hold: 0 } as const;
+const BUF_OPTS = { hold: 2, site: 0 };
+
 /** Nasce no sarcoplasma e fica vagando até sumir (H⁺ livre ou lactato que não saiu). */
 export const freeRoute = (pool: Pool, r: Rand): void => {
     const s = sarcoPoint(r);
-    spawn(pool, [s, nudge(s, r, 0.7), nudge(s, r, 0.9)], [2 + r(), 2.2 + r()], [0.22, 0.22]);
+    FREE_PTS[0] = s;
+    nudgeInto(FREE_A, s, r, 0.7);
+    FREE_PTS[1] = FREE_A;
+    nudgeInto(FREE_B, s, r, 0.9);
+    FREE_PTS[2] = FREE_B;
+    FREE_DUR[0] = 2 + r();
+    FREE_DUR[1] = 2.2 + r();
+    spawn(pool, FREE_PTS, FREE_DUR, FREE_JIT);
 };
 
 /** Capturado por um tampão: vai ao sítio e fica preso, encolhendo. */
 export const bufferRoute = (sim: Sim, site: P3, siteIndex: number): void => {
     const r = sim.rand;
-    const s = nudge(site, r, 1.6);
-    const mid = nudge([(s[0] + site[0]) / 2, (s[1] + site[1]) / 2, (s[2] + site[2]) / 2], r, 0.3);
-    spawn(sim.h, [s, mid, site, site], [0.9 + r() * 0.6, 0.8, 2.4], [0.22, 0.06, 0.02], { hold: 2, site: siteIndex });
+    const s = nudgeInto(BUF_S, site, r, 1.6);
+    BUF_M[0] = (s[0] + site[0]) / 2;
+    BUF_M[1] = (s[1] + site[1]) / 2;
+    BUF_M[2] = (s[2] + site[2]) / 2;
+    nudgeInto(BUF_M, BUF_M, r, 0.3);
+    BUF_PTS[2] = site;
+    BUF_PTS[3] = site;
+    BUF_DUR[0] = 0.9 + r() * 0.6;
+    BUF_OPTS.site = siteIndex;
+    spawn(sim.h, BUF_PTS, BUF_DUR, BUF_JIT, BUF_OPTS);
 };
 
 const startNear = (x: number, r: Rand): P3 => {
@@ -97,12 +142,19 @@ export const nbcRoute = (sim: Sim, bic: boolean): void => {
 
 /** CO₂ formado no plasma: segue a corrente até a saída do capilar (rumo ao pulmão). */
 export const co2Route = (sim: Sim, p: P3): void => {
-    const end: P3 = [CAP_HALF, p[1] + (sim.rand() - 0.5) * 0.3, p[2]];
-    spawn(sim.co2, [p, end], [Math.max((CAP_HALF - p[0]) / FLOW_SPEED, 0.4)], [0.06]);
+    TAIL_END[0] = CAP_HALF;
+    TAIL_END[1] = p[1] + (sim.rand() - 0.5) * 0.3;
+    TAIL_END[2] = p[2];
+    TAIL_PTS[0] = p;
+    TAIL_DUR[0] = Math.max((CAP_HALF - p[0]) / FLOW_SPEED, 0.4);
+    spawn(sim.co2, TAIL_PTS, TAIL_DUR, CO2_JIT);
 };
 
 /** H⁺ que a hemoglobina pega: viaja com a hemácia, encolhendo. */
 export const hbRoute = (sim: Sim, p: P3): void => {
-    const end: P3 = [Math.min(p[0] + 2.6, CAP_HALF), p[1], p[2]];
-    spawn(sim.h, [p, end], [1.7], [0.02], { hold: 0 });
+    TAIL_END[0] = Math.min(p[0] + 2.6, CAP_HALF);
+    TAIL_END[1] = p[1];
+    TAIL_END[2] = p[2];
+    TAIL_PTS[0] = p;
+    spawn(sim.h, TAIL_PTS, HB_DUR, HB_JIT, HOLD_NOW);
 };

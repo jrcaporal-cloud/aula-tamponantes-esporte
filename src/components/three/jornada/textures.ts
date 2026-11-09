@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import { rng } from '../shared/math';
 
 /*
- * Texturas de relevo procedurais (mapas de altura em tons de cinza, sem arquivos): vilosidades do
- * intestino, rugas finas da mucosa gástrica, estrias da fibra e o endotélio liso do vaso.
+ * Texturas de relevo procedurais (mapas de altura em tons de cinza, sem arquivos): estrias da fibra
+ * e o endotélio liso do vaso. A mucosa do estômago e do intestino é procedural no shader (shaders.ts).
  * Geradas uma vez por chamada; quem cria descarta. Repetição em unidades de mundo (uv do tubo).
  */
 
@@ -52,39 +52,6 @@ const valueNoise = (cells: number, seed: number): Height => {
         const b = at(i, j + 1) + (at(i + 1, j + 1) - at(i, j + 1)) * su;
         return a + (b - a) * sv;
     };
-};
-
-/** Vilosidades: domos arredondados em grade com jitter. */
-export const villiTexture = (): THREE.DataTexture => {
-    const n = valueNoise(8, 91);
-    const cells = 10;
-    const r = rng(17);
-    const jit = Float32Array.from({ length: cells * cells * 2 }, () => (r() - 0.5) * 0.5);
-    return toTexture((x, y) => {
-        const i = Math.floor(x * cells);
-        const j = Math.floor(y * cells);
-        let best = 9;
-        for (let dj = -1; dj <= 1; dj++) {
-            for (let di = -1; di <= 1; di++) {
-                const ci = (i + di + cells) % cells;
-                const cj = (j + dj + cells) % cells;
-                const cx = (i + di + 0.5 + jit[(cj * cells + ci) * 2]) / cells;
-                const cy = (j + dj + 0.5 + jit[(cj * cells + ci) * 2 + 1]) / cells;
-                best = Math.min(best, Math.hypot(x - cx, y - cy) * cells);
-            }
-        }
-        return Math.max(1 - best * 1.25, 0) ** 0.6 * 0.85 + n(x, y) * 0.15;
-    }, [1 / 0.32, 1 / 0.32]);
-};
-
-/** Mucosa gástrica: rugas finas e sinuosas sobre ruído. */
-export const rugaeTexture = (): THREE.DataTexture => {
-    const n = valueNoise(6, 7);
-    const m = valueNoise(16, 23);
-    return toTexture((x, y) => {
-        const wave = 0.5 + 0.5 * Math.sin((y * 6 + n(x, y) * 1.6) * Math.PI * 2);
-        return wave ** 2 * 0.65 + m(x, y) * 0.35;
-    }, [1 / 2.4, 1 / 2.4]);
 };
 
 /** Estrias da fibra: bandas A/I transversais, com uma linha Z fina no meio da banda clara. */

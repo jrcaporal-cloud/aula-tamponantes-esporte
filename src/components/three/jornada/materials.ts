@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { C } from '../../sims/kit/palette';
+import { withCutGrain } from './shaders';
 
 /*
  * Materiais da cena. Os tons de tecido derivam da paleta da aula (escurecidos): ardósia = tecido
@@ -56,16 +57,40 @@ export const glowMaterial = (hex: string, boost = 1.35, opacity = 1): THREE.Mesh
 /** Geometrias de partícula compartilhadas. */
 export const SPHERE_LO = new THREE.IcosahedronGeometry(1, 1);
 export const SPHERE_MID = new THREE.IcosahedronGeometry(1, 2);
-export const HIDDEN = new THREE.Matrix4().makeScale(0, 0, 0);
-
 const M = new THREE.Matrix4();
 const Q = new THREE.Quaternion();
 const S = new THREE.Vector3();
+const MIN_S = 1e-4;
 
-/** Escreve a instância i numa posição com escala uniforme (0 esconde). */
-export const put = (m: THREE.InstancedMesh, i: number, p: THREE.Vector3, s: number): void => {
-    if (s <= 1e-4) { m.setMatrixAt(i, HIDDEN); return; }
+/*
+ * Escrita compacta das malhas instanciadas: cada quadro escreve só as instâncias visíveis, uma atrás
+ * da outra (`push*` devolve o próximo índice livre), e `commit` desenha e sobe só essas. Sistema
+ * apagado: `sleep` esconde a malha uma vez e o quadro sai sem tocar nas instâncias.
+ */
+
+/** Esconde a malha (idempotente): nada a desenhar nem a subir. */
+export const sleep = (m: THREE.InstancedMesh): void => {
+    if (!m.visible) return;
+    m.visible = false;
+    m.count = 0;
+};
+
+/** Desenha só as `n` primeiras instâncias e sobe só o trecho escrito. */
+export const commit = (m: THREE.InstancedMesh, n: number): void => {
+    m.count = n;
+    m.visible = n > 0;
+    if (n === 0) return;
+    const a = m.instanceMatrix;
+    a.clearUpdateRanges();
+    a.addUpdateRange(0, n * 16);
+    a.needsUpdate = true;
+};
+
+/** Instância com escala uniforme em `i` (se visível); devolve o próximo índice livre. */
+export const push = (m: THREE.InstancedMesh, i: number, p: THREE.Vector3, s: number): number => {
+    if (s <= MIN_S) return i;
     m.setMatrixAt(i, M.compose(p, Q, S.setScalar(s)));
+    return i + 1;
 };
 
 /* ── Materiais de "museu": tecido com veludo (sheen) e película úmida (clearcoat) ── */
@@ -100,16 +125,16 @@ export const tissueMaterial = (s: TissueSpec): THREE.MeshPhysicalMaterial =>
         side: THREE.DoubleSide,
     });
 
-/** Face do corte: camadas da parede em cores de vértice, com um leve verniz de peça seccionada. */
+/** Face do corte: camadas da parede em cores de vértice, com um leve verniz de peça seccionada e grão fibroso. */
 export const cutFaceMaterial = (): THREE.MeshPhysicalMaterial =>
-    new THREE.MeshPhysicalMaterial({
+    withCutGrain(new THREE.MeshPhysicalMaterial({
         vertexColors: true,
         roughness: 0.42,
         clearcoat: 0.6,
         clearcoatRoughness: 0.25,
         emissive: new THREE.Color('#000000'),
         side: THREE.DoubleSide,
-    });
+    }));
 
 /** Pulso do sangue: onda que percorre o vaso (fração 0…1 do comprimento) a cada batimento. */
 export const PULSE_HZ = 1.05;
@@ -205,18 +230,20 @@ const NS = new THREE.Vector3();
 const FWD = new THREE.Vector3(0, 1, 0);
 const DIR = new THREE.Vector3();
 
-/** Instância esticada ao longo de `dir` (rastro): comprimento `len`, espessura `s`. */
-export const putStretched = (m: THREE.InstancedMesh, i: number, p: THREE.Vector3, dir: THREE.Vector3, s: number, len: number): void => {
-    if (s <= 1e-4) { m.setMatrixAt(i, HIDDEN); return; }
+/** Instância esticada ao longo de `dir` (rastro): comprimento `len`, espessura `s`. Devolve o próximo índice. */
+export const pushStretched = (m: THREE.InstancedMesh, i: number, p: THREE.Vector3, dir: THREE.Vector3, s: number, len: number): number => {
+    if (s <= MIN_S) return i;
     DIR.copy(dir);
     if (DIR.lengthSq() < 1e-10) DIR.set(1, 0, 0);
     Q.setFromUnitVectors(FWD, DIR.normalize());
     m.setMatrixAt(i, M.compose(p, Q, NS.set(s, len, s)));
     Q.identity();
+    return i + 1;
 };
 
-/** Instância com escala por eixo (bolha que oscila). */
-export const putScaled = (m: THREE.InstancedMesh, i: number, p: THREE.Vector3, sx: number, sy: number, sz: number): void => {
-    if (sx <= 1e-4) { m.setMatrixAt(i, HIDDEN); return; }
+/** Instância com escala por eixo (bolha que oscila). Devolve o próximo índice. */
+export const pushScaled = (m: THREE.InstancedMesh, i: number, p: THREE.Vector3, sx: number, sy: number, sz: number): number => {
+    if (sx <= MIN_S) return i;
     m.setMatrixAt(i, M.compose(p, Q, NS.set(sx, sy, sz)));
+    return i + 1;
 };

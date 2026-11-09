@@ -48,14 +48,24 @@ export const PhMeter = ({ simRef }: { simRef: SimRef }) => {
 
     useEffect(() => {
         let raf = 0;
+        // só mexe no DOM quando a mudança aparece: texto ao virar o centésimo, marcador a cada 0,0025
+        // (meio pixel da barra) e a barra de saída a cada 0,5%
+        const last = new Int32Array(5).fill(-1);
+        const changed = (slot: number, key: number) => {
+            if (last[slot] === key) return false;
+            last[slot] = key;
+            return true;
+        };
+        const paintRow = (slot: number, value: HTMLSpanElement | null, marker: HTMLDivElement | null, ph: number) => {
+            if (value && changed(slot, Math.round(ph * 100))) value.textContent = fmt(ph);
+            if (marker && changed(slot + 1, Math.round(ph * 400))) marker.style.left = pct(ph);
+        };
         const paint = () => {
             const m = simRef.current.meter;
-            const rows = [[mValue.current, mMarker.current, m.pHi], [bValue.current, bMarker.current, m.pHe]] as const;
-            for (const [value, marker, ph] of rows) {
-                if (value) value.textContent = fmt(ph);
-                if (marker) marker.style.left = pct(ph);
-            }
-            if (efflux.current) efflux.current.style.width = `${(Math.min(m.efflux, 1) * 100).toFixed(1)}%`;
+            paintRow(0, mValue.current, mMarker.current, m.pHi);
+            paintRow(2, bValue.current, bMarker.current, m.pHe);
+            const f = Math.min(m.efflux, 1);
+            if (efflux.current && changed(4, Math.round(f * 200))) efflux.current.style.width = `${(f * 100).toFixed(1)}%`;
             raf = requestAnimationFrame(paint);
         };
         raf = requestAnimationFrame(paint);
@@ -63,7 +73,7 @@ export const PhMeter = ({ simRef }: { simRef: SimRef }) => {
     }, [simRef]);
 
     return (
-        <div className="w-[300px] px-3.5 pt-2.5 pb-3 rounded-xl bg-[rgba(4,10,20,0.84)] border border-white/10 backdrop-blur-md">
+        <div className="w-[300px] px-3.5 pt-2.5 pb-3 rounded-xl bg-[rgba(4,10,20,0.92)] border border-white/10">
             <div className="flex items-center justify-between mb-2.5">
                 <span className="text-[14px] font-mono uppercase tracking-wider text-gray-300">pH</span>
                 <span className="px-2 py-0.5 rounded-full text-[14px] font-mono text-amber-200 bg-amber-400/10 border border-amber-300/30">valores ilustrativos</span>

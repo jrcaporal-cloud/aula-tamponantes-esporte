@@ -28,11 +28,18 @@ const OUT = new THREE.Vector3(0, 4.1, 1.6);
 
 export interface HeroFrame { u: number; come: number; rise: number; center: THREE.Vector3 }
 
+/** Quadro de rascunho reaproveitado (chamado a cada quadro pela cena e pelos rótulos): use na hora, não guarde. */
+const FRAME: HeroFrame = { u: 0, come: 0, rise: 0, center: new THREE.Vector3() };
+
 /** Fase do laço no instante `sec`; `center` = onde a molécula montada está (referencial da estação). */
 export const heroFrame = (sec: number, center: THREE.Vector3): HeroFrame => {
     const u = (sec % HERO_LOOP) / HERO_LOOP;
     const rise = phase(u, 0.44, 0.62);
-    return { u, come: phase(u, 0.04, 0.32), rise, center: center.copy(SITE).lerp(OUT, rise) };
+    FRAME.u = u;
+    FRAME.come = phase(u, 0.04, 0.32);
+    FRAME.rise = rise;
+    FRAME.center = center.copy(SITE).lerp(OUT, rise);
+    return FRAME;
 };
 
 /** Posição da metade β-alanina e da metade histidina, a partir do quadro do herói. */
@@ -43,8 +50,9 @@ export const heroRing = (sec: number, out: THREE.Vector3) => {
     const f = heroFrame(sec, out);
     return hisPart(f, out).addScaledVector(RING_CENTER, HERO_S);
 };
+const BA_LABEL_OFFSET = new THREE.Vector3(-1.6 * HERO_S, 0.6 * HERO_S, 0);
 /** Ponto da metade β-alanina do herói (para o rótulo "Carnosina"). */
 export const heroBa = (sec: number, out: THREE.Vector3) => {
     const f = heroFrame(sec, out);
-    return baPart(f, out).add(new THREE.Vector3(-1.6 * HERO_S, 0.6 * HERO_S, 0));
+    return baPart(f, out).add(BA_LABEL_OFFSET);
 };

@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { C } from '../../sims/kit/palette';
 import { HudBox } from './hudParts';
-import { toPath, useRaf } from './hudUtils';
+import { setAttr, setText, toPath, useRaf } from './hudUtils';
 import { br, firing, HOUR_AXIS, ITCH_THRESHOLD, PEAK, plasma, playHour, type Release } from './model';
 import { useCarnoSim } from './store';
 
@@ -39,15 +39,19 @@ export const PlasmaHud = ({ withSlow }: { withSlow: boolean }) => {
         const h = playHour(sec);
         const c = plasma(h, mode);
         const x = sx(h);
-        line.current?.setAttribute('x1', `${x}`);
-        line.current?.setAttribute('x2', `${x}`);
-        dot.current?.setAttribute('cx', `${x}`);
-        dot.current?.setAttribute('cy', `${sy(c)}`);
-        if (read.current) read.current.textContent = `${br(h, 1)} h · ${br(c)} µM`;
+        setAttr(line.current, 'x1', `${x}`);
+        setAttr(line.current, 'x2', `${x}`);
+        setAttr(dot.current, 'cx', `${x}`);
+        setAttr(dot.current, 'cy', `${sy(c)}`);
+        setText(read.current, `${br(h, 1)} h · ${br(c)} µM`);
         if (state.current && withSlow) {
             const on = firing(h, mode) > 0;
-            state.current.textContent = on ? 'formigando' : 'abaixo do limiar';
-            state.current.style.color = on ? C.risk : '#9CA3AF';
+            setText(state.current, on ? 'formigando' : 'abaixo do limiar');
+            const color = on ? C.risk : '#9CA3AF';
+            if (state.current.dataset.c !== color) {
+                state.current.dataset.c = color;
+                state.current.style.color = color;
+            }
         }
     });
 
