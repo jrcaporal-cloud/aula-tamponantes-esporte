@@ -1,4 +1,4 @@
-# Roteiro — "Ácido, Base e Performance" (56 slides, 7 atos, ~2h45 com discussão)
+# Roteiro — "Ácido, Base e Performance" (59 slides, 7 atos, ~3h30 com discussão)
 
 Fio narrativo: **o Inquérito do H⁺**. A fadiga é o "crime"; o ácido lático é o suspeito de sempre (e injustiçado);
 a perícia (fisiologia) reconstitui a cena; bicarbonato e beta-alanina são as testemunhas de defesa da performance;
@@ -92,6 +92,9 @@ Ids dos slides: número inteiro único; a ordem abaixo é a ordem da aula. `min`
 | 93 | O Dia de Prova | `CompetitionDaySim` | Linha do tempo de cada personagem: Júlia (eliminatória e final em dias seguidos), Rafael (pesagem na hora, até 5 lutas), Carlos (tiazida exige AUT), Bianca (eliminatória de manhã, final à tarde; 18 anos). | 4 |
 | 94 | Quatro Casos, Quatro Vereditos | `CaseVerdictSim` | Para cada personagem: o que a evidência diz, armadilhas e decisão (dossiê 06, Parte 5). Rótulo "fictícios". | 6 |
 | 95 | Testar no Treino Antes da Prova | `ProtocolFlowSim` | Fluxo de decisão (consenso AIS/ISSN/COI): a prova está na janela? → contraindicações? → regras (WADA/Anvisa) → teste no treino (GI, horário, sódio) → registrar → decidir. Sem receita: é um fluxo de raciocínio. | 4 |
+| 100 | O Cartão do Bicarbonato | `BicarbCardSim` | Cartão de prescrição que se preenche em 6 passos (para quem, dose, horário, forma, várias provas, cuidados), cada linha com a régua ISSN × AIS × COI ou os números, selo de honestidade e fonte: 30 s–12 min; 0,2–0,3 g/kg (0,4–0,5 só GI) [ISSN2021, GOUGH2018]; 60–180 min (AIS 120–150 com refeição ~1,5 g/kg CHO; pico 75–180 min; 1 de 23) [AIS-SB2025, JONES2016, BOEGMAN2020]; cápsula/entérica/fracionar, GI 29,5% × 2,6% [MILLER2025RUN, HILTON2020GI]; carga 0,4–0,5 g/kg/d por 3–7 dias, reforço ~100 mg/kg sem eficácia publicada; quem não deve, M2.2, IN 28/CFN 656, certificação por lote. Selo "orientação geral, não receita". Acrescentado em 16/11/2026 (pedido: recomendações mais claras). | 4 |
+| 101 | O Cartão da Beta-alanina | `BetaAlanineCardSim` | Mesmo formato: 0,5–10 min (ES 0,18; capacidade 0,50 × desempenho 0,11) [SAUNDERS2017BJSM, HOBSON2012]; 3,2–6,4 g/d (ISSN 4–6; AIS 4 × 1,6 g; COI ~65 mg/kg/d), doses ≤ 1,6 g/liberação lenta, com refeição [TREXLER2015, AIS-BA2025, MAUGHAN2018, STEGEN2013]; ≥ 4 semanas, 179 g = 28 dias a 6,4 g/d × ~90 a 2 g/d; manutenção ~1,2 g/d, washout 6–15 sem [AIS-BA2025, BAGUET2009]; IN 28, segurança [DOLAN2019]; combinação SMD 0,32 [CURRANBOWEN2024, TOBIAS2013, DASILVA2019]. | 3 |
+| 102 | Quem Leva o Quê | `WhoTakesWhatSim` | Quadro por tipo de esforço (dossiê 06, 4.1) com luz do bicarbonato e da β-alanina; os 4 personagens caem nas linhas (3 na verde) e ganham a luz da decisão do slide 94. Rótulo "caso fictício". | 2 |
 | 96 | O que Levar para Segunda-feira | `TakeawaysSim` | 5 mensagens finais. | 3 |
 | 97 | O Veredito das Acusações | `VerdictRecapSim` | Volta às 6 acusações do slide 11, agora com o veredito justificado em uma linha cada. | 3 |
 | 99 | (citação final) | QuoteSlide | "O tampão não vence a prova. Ele só adia o momento em que o atleta descobre o próprio limite." (ou frase melhor, sem prometer efeito) | 1 |

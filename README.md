@@ -3,7 +3,7 @@
 Aula interativa sobre substratos tamponantes no exercício (bicarbonato, beta-alanina e companhia), para pós-graduação.
 React 19 + TypeScript + Vite + Tailwind v4 + framer-motion + React Three Fiber. Mesmo motor da aula "Fisiologia do Doping no Esporte".
 
-56 slides em 7 atos, com um fio narrativo de inquérito: a fadiga é o crime, o ácido lático é o suspeito de sempre,
+59 slides em 7 atos, com um fio narrativo de inquérito: a fadiga é o crime, o ácido lático é o suspeito de sempre,
 a fisiologia é a perícia, bicarbonato e beta-alanina são as testemunhas, a metodologia é o contra-interrogatório e a prática é o veredito.
 Quatro personagens fictícios (Júlia, 800 m; Rafael, jiu-jítsu; Carlos, remo master hipertenso; Bianca, natação vegetariana) atravessam a aula.
 
@@ -23,7 +23,7 @@ O endereço acompanha o ponto da aula (`#/27/3` = slide 27, terceiro passo).
 
 ### Versões por tempo
 
-A aula completa leva cerca de 3h20 com discussão. Parâmetros na URL escondem os slides de aprofundamento (nada é apagado):
+A aula completa leva cerca de 3h30 com discussão. Parâmetros na URL escondem os slides de aprofundamento (nada é apagado):
 
 - `?tempo=120` — cerca de 2h
 - `?tempo=90` — cerca de 1h30

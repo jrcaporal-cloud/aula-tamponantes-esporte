@@ -79,9 +79,9 @@ describe('versões por tempo', () => {
         expect(IDS.every(id => keepsSlide('completa', id))).toBe(true);
     });
 
-    it('as versões curtas mantêm a abertura, o mecanismo, as duas testemunhas e o fechamento', () => {
+    it('as versões curtas mantêm a abertura, o mecanismo, as duas testemunhas, os cartões de prescrição e o fechamento', () => {
         for (const tempo of ['120', '90', '60'] as const) {
-            for (const id of [0, 10, 11, 26, 43, 62, 92, 94, 99]) expect(keepsSlide(tempo, id), `${tempo} min, slide ${id}`).toBe(true);
+            for (const id of [0, 10, 11, 26, 43, 62, 92, 94, 100, 101, 99]) expect(keepsSlide(tempo, id), `${tempo} min, slide ${id}`).toBe(true);
         }
     });
 

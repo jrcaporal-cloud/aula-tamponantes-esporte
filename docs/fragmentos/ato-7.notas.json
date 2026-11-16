@@ -33,6 +33,24 @@
     "minutos": 4,
     "mensagem": "Seis perguntas na ordem: a prova está na janela, há contraindicação, as regras permitem, testou no treino, registrou, decidiu. As três primeiras podem encerrar a conversa. O teste segue as quatro fases do AIS, e o registro com justificativa é exigência da CFN 656.",
     "pergunta": "Em que passo vocês costumam pular direto para a dose?",
+    "transicao": "O fluxo diz como decidir; os consensos dizem com que números. Primeiro, o bicarbonato."
+  },
+  "100": {
+    "minutos": 4,
+    "mensagem": "É o cartão que faltava juntar: o que ISSN, AIS e COI escrevem, linha a linha. Prova de 30 s a ~12 min; 0,2–0,3 g/kg; 60–180 min antes (o AIS fala em 120–150 min com refeição pequena rica em carboidrato), no relógio de cada atleta; cápsula, fracionar e refeição pequena contra o intestino; carga de vários dias ou reforço testado para mais de uma prova. A última linha vem antes de todas: diurético, rim, coração, gestação e transtorno alimentar fecham a porta, e no Brasil o bicarbonato nem existe como suplemento em cápsula. É orientação geral de consenso, não receita: a dose de cada um sai do teste no treino.",
+    "pergunta": "Qual linha deste cartão vocês mais veem errada na prática — a dose, o horário ou a lista de quem não deve?",
+    "transicao": "A beta-alanina tem outro relógio: semanas, não horas."
+  },
+  "101": {
+    "minutos": 3,
+    "mensagem": "Para quem: 0,5 a 10 min, melhor em teste até a exaustão do que em prova. Dose: 3,2–6,4 g/d (ISSN 4–6; AIS 4 × 1,6 g), em doses de até 1,6 g ou liberação lenta, junto da refeição. Tempo: no mínimo 4 semanas; 179 g levam 28 dias a 6,4 g/d e ~90 dias no teto brasileiro de 2 g/d. Manutenção ~1,2 g/d; ao parar, some em 6–15 semanas. Com bicarbonato soma um pouco (SMD 0,32), mas o maior estudo foi nulo. A IN 28 fecha para menores de 19 anos, gestantes e lactantes; acima de 2 g/d é zona cinzenta — justificativa no prontuário e, na dúvida, o CRN.",
+    "pergunta": "Se o atleta compete daqui a 3 semanas, a beta-alanina ainda entra na conversa? E no teto de 2 g/d?",
+    "transicao": "Com os dois cartões na mão, quem leva o quê?"
+  },
+  "102": {
+    "minutos": 2,
+    "mensagem": "O mapa por tipo de esforço junta o que a aula mostrou: verde para provas contínuas de 30 s a 10 min (e resistência muscular, para o bicarbonato), amarelo para lutas, sprints repetidos e provas longas com surtos, vermelho para força máxima, sprint curto e ritmo estável por horas. Três dos quatro personagens caem na linha verde — e só Júlia sai com sinal verde: idade, remédio, regra e balança decidem antes da fisiologia. Personagens fictícios; decisões do slide 94.",
+    "pergunta": "Que atleta do seu consultório caberia na linha verde — e o que pode tirá-lo de lá?",
     "transicao": "Se for para guardar só cinco coisas desta aula, são estas."
   },
   "96": {
