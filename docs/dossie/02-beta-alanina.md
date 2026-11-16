@@ -787,3 +787,16 @@ Convenções: **dm** = massa seca; **ww** = massa úmida; **¹H-ERM** = espectro
 - **Dose diária de HOFFMAN2014 (soldados)** — não informada no abstract.
 - **Nome do coautor da descoberta de 1900 (Amiradžibi)** — não conferido; citar só "Gulewitsch, 1900".
 - **"Humanos não têm balenina no músculo"** — conflito: BOLDYREV2013 diz que humanos não têm variante metilada; DEJAGER2023 afirma ter encontrado balenina em músculo humano (citando VDSTEDE2023, cujo abstract não confirma). Não usar nenhuma das duas afirmações como fato fechado.
+
+### ANVISA-IN28-BA (regra brasileira — conferida em 16/11/2026)
+- Citação: Anvisa. Instrução Normativa nº 28, de 26/07/2018 (lista de constituintes, limites de uso, alegações e rotulagem complementar dos suplementos alimentares), com a beta-alanina incluída pela IN nº 102, de 15/10/2021. Texto consolidado no AnvisaLegis: https://anvisalegis.datalegis.net (IN 28/2018, "Vigente com Alterações").
+- Anexo I: beta-alanina (CAS 107-95-9) entre os aminoácidos autorizados (incluída pela IN 102/2021).
+- Anexo IV (limite máximo): **2 g/dia só para ≥ 19 anos**; "NA" para 0–18 anos, gestantes e lactantes.
+- Anexo VI (advertência obrigatória no rótulo): "Quantidade diária máxima de 2 g com doses divididas de, no máximo, 300 mg, com intervalo de duas horas entre as doses."
+- Ponto de ensino: o limite é de ROTULAGEM do suplemento vendido no Brasil, muito abaixo das doses dos consensos (ISSN 4–6 g/d; AIS 6,4 g/d; COI ~65 mg/kg/d). Prescrever acima é decisão clínica do profissional.
+- Verificação: confirmado no texto consolidado (Anexos I, IV e VI)
+
+### AIS-BA-USO (como usar — conferido em 16/11/2026)
+- Citação: Australian Institute of Sport. ß-alanine — How and when do I use it? https://www.ausport.gov.au/ais/nutrition/supplements/group_a/performance-supplements2/b-alanine/how-and-when-do-i-use-it
+- Texto: 1.600 mg nas 3 refeições principais e no maior lanche = **6.400 mg/dia**; mínimo de **4 semanas**; tempo até a carnosina máxima variável (**média 18 sem com 6,4 g/d; 4–24 sem**); manutenção de **~1,2 g/dia** segura a carnosina 30–50% acima da linha de base.
+- Verificação: confirmado na página oficial (HTML)
